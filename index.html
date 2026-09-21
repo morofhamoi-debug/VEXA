@@ -116,7 +116,6 @@ textarea.input{resize:vertical;min-height:80px}
 }
 .register-link:hover{text-decoration:underline}
 
-/* Mode toggle */
 .mode-toggle{
   display:flex;gap:4px;
   background:var(--surface-2);border:1px solid var(--border);
@@ -133,15 +132,8 @@ textarea.input{resize:vertical;min-height:80px}
 }
 [data-theme="dark"] .mode-toggle button.active{background:var(--surface-2);color:#c4b5fd}
 
-/* Register steps */
-.steps{
-  display:flex;gap:6px;margin-bottom:18px;
-}
-.steps .step{
-  flex:1;height:4px;border-radius:4px;
-  background:var(--border);
-  transition:background .25s;
-}
+.steps{display:flex;gap:6px;margin-bottom:18px}
+.steps .step{flex:1;height:4px;border-radius:4px;background:var(--border);transition:background .25s}
 .steps .step.active{background:var(--primary)}
 .steps .step.done{background:var(--primary);opacity:.6}
 
@@ -240,7 +232,7 @@ textarea.input{resize:vertical;min-height:80px}
   border:2px solid var(--surface);
 }
 
-/* ============ MAIN TOP TABS (STICKY + CENTERED) ============ */
+/* ============ MAIN TOP TABS ============ */
 .main-tabs{
   position:sticky;
   top:var(--topbar-h,62px);
@@ -397,7 +389,7 @@ textarea.input{resize:vertical;min-height:80px}
 .empty-title{font-weight:600;color:var(--text-2);font-size:.95rem;margin-bottom:4px}
 .empty-text{font-size:.83rem}
 
-/* ============ QR SCANNER ============ */
+/* ============ QR SCANNER (ISSUE) ============ */
 .qr-scanner{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:34px 20px 26px;text-align:center;
@@ -475,11 +467,6 @@ textarea.input{resize:vertical;min-height:80px}
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
 .qr-sub{font-size:.88rem;color:var(--text-muted);max-width:360px;z-index:1;line-height:1.5}
-.qr-hint{
-  margin-top:16px;font-size:.78rem;color:var(--text-muted);
-  padding:7px 14px;background:var(--surface-2);border-radius:20px;
-  border:1px solid var(--border);z-index:1;
-}
 @media (max-width:480px){
   .qr-frame{width:170px;height:170px;padding:12px;border-radius:18px}
   .qr-frame::before,.qr-frame::after{width:22px;height:22px;border-width:2.5px}
@@ -488,17 +475,191 @@ textarea.input{resize:vertical;min-height:80px}
   .qr-scanner{padding:24px 14px 20px}
 }
 
-/* ============ RECEPTION ============ */
-.reception-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:20px;align-items:start}
+/* ============ ISSUE MANUAL LOOKUP ============ */
+.issue-manual{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:22px;
+  margin-bottom:20px;
+  box-shadow:var(--shadow-sm);
+}
+.issue-manual-header{
+  display:flex;align-items:center;gap:10px;
+  font-size:.92rem;font-weight:700;
+  color:var(--text-2);
+  margin-bottom:16px;
+}
+.issue-manual-header svg{width:18px;height:18px;color:var(--primary)}
+.manual-step{
+  display:flex;gap:14px;align-items:flex-start;
+  animation:fadeIn .28s ease;
+}
+.manual-step + .manual-step{margin-top:14px;padding-top:14px;border-top:1px dashed var(--border)}
+.step-badge{
+  width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,var(--primary) 0%,#5b21b6 100%);
+  color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:.9rem;flex-shrink:0;margin-top:22px;
+  box-shadow:0 4px 12px rgba(124,58,237,.3);
+}
+.step-content{flex:1;min-width:0}
+.step-label{
+  font-size:.82rem;font-weight:700;
+  color:var(--text-2);margin-bottom:8px;
+}
+.step-hint{
+  font-size:.75rem;color:var(--text-muted);
+  margin-top:6px;
+}
+#issueLast4{
+  font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  font-size:1.3rem;
+  letter-spacing:.5em;
+  text-align:center;
+  font-weight:800;
+  padding:16px 14px 16px 26px;
+  text-indent:.25em;
+}
+#issueClientCode{
+  font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  font-size:1.3rem;
+  letter-spacing:.25em;
+  text-align:center;
+  font-weight:800;
+  padding:16px 14px;
+}
+.step-error{
+  color:var(--danger);font-size:.82rem;margin-top:8px;font-weight:600;
+  display:flex;align-items:center;gap:6px;
+}
+.step-success{
+  color:var(--success);font-size:.82rem;margin-top:8px;font-weight:600;
+  display:flex;align-items:center;gap:6px;
+}
+
+/* ============ RECEPTION (GREEN VISUAL) ============ */
+.reception-hero{
+  background:linear-gradient(135deg,#10b981 0%,#047857 100%);
+  color:#fff;
+  border-radius:var(--radius-lg);
+  padding:22px 24px;
+  margin-bottom:18px;
+  display:flex;align-items:center;gap:18px;
+  position:relative;overflow:hidden;
+  box-shadow:0 10px 28px rgba(16,185,129,.28);
+}
+.reception-hero::after{
+  content:'';position:absolute;right:-50px;top:-50px;
+  width:200px;height:200px;border-radius:50%;
+  background:rgba(255,255,255,.1);
+}
+.reception-hero::before{
+  content:'';position:absolute;right:60px;bottom:-60px;
+  width:140px;height:140px;border-radius:50%;
+  background:rgba(255,255,255,.06);
+}
+.reception-hero-icon{
+  width:58px;height:58px;border-radius:16px;
+  background:rgba(255,255,255,.22);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  backdrop-filter:blur(10px);
+  position:relative;z-index:1;
+  border:1px solid rgba(255,255,255,.25);
+}
+.reception-hero-icon svg{width:30px;height:30px;color:#fff}
+.reception-hero-text{position:relative;z-index:1;min-width:0}
+.reception-hero h2{
+  font-size:1.35rem;font-weight:800;letter-spacing:-.02em;
+  margin-bottom:4px;
+}
+.reception-hero p{
+  font-size:.86rem;opacity:.92;
+}
+
+/* Reception scanner card */
+.reception-scanner{
+  background:var(--surface);
+  border:2px solid #10b981;
+  border-radius:var(--radius-lg);
+  padding:26px 20px 22px;
+  margin-bottom:18px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 6px 24px rgba(16,185,129,.15);
+}
+.reception-scanner::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 25%, rgba(16,185,129,.08), transparent 65%);
+  pointer-events:none;
+}
+.barcode-display{
+  position:relative;
+  width:240px;
+  max-width:100%;
+  height:92px;
+  margin:0 auto 18px;
+  padding:14px;
+  background:#ecfdf5;
+  border-radius:12px;
+  border:1px solid #a7f3d0;
+  overflow:hidden;
+}
+[data-theme="dark"] .barcode-display{
+  background:#052e22;
+  border-color:#065f46;
+}
+.barcode-display svg{
+  width:100%;height:100%;display:block;
+  color:#059669;
+  filter:drop-shadow(0 0 4px rgba(16,185,129,.4));
+}
+[data-theme="dark"] .barcode-display svg{color:#34d399}
+.barcode-scan-line{
+  position:absolute;left:6px;right:6px;height:3px;
+  background:linear-gradient(90deg,transparent 0%,#10b981 50%,transparent 100%);
+  box-shadow:0 0 14px #10b981,0 0 24px rgba(16,185,129,.7);
+  border-radius:3px;
+  animation:barcodeScan 2.4s cubic-bezier(.45,0,.55,1) infinite;
+  top:10%;
+  pointer-events:none;
+}
+@keyframes barcodeScan{
+  0%{top:10%;opacity:0}
+  15%{opacity:1}
+  85%{opacity:1}
+  100%{top:85%;opacity:0}
+}
+.reception-scan-title{
+  font-size:1.1rem;font-weight:800;letter-spacing:-.015em;
+  color:#047857;
+  margin-bottom:6px;
+  position:relative;z-index:1;
+}
+[data-theme="dark"] .reception-scan-title{color:#34d399}
+.reception-scan-sub{
+  font-size:.85rem;color:var(--text-muted);
+  position:relative;z-index:1;
+  max-width:340px;margin:0 auto;
+}
+
+.reception-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:20px;align-items:start;margin-top:20px}
 .scan-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px}
-.scan-box h3{font-size:1rem;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.scan-box h3{font-size:.92rem;margin-bottom:14px;display:flex;align-items:center;gap:8px;color:#047857;text-transform:uppercase;letter-spacing:.04em;font-weight:800}
+[data-theme="dark"] .scan-box h3{color:#34d399}
+.scan-box h3 svg{color:currentColor}
 .scan-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .scan-counts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
-.scan-count{background:var(--surface-2);border-radius:var(--radius);padding:12px 14px;border:1px solid var(--border-2)}
-.scan-count .num{font-size:1.4rem;font-weight:800;letter-spacing:-.02em}
+.scan-count{background:#ecfdf5;border-radius:var(--radius);padding:12px 14px;border:1px solid #a7f3d0}
+[data-theme="dark"] .scan-count{background:#052e22;border-color:#065f46}
+.scan-count .num{font-size:1.4rem;font-weight:800;letter-spacing:-.02em;color:#047857}
+[data-theme="dark"] .scan-count .num{color:#34d399}
 .scan-count .lbl{font-size:.76rem;color:var(--text-muted)}
 .list-items{display:flex;flex-direction:column;gap:8px;max-height:480px;overflow-y:auto;margin-top:14px}
-.list-item{display:flex;align-items:center;gap:12px;padding:12px;background:var(--surface-2);border-radius:var(--radius);border:1px solid var(--border-2);animation:fadeIn .25s ease}
+.list-item{display:flex;align-items:center;gap:12px;padding:12px;background:var(--surface-2);border-radius:var(--radius);border:1px solid var(--border-2);animation:fadeIn .25s ease;border-left:3px solid #10b981}
 .list-item-body{flex:1;min-width:0}
 .list-item-title{font-weight:600;font-size:.88rem;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .list-item-sub{font-size:.76rem;color:var(--text-muted);font-family:ui-monospace,monospace}
@@ -623,6 +784,20 @@ textarea.input{resize:vertical;min-height:80px}
   .order-info{grid-template-columns:1fr}
   .big-empty{padding:60px 20px;min-height:320px}
   .big-empty h2{font-size:1.2rem}
+  .issue-manual{padding:18px}
+  .manual-step{gap:12px}
+  .step-badge{width:30px;height:30px;margin-top:20px;font-size:.82rem}
+  .reception-hero{padding:18px 20px;gap:14px}
+  .reception-hero-icon{width:50px;height:50px;border-radius:14px}
+  .reception-hero-icon svg{width:26px;height:26px}
+  .reception-hero h2{font-size:1.15rem}
+  .reception-hero p{font-size:.8rem}
+  .reception-scanner{padding:22px 16px 18px}
+  .barcode-display{width:200px;height:78px;padding:12px}
+  .reception-scan-title{font-size:1rem}
+  .reception-scan-sub{font-size:.8rem}
+  #issueLast4{font-size:1.1rem;padding:14px;letter-spacing:.4em;text-indent:.2em}
+  #issueClientCode{font-size:1.1rem;padding:14px;letter-spacing:.2em}
 }
 @media (max-width: 480px){
   .toolbar{gap:8px}
@@ -630,6 +805,7 @@ textarea.input{resize:vertical;min-height:80px}
   .quick-actions{grid-template-columns:1fr}
   .grid-stats{grid-template-columns:repeat(2,1fr)}
   .login-card{padding:26px 20px}
+  .barcode-display{width:180px;height:70px;padding:10px}
 }
 @media (max-width: 360px){.grid-stats{grid-template-columns:1fr}}
 @media (min-width: 901px) and (max-width: 1180px){.sidebar{width:220px}.content{padding:20px}}
@@ -668,7 +844,7 @@ textarea.input{resize:vertical;min-height:80px}
       <form id="loginForm" autocomplete="on">
         <div class="form-group" id="phoneGroup">
           <label for="phoneInput">Номер телефона</label>
-          <input class="input" type="tel" id="phoneInput" placeholder="+7 900 000-00-00" autocomplete="tel" inputmode="tel">
+          <input class="input" type="tel" id="phoneInput" placeholder="+7 (900) 000-00-00" autocomplete="tel" inputmode="tel">
         </div>
         <div class="form-group hidden" id="loginGroup">
           <label for="loginInput">Логин</label>
@@ -769,12 +945,12 @@ textarea.input{resize:vertical;min-height:80px}
    DATA LAYER
    ============================================================ */
 const KEYS = {
-  orders:'vexa_orders_v2',
-  history:'vexa_history_v2',
-  employees:'vexa_employees_v2',
-  notifications:'vexa_notifications_v2',
-  settings:'vexa_settings_v2',
-  session:'vexa_session_v2'
+  orders:'vexa_orders_v3',
+  history:'vexa_history_v3',
+  employees:'vexa_employees_v3',
+  notifications:'vexa_notifications_v3',
+  settings:'vexa_settings_v3',
+  session:'vexa_session_v3'
 };
 
 const DEFAULT_SETTINGS = {
@@ -834,10 +1010,56 @@ function phoneMatch(a, b){
   if(na.length < 10 || nb.length < 10) return na === nb;
   return na.slice(-10) === nb.slice(-10);
 }
+/* Phone formatter: always +7, max 11 digits total incl. 7
+   Format: +7 (918) 888-88-88 */
+function formatPhoneInput(value){
+  let digits = (value||'').replace(/\D/g, '');
+  if(digits.startsWith('8')) digits = '7' + digits.slice(1);
+  if(digits && !digits.startsWith('7')) digits = '7' + digits;
+  digits = digits.slice(0, 11);
+  if(!digits) return '';
+  let out = '+7';
+  const rest = digits.slice(1);
+  if(rest.length > 0){
+    out += ' (' + rest.slice(0, 3);
+  }
+  if(rest.length >= 3){
+    out += ')';
+  }
+  if(rest.length > 3){
+    out += ' ' + rest.slice(3, 6);
+  }
+  if(rest.length > 6){
+    out += '-' + rest.slice(6, 8);
+  }
+  if(rest.length > 8){
+    out += '-' + rest.slice(8, 10);
+  }
+  return out;
+}
+function attachPhoneFormatter(input, opts){
+  if(!input) return;
+  opts = opts || {};
+  input.addEventListener('input', () => {
+    const before = input.value;
+    const formatted = formatPhoneInput(before);
+    if(formatted !== before) input.value = formatted;
+  });
+  input.addEventListener('focus', () => {
+    if(!input.value && opts.autoStart){
+      input.value = '+7 (';
+    }
+  });
+  input.addEventListener('blur', () => {
+    const digits = normalizePhone(input.value);
+    if(digits.length <= 1) input.value = '';
+  });
+}
 function formatPhoneDisplay(p){
   const n = normalizePhone(p);
-  if(n.length === 11 && (n[0] === '7' || n[0] === '8')){
-    return '+7 ' + n.slice(1,4) + ' ' + n.slice(4,7) + '-' + n.slice(7,9) + '-' + n.slice(9,11);
+  if(n.length >= 10){
+    const d = n.length === 11 && (n[0] === '7' || n[0] === '8') ? n.slice(1) : n.slice(-10);
+    return '+7 (' + d.slice(0,3) + ') ' + d.slice(3,6) + '-' + d.slice(6,8) + '-' + d.slice(8,10);
   }
   return p;
 }
@@ -871,6 +1093,7 @@ const state = {
   sidebarOpen: false,
   loginMode: 'phone',
   reception: {items:[], errors:0},
+  issueLookup: {last4:'', orderId:null, code:''},
   register: {
     step: 1,
     phone: '',
@@ -1034,7 +1257,7 @@ function initials(name){
 function initialsUpper(name){ return initials(name).toUpperCase(); }
 
 /* ============================================================
-   FAKE QR-CODE SVG
+   QR / BARCODE SVG
    ============================================================ */
 function generateQRsvg(){
   const size = 25;
@@ -1060,12 +1283,28 @@ function generateQRsvg(){
     d += `M${ox+2} ${oy+2}h3v3h-3z `;
     return `<path d="${d}" fill="currentColor" fill-rule="evenodd"/>`;
   };
-  return `<svg viewBox="0 0 ${size} ${size}" shape-rendering="crispEdges" style="color:#a855f7" xmlns="http://www.w3.org/2000/svg">
+  return `<svg viewBox="0 0 ${size} ${size}" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
     <path d="${path}" fill="currentColor"/>
     ${finder(0,0)}
     ${finder(size-7,0)}
     ${finder(0,size-7)}
   </svg>`;
+}
+function generateBarcodeSvg(){
+  let path = '';
+  let x = 0;
+  let seed = 887;
+  const rnd = () => {
+    seed = (seed * 9301 + 49297) % 233280;
+    return seed / 233280;
+  };
+  for(let i = 0; i < 60; i++){
+    const w = 1 + Math.floor(rnd() * 3);
+    const gap = 1 + Math.floor(rnd() * 2);
+    path += `<rect x="${x}" y="0" width="${w}" height="100" fill="currentColor"/>`;
+    x += w + gap;
+  }
+  return `<svg viewBox="0 0 ${x} 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">${path}</svg>`;
 }
 
 /* ============================================================
@@ -1128,6 +1367,10 @@ function openModal(opts){
       closeThis();
     }
   }
+  // Auto-attach phone formatting for known phone inputs in modals
+  const phoneInModal = overlay.querySelector('input[type="tel"]');
+  if(phoneInModal) attachPhoneFormatter(phoneInModal, {autoStart:true});
+
   modalStack.push(overlay);
   return overlay;
 }
@@ -1207,6 +1450,7 @@ function navigate(section){
   if(section === 'orders') state.filters.orders = {q:'', status:'all', date:'all', sort:'date-desc'};
   if(section === 'warehouse') state.filters.warehouse = {q:'', status:'all'};
   if(section === 'history') state.filters.history = {q:'', type:'all', sort:'time-desc'};
+  if(section === 'issue') state.issueLookup = {last4:'', orderId:null, code:''};
   closeSidebar();
   render();
   window.scrollTo({top:0, behavior:'instant'});
@@ -1391,28 +1635,39 @@ function computeStats(){
   return {awaitingPickup, acceptedToday, issuedToday, returnsToday, inStock, operationsToday};
 }
 
-/* ============ RECEPTION (QR SCANNER FOR PRODUCT) ============ */
+/* ============ RECEPTION (GREEN VISUAL, DIFFERENT FROM ISSUE) ============ */
 function renderReception(){
   const items = state.reception.items;
   const errors = state.reception.errors;
   return `
   <div class="section">
-    <div class="qr-scanner">
-      <div class="qr-frame">
-        <div class="qr-inner">
-          ${generateQRsvg()}
-          <div class="qr-scan-line"></div>
-        </div>
+    <div class="reception-hero">
+      <div class="reception-hero-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 8v13H3V8"/>
+          <path d="M1 3h22v5H1z"/>
+          <path d="M10 12h4"/>
+        </svg>
       </div>
-      <h2 class="qr-title">Отсканируйте QR-код товара</h2>
-      <p class="qr-sub">Наведите камеру на штрихкод или QR-код на упаковке товара</p>
-      <div class="qr-hint">Или введите штрихкод вручную ниже</div>
+      <div class="reception-hero-text">
+        <h2>Приёмка товаров</h2>
+        <p>Сканируйте штрихкоды поступающих товаров на склад</p>
+      </div>
+    </div>
+
+    <div class="reception-scanner">
+      <div class="barcode-display">
+        ${generateBarcodeSvg()}
+        <div class="barcode-scan-line"></div>
+      </div>
+      <h3 class="reception-scan-title">Отсканируйте штрихкод товара</h3>
+      <p class="reception-scan-sub">Наведите камеру на штрихкод или введите его вручную ниже</p>
     </div>
 
     <div class="reception-grid">
       <div class="scan-box">
         <h3>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/></svg>
           Ручной ввод
         </h3>
         <div class="form-group">
@@ -1424,7 +1679,7 @@ function renderReception(){
           <input class="input" id="recvSupply" placeholder="Номер поставки" autocomplete="off">
         </div>
         <div class="scan-actions">
-          <button class="btn btn-primary" id="recvAddBtn">
+          <button class="btn btn-success" id="recvAddBtn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Добавить
           </button>
@@ -1439,11 +1694,11 @@ function renderReception(){
         </div>
         <div class="scan-counts">
           <div class="scan-count">
-            <div class="num" style="color:var(--success)">${items.length}</div>
+            <div class="num">${items.length}</div>
             <div class="lbl">Принято</div>
           </div>
           <div class="scan-count">
-            <div class="num" style="color:${errors>0?'var(--danger)':'var(--text)'}">${errors}</div>
+            <div class="num" style="color:${errors>0?'var(--danger)':''}">${errors}</div>
             <div class="lbl">Ошибок</div>
           </div>
         </div>
@@ -1457,7 +1712,7 @@ function renderReception(){
           </div>
         </div>
         <div class="list-items" id="recvList">
-          ${items.length === 0 ? emptyState('Список пуст', 'Отсканируйте QR-код товара или введите штрихкод вручную') :
+          ${items.length === 0 ? emptyState('Список пуст', 'Отсканируйте штрихкод товара или введите его вручную') :
             items.map(it => `
               <div class="list-item">
                 <div class="list-item-body">
@@ -1555,6 +1810,7 @@ function nextShelf(){
 
 /* ============ ISSUE ============ */
 function renderIssue(){
+  const l = state.issueLookup;
   return `
   <div class="section">
     <div class="qr-scanner">
@@ -1566,65 +1822,53 @@ function renderIssue(){
       </div>
       <h2 class="qr-title">Отсканируйте QR-код клиента</h2>
       <p class="qr-sub">Наведите камеру на экран клиента, чтобы считать код получения заказа</p>
-      <div class="qr-hint">Или введите номер заказа, штрихкод / код получения вручную</div>
     </div>
 
-    <div class="card">
-      <div class="card-header">
-        <div>
-          <div class="card-title">Поиск заказа</div>
-          <div class="card-sub">По номеру заказа, штрихкоду или коду получения</div>
+    <div class="issue-manual">
+      <div class="issue-manual-header">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+        Ввод вручную
+      </div>
+
+      <div class="manual-step">
+        <div class="step-badge">1</div>
+        <div class="step-content">
+          <label class="step-label" for="issueLast4">Последние 4 цифры номера</label>
+          <input class="input" id="issueLast4" inputmode="numeric" maxlength="4" placeholder="_ _ _ _" autocomplete="off" value="${escapeHtml(l.last4||'')}">
+          <div class="step-hint">Введите последние 4 цифры номера заказа, например 0001</div>
+          <div id="issueStep1Msg"></div>
         </div>
       </div>
-      <div class="toolbar" style="margin-bottom:0">
-        <div class="search">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input class="input" id="issueSearch" placeholder="Номер заказа, штрихкод или код" autocomplete="off">
+
+      <div class="manual-step hidden" id="issueStep2">
+        <div class="step-badge">2</div>
+        <div class="step-content">
+          <label class="step-label" for="issueClientCode">Введите код клиента</label>
+          <input class="input" id="issueClientCode" inputmode="numeric" placeholder="Код получения" autocomplete="off" value="${escapeHtml(l.code||'')}">
+          <div class="step-hint" id="issueStep2Hint">4-значный код, который назвал клиент</div>
+          <div id="issueStep2Msg"></div>
         </div>
-        <button class="btn btn-primary" id="issueFindBtn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          Найти
-        </button>
-        <button class="btn btn-secondary" id="issueScanBtn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-          Сканировать
-        </button>
       </div>
-      <div id="issueResult" style="margin-top:18px"></div>
     </div>
+
+    <div id="issueResult"></div>
   </div>`;
 }
 
-function searchIssueOrder(query){
-  const q = (query || '').trim().toLowerCase();
-  if(!q) return null;
-  return state.orders.find(o =>
-    o.number.toLowerCase() === q ||
-    o.barcode.toLowerCase() === q ||
-    o.pickupCode.toLowerCase() === q
-  ) || state.orders.find(o =>
-    o.number.toLowerCase().includes(q) ||
-    o.barcode.toLowerCase().includes(q)
-  );
+function findOrdersByLast4(digits){
+  const d = (digits||'').trim();
+  if(!/^\d{4}$/.test(d)) return [];
+  return state.orders.filter(o => {
+    const num = (o.number||'').replace(/\D/g,'');
+    return num.endsWith(d);
+  });
 }
 
-function renderIssueResult(query){
-  const container = document.getElementById('issueResult');
-  if(!container) return;
-  if(!query){ container.innerHTML = ''; return; }
-  const order = searchIssueOrder(query);
-  if(!order){
-    container.innerHTML = `<div class="empty">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <div class="empty-title">Заказ не найден</div>
-      <div class="empty-text">Проверьте номер, штрихкод или код получения</div>
-    </div>`;
-    return;
-  }
+function renderIssueResultForOrder(order, matchedByCode){
   const u = getUser(order.employee);
   const canIssue = ['awaiting_pickup','in_stock','accepted'].includes(order.status);
-  container.innerHTML = `
-    <div class="order-card">
+  return `
+    <div class="order-card" style="margin-top:16px">
       <div class="order-head">
         <div>
           <div class="order-num">${escapeHtml(order.number)}</div>
@@ -1640,10 +1884,11 @@ function renderIssueResult(query){
         <div class="info-item"><div class="lbl">Дата поступления</div><div class="val">${escapeHtml(fmtDT(order.acceptedAt || order.createdAt))}</div></div>
         <div class="info-item"><div class="lbl">Сотрудник</div><div class="val">${escapeHtml(u ? u.name : '—')}</div></div>
       </div>
+      ${matchedByCode ? `
       <div style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--surface-2);border-radius:var(--radius);margin-bottom:14px">
         <div style="font-size:.78rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;font-weight:700">Код получения</div>
         <div class="code-highlight">${escapeHtml(order.pickupCode)}</div>
-      </div>
+      </div>` : ''}
       ${order.status === 'issued' ? `
         <div style="padding:12px;border-radius:var(--radius);background:var(--success-soft);color:var(--success);font-size:.85rem;font-weight:600">
           Заказ уже выдан ${escapeHtml(fmtDT(order.issuedAt))}
@@ -1659,8 +1904,149 @@ function renderIssueResult(query){
           Заказ нельзя выдать в текущем статусе
         </div>`}
     </div>`;
+}
+
+function renderIssueList(orders){
+  return `
+    <div class="card" style="margin-top:16px">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Найдено заказов: ${orders.length}</div>
+          <div class="card-sub">Выберите нужный заказ</div>
+        </div>
+      </div>
+      <div class="table-wrap" style="border:none;background:transparent">
+        <table class="table">
+          <thead><tr>
+            <th>Заказ</th><th>Товар</th><th>Статус</th><th>Полка</th>
+          </tr></thead>
+          <tbody>
+            ${orders.map(o => `
+              <tr data-issue-pick="${o.id}">
+                <td class="td-mono">${escapeHtml(o.number)}</td>
+                <td class="td-name">${escapeHtml(o.product)}</td>
+                <td>${statusBadge(o.status)}</td>
+                <td class="td-mono">${escapeHtml(o.shelf||'—')}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+function handleIssueLast4Change(){
+  const inp = document.getElementById('issueLast4');
+  if(!inp) return;
+  let v = inp.value.replace(/\D/g,'').slice(0,4);
+  if(inp.value !== v) inp.value = v;
+  state.issueLookup.last4 = v;
+  state.issueLookup.code = '';
+  state.issueLookup.orderId = null;
+
+  const step2 = document.getElementById('issueStep2');
+  const resEl = document.getElementById('issueResult');
+  const msg1 = document.getElementById('issueStep1Msg');
+  if(resEl) resEl.innerHTML = '';
+  if(msg1) msg1.innerHTML = '';
+
+  if(v.length < 4){
+    if(step2) step2.classList.add('hidden');
+    return;
+  }
+
+  const matches = findOrdersByLast4(v);
+  if(matches.length === 0){
+    if(step2) step2.classList.add('hidden');
+    if(msg1) msg1.innerHTML = `<div class="step-error">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Заказы с такими цифрами не найдены</div>`;
+    return;
+  }
+  if(step2){
+    step2.classList.remove('hidden');
+    const hint = document.getElementById('issueStep2Hint');
+    if(hint){
+      hint.textContent = matches.length === 1
+        ? 'Найден 1 заказ. Введите 4-значный код получения'
+        : `Найдено ${matches.length} заказов. Введите код получения для выбора`;
+    }
+    setTimeout(() => {
+      const ci = document.getElementById('issueClientCode');
+      if(ci) ci.focus();
+    }, 80);
+  }
+}
+
+function handleIssueClientCodeInput(){
+  const inp = document.getElementById('issueClientCode');
+  if(!inp) return;
+  let v = inp.value.replace(/\D/g,'');
+  if(inp.value !== v) inp.value = v;
+  state.issueLookup.code = v;
+
+  const msg2 = document.getElementById('issueStep2Msg');
+  const resEl = document.getElementById('issueResult');
+  if(msg2) msg2.innerHTML = '';
+  if(resEl) resEl.innerHTML = '';
+
+  if(v.length < 4) return;
+
+  const matches = findOrdersByLast4(state.issueLookup.last4);
+  if(matches.length === 0) return;
+
+  const found = matches.find(o => (o.pickupCode||'').trim() === v);
+  if(!found){
+    if(msg2) msg2.innerHTML = `<div class="step-error">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+      Неверный код клиента</div>`;
+    return;
+  }
+
+  state.issueLookup.orderId = found.id;
+
+  if(matches.length === 1){
+    if(msg2) msg2.innerHTML = `<div class="step-success">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Код верный — заказ найден</div>`;
+    if(resEl) resEl.innerHTML = renderIssueResultForOrder(found, true);
+    bindIssueConfirm();
+  } else {
+    if(msg2) msg2.innerHTML = `<div class="step-success">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Код верный — выбран заказ ${escapeHtml(found.number)}</div>`;
+    if(resEl) resEl.innerHTML = renderIssueResultForOrder(found, true);
+    bindIssueConfirm();
+  }
+}
+
+function bindIssueConfirm(){
   const btn = document.getElementById('issueConfirmBtn');
-  if(btn) btn.addEventListener('click', () => issueOrderFlow(order.id));
+  if(btn){
+    const id = btn.dataset.id;
+    btn.addEventListener('click', () => issueOrderFlow(id));
+  }
+}
+
+function renderIssueResult(query){ /* retained for scanner compatibility */
+  const container = document.getElementById('issueResult');
+  if(!container) return;
+  const q = (query || '').trim();
+  if(!q){ container.innerHTML = ''; return; }
+  const found = state.orders.find(o =>
+    o.number.toLowerCase() === q.toLowerCase() ||
+    o.barcode.toLowerCase() === q.toLowerCase() ||
+    (o.pickupCode||'').toLowerCase() === q.toLowerCase()
+  );
+  if(!found){
+    container.innerHTML = `<div class="empty" style="margin-top:16px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <div class="empty-title">Заказ не найден</div>
+      <div class="empty-text">Проверьте данные и попробуйте снова</div>
+    </div>`;
+    return;
+  }
+  container.innerHTML = renderIssueResultForOrder(found, true);
+  bindIssueConfirm();
 }
 
 function issueOrderFlow(orderId){
@@ -1706,9 +2092,8 @@ function performIssue(orderId){
   addHistory('Выдача', order.number, 'Успешно', 'Заказ выдан клиенту');
   pushNotification('success', 'Заказ выдан', order.number + ' · ' + order.product);
   toast('Заказ ' + order.number + ' выдан', 'success');
-  const inp = document.getElementById('issueSearch');
-  if(inp && inp.value.trim()) renderIssueResult(inp.value);
-  else render();
+  state.issueLookup = {last4:'', orderId:null, code:''};
+  render();
 }
 
 /* ============ RETURNS (BIG EMPTY STATE) ============ */
@@ -2338,7 +2723,7 @@ function addEmployeeFlow(){
           ${ROLE_OPTIONS.map(r => `<option>${escapeHtml(r)}</option>`).join('')}
         </select>
       </div>
-      <div class="form-group"><label>Номер телефона</label><input class="input" type="tel" id="newEmpPhone" placeholder="+7 900 000-00-00" inputmode="tel"></div>
+      <div class="form-group"><label>Номер телефона</label><input class="input" type="tel" id="newEmpPhone" placeholder="+7 (900) 000-00-00" inputmode="tel"></div>
       <div class="form-group"><label>Логин</label><input class="input" id="newEmpLogin" placeholder="Латинские буквы и цифры"></div>
       <div class="form-group"><label>Пароль</label><input class="input" id="newEmpPass" placeholder="Минимум 3 символа"></div>`,
     actions:[
@@ -2352,6 +2737,7 @@ function addEmployeeFlow(){
         if(!name || name.length < 2){ toast('Введите корректное имя', 'warning'); return false; }
         if(!/^[a-z0-9_]{3,}$/.test(login)){ toast('Логин: латиница/цифры, минимум 3 символа', 'warning'); return false; }
         if(state.employees.some(e => e.login === login)){ toast('Логин уже используется', 'warning'); return false; }
+        if(phone && normalizePhone(phone).length < 11){ toast('Введите полный номер телефона', 'warning'); return false; }
         if(phone && state.employees.some(e => phoneMatch(e.phone, phone))){ toast('Телефон уже используется', 'warning'); return false; }
         if(pass.length < 3){ toast('Пароль слишком короткий', 'warning'); return false; }
         state.employees.push({
@@ -2495,6 +2881,7 @@ function bindSectionEvents(){
     });
   });
 
+  // ===== RECEPTION =====
   if(state.currentSection === 'reception'){
     const barcodeInput = document.getElementById('recvBarcode');
     if(barcodeInput){
@@ -2505,7 +2892,7 @@ function bindSectionEvents(){
     const addBtn = document.getElementById('recvAddBtn');
     if(addBtn) addBtn.addEventListener('click', handleReceptionAdd);
     const scanBtn = document.getElementById('recvScanBtn');
-    if(scanBtn) scanBtn.addEventListener('click', openCameraScanner);
+    if(scanBtn) scanBtn.addEventListener('click', () => openCameraScanner('reception'));
     const createBtn = document.getElementById('recvCreateBtn');
     if(createBtn) createBtn.addEventListener('click', addOrderFlow);
     const completeBtn = document.getElementById('recvComplete');
@@ -2520,19 +2907,37 @@ function bindSectionEvents(){
     });
   }
 
+  // ===== ISSUE =====
   if(state.currentSection === 'issue'){
-    const searchInput = document.getElementById('issueSearch');
-    const findBtn = document.getElementById('issueFindBtn');
-    if(searchInput){
-      searchInput.addEventListener('keydown', e => {
-        if(e.key === 'Enter'){ e.preventDefault(); renderIssueResult(searchInput.value); }
+    const l4 = document.getElementById('issueLast4');
+    if(l4){
+      l4.addEventListener('input', handleIssueLast4Change);
+      l4.addEventListener('keydown', e => {
+        if(e.key === 'Enter'){
+          e.preventDefault();
+          if(l4.value.length === 4){
+            const ci = document.getElementById('issueClientCode');
+            if(ci) ci.focus();
+          }
+        }
       });
     }
-    if(findBtn && searchInput) findBtn.addEventListener('click', () => renderIssueResult(searchInput.value));
+    const cc = document.getElementById('issueClientCode');
+    if(cc){
+      cc.addEventListener('input', handleIssueClientCodeInput);
+      cc.addEventListener('keydown', e => {
+        if(e.key === 'Enter'){ e.preventDefault(); handleIssueClientCodeInput(); }
+      });
+    }
+    // If order already selected (e.g. after re-render) rebind button
+    bindIssueConfirm();
+
+    // scanner button for issue
     const scanBtn = document.getElementById('issueScanBtn');
-    if(scanBtn) scanBtn.addEventListener('click', openCameraScanner);
+    if(scanBtn) scanBtn.addEventListener('click', () => openCameraScanner('issue'));
   }
 
+  // ===== RETURNS =====
   if(state.currentSection === 'returns'){
     const rs = document.getElementById('returnSearch');
     const rb = document.getElementById('returnFindBtn');
@@ -2552,6 +2957,7 @@ function bindSectionEvents(){
     }
   }
 
+  // ===== WAREHOUSE =====
   if(state.currentSection === 'warehouse'){
     const ws = document.getElementById('whSearch');
     if(ws) ws.addEventListener('input', () => {
@@ -2565,6 +2971,7 @@ function bindSectionEvents(){
     if(wst) wst.addEventListener('change', () => { state.filters.warehouse.status = wst.value; render(); });
   }
 
+  // ===== ORDERS =====
   if(state.currentSection === 'orders'){
     const os = document.getElementById('ordSearch');
     if(os) os.addEventListener('input', () => {
@@ -2584,6 +2991,7 @@ function bindSectionEvents(){
     if(addBtn) addBtn.addEventListener('click', addOrderFlow);
   }
 
+  // ===== HISTORY =====
   if(state.currentSection === 'history'){
     const hs = document.getElementById('histSearch');
     if(hs) hs.addEventListener('input', () => {
@@ -2599,6 +3007,7 @@ function bindSectionEvents(){
     if(hsort) hsort.addEventListener('change', () => { state.filters.history.sort = hsort.value; render(); });
   }
 
+  // ===== EMPLOYEES =====
   if(state.currentSection === 'employees'){
     const addBtn = document.getElementById('addEmployeeBtn');
     if(addBtn) addBtn.addEventListener('click', addEmployeeFlow);
@@ -2623,6 +3032,7 @@ function bindSectionEvents(){
     });
   }
 
+  // ===== NOTIFICATIONS =====
   if(state.currentSection === 'notifications'){
     const toggle = document.getElementById('notifToggleUnread');
     if(toggle) toggle.addEventListener('click', () => {
@@ -2651,6 +3061,7 @@ function bindSectionEvents(){
     });
   }
 
+  // ===== SETTINGS =====
   if(state.currentSection === 'settings'){
     const savePvn = document.getElementById('savePvnBtn');
     if(savePvn) savePvn.addEventListener('click', () => {
@@ -2696,7 +3107,7 @@ function bindSectionEvents(){
 /* ============================================================
    CAMERA SCANNER
    ============================================================ */
-async function openCameraScanner(){
+async function openCameraScanner(context){
   if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
     toast('Камера недоступна: браузер не поддерживает MediaDevices', 'warning');
     pushNotification('warning', 'Камера недоступна', 'Используйте ручной ввод');
@@ -2727,7 +3138,7 @@ async function openCameraScanner(){
   if(manualBtn) manualBtn.addEventListener('click', () => {
     const v = (manualInput.value || '').trim();
     if(!v){ toast('Введите код', 'warning'); return; }
-    applyScannedCode(v);
+    applyScannedCode(v, context);
     overlay._close();
   });
   if(manualInput) manualInput.addEventListener('keydown', e => {
@@ -2783,7 +3194,7 @@ async function openCameraScanner(){
       const codes = await detector.detect(video);
       if(codes && codes.length > 0 && codes[0].rawValue){
         stopped = true;
-        applyScannedCode(codes[0].rawValue);
+        applyScannedCode(codes[0].rawValue, context);
         overlay._close();
         return;
       }
@@ -2793,20 +3204,21 @@ async function openCameraScanner(){
   requestAnimationFrame(scan);
 }
 
-function applyScannedCode(code){
-  if(state.currentSection === 'reception'){
+function applyScannedCode(code, context){
+  if(context === 'reception' || state.currentSection === 'reception'){
     const input = document.getElementById('recvBarcode');
     if(input){ input.value = code; }
     handleReceptionAdd();
   } else {
-    const input = document.getElementById('issueSearch');
-    if(input){ input.value = code; renderIssueResult(code); }
-    else {
-      navigate('issue');
-      setTimeout(() => {
-        const i2 = document.getElementById('issueSearch');
-        if(i2){ i2.value = code; renderIssueResult(code); }
-      }, 100);
+    const input = document.getElementById('issueLast4');
+    // take last 4 digits of scanned code
+    const digits = (code||'').replace(/\D/g,'');
+    if(input && digits.length >= 4){
+      input.value = digits.slice(-4);
+      handleIssueLast4Change();
+    } else if(input){
+      input.value = digits;
+      handleIssueLast4Change();
     }
     toast('Код отсканирован: ' + code, 'info');
   }
@@ -2853,6 +3265,7 @@ function handleLogin(e){
   if(state.loginMode === 'phone'){
     const phone = (document.getElementById('phoneInput').value || '').trim();
     if(!phone){ errEl.textContent = 'Введите номер телефона'; return; }
+    if(normalizePhone(phone).length < 11){ errEl.textContent = 'Введите полный номер телефона'; return; }
     if(!pass){ errEl.textContent = 'Введите пароль'; return; }
     emp = state.employees.find(e => phoneMatch(e.phone, phone));
   } else {
@@ -2907,18 +3320,19 @@ function renderRegisterStep(){
     content.innerHTML = `
       <div class="form-group">
         <label for="regPhone">Номер телефона</label>
-        <input class="input" type="tel" id="regPhone" placeholder="+7 900 000-00-00" value="${escapeHtml(state.register.phone)}" autofocus inputmode="tel">
+        <input class="input" type="tel" id="regPhone" placeholder="+7 (900) 000-00-00" value="${escapeHtml(state.register.phone)}" autofocus inputmode="tel">
       </div>
       <button type="button" class="btn btn-primary btn-block btn-lg" id="regNext">Далее</button>
       <div style="margin-top:14px;text-align:center">
         <span class="register-link" id="regBack">Назад ко входу</span>
       </div>`;
     const phoneInput = document.getElementById('regPhone');
+    attachPhoneFormatter(phoneInput, {autoStart:true});
     const next = document.getElementById('regNext');
     const back = document.getElementById('regBack');
     next.addEventListener('click', () => {
       const v = phoneInput.value.trim();
-      if(normalizePhone(v).length < 10){ document.getElementById('registerError').textContent = 'Введите корректный номер телефона'; return; }
+      if(normalizePhone(v).length < 11){ document.getElementById('registerError').textContent = 'Введите полный номер телефона'; return; }
       if(state.employees.some(e => phoneMatch(e.phone, v))){ document.getElementById('registerError').textContent = 'Этот номер уже зарегистрирован'; return; }
       state.register.phone = v;
       state.register.step = 2;
@@ -3030,7 +3444,8 @@ function completeRegistration(){
   showLoginView();
   setLoginMode('login');
   document.getElementById('loginInput').value = r.login;
-  document.getElementById('phoneInput').value = formatPhoneDisplay(r.phone);
+  const pi = document.getElementById('phoneInput');
+  if(pi) pi.value = formatPhoneDisplay(r.phone);
   document.getElementById('loginError').textContent = '';
   document.getElementById('passwordInput').value = '';
   state.register = {step:1, phone:'', login:'', password:'', firstName:'', lastName:''};
@@ -3071,6 +3486,7 @@ function resetAllData(){
   state.notifications = [];
   state.reception.items = [];
   state.reception.errors = 0;
+  state.issueLookup = {last4:'', orderId:null, code:''};
   state.currentUser = null;
   saveOrders(); saveHistory(); saveEmployees(); saveNotifications();
   saveSession();
@@ -3117,6 +3533,10 @@ function init(){
       togglePass.querySelector('svg').innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
     }
   });
+
+  // Phone formatter on login phone input
+  const phoneInput = document.getElementById('phoneInput');
+  attachPhoneFormatter(phoneInput, {autoStart:true});
 
   // Register link
   document.getElementById('registerLink').addEventListener('click', showRegisterView);
