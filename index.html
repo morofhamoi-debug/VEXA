@@ -60,6 +60,8 @@ a{color:inherit;text-decoration:none}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:6px;border:2px solid var(--bg)}
 ::-webkit-scrollbar-thumb:hover{background:var(--text-muted)}
 
+.mobile-only{display:none !important}
+
 .logo{display:inline-flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em}
 .logo svg{display:block}
 .logo-text{font-size:1.4rem;background:linear-gradient(135deg,#8b5cf6,#6d28d9);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:800}
@@ -447,6 +449,7 @@ textarea.input{resize:vertical;min-height:80px}
   50%{box-shadow:0 0 18px #22d3ee,0 0 34px rgba(34,211,238,.75)}
 }
 .qr-inner{width:100%;height:100%;position:relative;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.15)}
+.qr-inner video{width:100%;height:100%;object-fit:cover;display:block;border-radius:10px}
 .qr-inner svg{width:100%;height:100%;display:block;filter:drop-shadow(0 0 5px rgba(168,85,247,.95)) drop-shadow(0 0 12px rgba(124,58,237,.6))}
 .qr-scan-line{
   position:absolute;left:6px;right:6px;height:3px;
@@ -474,6 +477,19 @@ textarea.input{resize:vertical;min-height:80px}
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
 .qr-sub{font-size:.88rem;color:var(--text-muted);max-width:360px;z-index:1;line-height:1.5}
+.qr-live-dot{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:.72rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;
+  padding:3px 10px;border-radius:20px;
+  background:rgba(34,211,238,.15);color:#0891b2;
+  margin-bottom:10px;z-index:1;
+}
+.qr-live-dot .live-dot{
+  width:7px;height:7px;border-radius:50%;background:#ef4444;
+  animation:livePulse 1.4s ease-in-out infinite;
+}
+@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.75)}}
 
 .issue-divider{
   display:flex;align-items:center;gap:14px;
@@ -760,6 +776,7 @@ textarea.input{resize:vertical;min-height:80px}
 .sidebar-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:39;display:none}
 
 @media (max-width: 900px){
+  .mobile-only{display:inline-flex !important}
   .sidebar{position:fixed;left:0;top:0;bottom:0;transform:translateX(-100%);transition:transform .28s cubic-bezier(.3,.9,.3,1);box-shadow:var(--shadow-lg);padding-top:env(safe-area-inset-top,0px)}
   .sidebar.open{transform:none}
   .sidebar-backdrop.show{display:block}
@@ -1017,8 +1034,6 @@ function phoneMatch(a, b){
   if(na.length < 10 || nb.length < 10) return na === nb;
   return na.slice(-10) === nb.slice(-10);
 }
-/* Phone formatter: always +7, max 11 digits total incl. 7
-   Format: +7 (918) 888-88-88 */
 function formatPhoneInput(value){
   let digits = (value||'').replace(/\D/g, '');
   if(digits.startsWith('8')) digits = '7' + digits.slice(1);
@@ -1027,21 +1042,11 @@ function formatPhoneInput(value){
   if(!digits) return '';
   let out = '+7';
   const rest = digits.slice(1);
-  if(rest.length > 0){
-    out += ' (' + rest.slice(0, 3);
-  }
-  if(rest.length >= 3){
-    out += ')';
-  }
-  if(rest.length > 3){
-    out += ' ' + rest.slice(3, 6);
-  }
-  if(rest.length > 6){
-    out += '-' + rest.slice(6, 8);
-  }
-  if(rest.length > 8){
-    out += '-' + rest.slice(8, 10);
-  }
+  if(rest.length > 0){ out += ' (' + rest.slice(0, 3); }
+  if(rest.length >= 3){ out += ')'; }
+  if(rest.length > 3){ out += ' ' + rest.slice(3, 6); }
+  if(rest.length > 6){ out += '-' + rest.slice(6, 8); }
+  if(rest.length > 8){ out += '-' + rest.slice(8, 10); }
   return out;
 }
 function attachPhoneFormatter(input, opts){
@@ -1053,9 +1058,7 @@ function attachPhoneFormatter(input, opts){
     if(formatted !== before) input.value = formatted;
   });
   input.addEventListener('focus', () => {
-    if(!input.value && opts.autoStart){
-      input.value = '+7 (';
-    }
+    if(!input.value && opts.autoStart){ input.value = '+7 ('; }
   });
   input.addEventListener('blur', () => {
     const digits = normalizePhone(input.value);
@@ -1101,14 +1104,7 @@ const state = {
   loginMode: 'phone',
   reception: {items:[], errors:0},
   issueLookup: {last4:'', orderId:null, code:''},
-  register: {
-    step: 1,
-    phone: '',
-    login: '',
-    password: '',
-    firstName: '',
-    lastName: ''
-  },
+  register: {step: 1, phone: '', login: '', password: '', firstName: '', lastName: ''},
   filters: {
     orders: {q:'', status:'all', date:'all', sort:'date-desc'},
     warehouse: {q:'', status:'all'},
@@ -1155,9 +1151,7 @@ function saveSession(){
   else lsRemove(KEYS.session);
 }
 
-function getUser(id){
-  return state.employees.find(e => e.id === id) || null;
-}
+function getUser(id){ return state.employees.find(e => e.id === id) || null; }
 function currentUserObj(){ return getUser(state.currentUser); }
 
 /* ============================================================
@@ -1374,7 +1368,6 @@ function openModal(opts){
       closeThis();
     }
   }
-  // Auto-attach phone formatting for known phone inputs in modals
   const phoneInModal = overlay.querySelector('input[type="tel"]');
   if(phoneInModal) attachPhoneFormatter(phoneInModal, {autoStart:true});
 
@@ -1453,6 +1446,7 @@ function renderMainTabs(){
 
 function navigate(section){
   if(!ALL_SECTIONS.some(s => s.id === section)) section = 'home';
+  stopIssueAutoScanner();
   state.currentSection = section;
   if(section === 'orders') state.filters.orders = {q:'', status:'all', date:'all', sort:'date-desc'};
   if(section === 'warehouse') state.filters.warehouse = {q:'', status:'all'};
@@ -1497,6 +1491,15 @@ function render(){
   content.innerHTML = (renders[state.currentSection] || renderHome)();
   bindSectionEvents();
   updateLayout();
+
+  // Handle auto scanner for issue section
+  if(state.currentSection === 'issue'){
+    setTimeout(() => {
+      if(state.currentSection === 'issue') startIssueAutoScanner();
+    }, 60);
+  } else {
+    stopIssueAutoScanner();
+  }
 }
 
 function updateLayout(){
@@ -1669,6 +1672,12 @@ function renderReception(){
       </div>
       <h3 class="reception-scan-title">Отсканируйте штрихкод товара</h3>
       <p class="reception-scan-sub">Наведите камеру на штрихкод или введите его вручную ниже</p>
+
+      <!-- Mobile-only camera button under barcode -->
+      <button class="btn btn-success mobile-only" id="recvScanBtn" style="margin-top:16px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        Открыть камеру
+      </button>
     </div>
 
     <div class="reception-grid">
@@ -1689,10 +1698,6 @@ function renderReception(){
           <button class="btn btn-success" id="recvAddBtn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Добавить
-          </button>
-          <button class="btn btn-secondary" id="recvScanBtn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-            Открыть камеру
           </button>
           <button class="btn btn-ghost" id="recvCreateBtn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -1815,22 +1820,25 @@ function nextShelf(){
   return shelves[Math.floor(Math.random() * shelves.length)];
 }
 
-/* ============ ISSUE (UNIFIED BLOCK) ============ */
+/* ============ ISSUE (UNIFIED BLOCK WITH AUTO-CAMERA) ============ */
 function renderIssue(){
   const l = state.issueLookup;
   return `
   <div class="section">
     <div class="issue-unified">
-      <!-- QR part -->
+      <!-- QR part (live camera) -->
       <div class="issue-qr-part">
         <div class="qr-frame">
-          <div class="qr-inner">
+          <div class="qr-inner" id="issueQrInner">
             ${generateQRsvg()}
-            <div class="qr-scan-line"></div>
           </div>
+          <div class="qr-scan-line" id="issueScanLine"></div>
+        </div>
+        <div class="qr-live-dot" id="issueLiveDot" style="display:none">
+          <span class="live-dot"></span> Сканирование…
         </div>
         <h2 class="qr-title">Отсканируйте QR-код клиента</h2>
-        <p class="qr-sub">Наведите камеру на экран клиента, чтобы считать код получения заказа</p>
+        <p class="qr-sub">Просто поднесите QR-код к камере — распознавание произойдёт автоматически</p>
       </div>
 
       <!-- Divider -->
@@ -1928,7 +1936,6 @@ function handleIssueLast4Change(){
   if(resEl) resEl.innerHTML = '';
   if(msg1) msg1.innerHTML = '';
 
-  // reset step 2 code
   const codeInput = document.getElementById('issueClientCode');
   if(codeInput) codeInput.value = '';
   const msg2 = document.getElementById('issueStep2Msg');
@@ -1944,7 +1951,7 @@ function handleIssueLast4Change(){
     if(step2) step2.classList.add('hidden');
     if(msg1) msg1.innerHTML = `<div class="step-error">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      Заказы с такими цифрами не найдены</div>`;
+      Клиент не найден.</div>`;
     return;
   }
   if(step2){
@@ -1977,25 +1984,17 @@ function handleIssueClientCodeInput(){
   if(!found){
     if(msg2) msg2.innerHTML = `<div class="step-error">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-      Неверный код клиента</div>`;
+      Товар не найден</div>`;
     return;
   }
 
   state.issueLookup.orderId = found.id;
 
-  if(matches.length === 1){
-    if(msg2) msg2.innerHTML = `<div class="step-success">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      Код верный — заказ найден</div>`;
-    if(resEl) resEl.innerHTML = renderIssueResultForOrder(found, true);
-    bindIssueConfirm();
-  } else {
-    if(msg2) msg2.innerHTML = `<div class="step-success">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      Код верный — выбран заказ ${escapeHtml(found.number)}</div>`;
-    if(resEl) resEl.innerHTML = renderIssueResultForOrder(found, true);
-    bindIssueConfirm();
-  }
+  if(msg2) msg2.innerHTML = `<div class="step-success">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    Код верный — заказ найден</div>`;
+  if(resEl) resEl.innerHTML = renderIssueResultForOrder(found, true);
+  bindIssueConfirm();
 }
 
 function bindIssueConfirm(){
@@ -2006,26 +2005,211 @@ function bindIssueConfirm(){
   }
 }
 
-function renderIssueResult(query){ /* retained for scanner compatibility */
-  const container = document.getElementById('issueResult');
-  if(!container) return;
-  const q = (query || '').trim();
-  if(!q){ container.innerHTML = ''; return; }
-  const found = state.orders.find(o =>
-    o.number.toLowerCase() === q.toLowerCase() ||
-    o.barcode.toLowerCase() === q.toLowerCase() ||
-    (o.pickupCode||'').toLowerCase() === q.toLowerCase()
-  );
-  if(!found){
-    container.innerHTML = `<div class="empty" style="margin-top:16px">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <div class="empty-title">Заказ не найден</div>
-      <div class="empty-text">Проверьте данные и попробуйте снова</div>
-    </div>`;
+/* ============================================================
+   ISSUE AUTO-SCANNER (live camera, no button press)
+   ============================================================ */
+let issueScannerActive = false;
+let issueScannerStream = null;
+let issueScannerRAF = null;
+let issueScannerCooldown = false;
+
+function loadJsQR(){
+  return new Promise((resolve, reject) => {
+    if(window.jsQR) return resolve(window.jsQR);
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js';
+    s.onload = () => resolve(window.jsQR);
+    s.onerror = () => reject(new Error('jsQR load failed'));
+    document.head.appendChild(s);
+  });
+}
+
+function stopIssueAutoScanner(){
+  issueScannerActive = false;
+  if(issueScannerRAF){
+    cancelAnimationFrame(issueScannerRAF);
+    issueScannerRAF = null;
+  }
+  if(issueScannerStream){
+    try{ issueScannerStream.getTracks().forEach(t => t.stop()); }catch(e){}
+    issueScannerStream = null;
+  }
+}
+
+async function startIssueAutoScanner(){
+  stopIssueAutoScanner();
+  if(state.currentSection !== 'issue') return;
+  if(issueScannerCooldown) return;
+
+  const qrInner = document.getElementById('issueQrInner');
+  if(!qrInner) return;
+
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
     return;
   }
-  container.innerHTML = renderIssueResultForOrder(found, true);
+
+  let stream;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+    });
+  } catch(e){
+    console.warn('Camera not available:', e);
+    return;
+  }
+
+  // Make sure we're still on the issue section
+  if(state.currentSection !== 'issue'){
+    try{ stream.getTracks().forEach(t => t.stop()); }catch(e){}
+    return;
+  }
+
+  issueScannerActive = true;
+  issueScannerStream = stream;
+
+  // Replace SVG with video
+  qrInner.innerHTML = '';
+  qrInner.style.background = '#000';
+
+  const video = document.createElement('video');
+  video.setAttribute('autoplay', '');
+  video.setAttribute('playsinline', '');
+  video.setAttribute('muted', '');
+  video.muted = true;
+  qrInner.appendChild(video);
+  video.srcObject = stream;
+
+  // Live indicator
+  const liveDot = document.getElementById('issueLiveDot');
+  if(liveDot) liveDot.style.display = 'inline-flex';
+
+  try { await video.play(); } catch(e){}
+
+  // Setup detectors
+  let nativeDetector = null;
+  if('BarcodeDetector' in window){
+    try {
+      nativeDetector = new window.BarcodeDetector({
+        formats: ['qr_code', 'code_128', 'code_39', 'ean_13']
+      });
+    } catch(e){ nativeDetector = null; }
+  }
+
+  let jsQR = null;
+  if(!nativeDetector){
+    try { jsQR = await loadJsQR(); } catch(e){}
+  }
+
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+  let frameCounter = 0;
+
+  const scanLoop = async () => {
+    if(!issueScannerActive) return;
+    if(!video.parentNode) return;
+
+    let code = null;
+
+    try {
+      if(nativeDetector){
+        const codes = await nativeDetector.detect(video);
+        if(codes && codes.length > 0 && codes[0].rawValue){
+          code = codes[0].rawValue;
+        }
+      } else if(jsQR && video.readyState === video.HAVE_ENOUGH_DATA && video.videoWidth > 0){
+        // Skip frames for perf
+        frameCounter++;
+        if(frameCounter % 3 === 0){
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const result = jsQR(imageData.data, imageData.width, imageData.height, {
+            inversionAttempts: 'dontInvert'
+          });
+          if(result && result.data){ code = result.data; }
+        }
+      }
+    } catch(e){ /* ignore */ }
+
+    if(code){
+      handleIssueScanResult(code);
+      return;
+    }
+
+    issueScannerRAF = requestAnimationFrame(scanLoop);
+  };
+
+  issueScannerRAF = requestAnimationFrame(scanLoop);
+}
+
+function handleIssueScanResult(code){
+  stopIssueAutoScanner();
+  issueScannerCooldown = true;
+
+  const q = String(code).trim();
+  const qLower = q.toLowerCase();
+  const digits = q.replace(/\D/g,'');
+
+  // Try to find order
+  let order = state.orders.find(o =>
+    (o.number||'').toLowerCase() === qLower ||
+    (o.barcode||'').toLowerCase() === qLower ||
+    (o.pickupCode||'') === q
+  );
+
+  // Try matching by contained pickup code
+  if(!order){
+    order = state.orders.find(o => (o.pickupCode||'') && q.includes(o.pickupCode));
+  }
+
+  // Try matching by last digits
+  if(!order && digits.length >= 4){
+    const last4 = digits.slice(-4);
+    const byLast4 = findOrdersByLast4(last4);
+    if(byLast4.length === 1) order = byLast4[0];
+  }
+
+  const resEl = document.getElementById('issueResult');
+
+  if(!order){
+    if(resEl) resEl.innerHTML = `
+      <div class="order-card" style="margin-top:16px;border-left:4px solid var(--danger)">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="width:46px;height:46px;border-radius:50%;background:var(--danger-soft);color:var(--danger);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:800;font-size:1.1rem;color:var(--danger)">Товар не найден</div>
+            <div style="font-size:.8rem;color:var(--text-muted);margin-top:4px;word-break:break-all">Отсканирован код: <b>${escapeHtml(q)}</b></div>
+          </div>
+        </div>
+      </div>`;
+    toast('Товар не найден', 'error');
+    beep('error');
+    // Restart scanner after delay
+    setTimeout(() => {
+      issueScannerCooldown = false;
+      if(state.currentSection === 'issue'){
+        const resEl2 = document.getElementById('issueResult');
+        if(resEl2) resEl2.innerHTML = '';
+        startIssueAutoScanner();
+      }
+    }, 2500);
+    return;
+  }
+
+  // Order found
+  if(resEl) resEl.innerHTML = renderIssueResultForOrder(order, true);
   bindIssueConfirm();
+  toast('Заказ ' + order.number + ' найден', 'success');
+  beep('success');
+
+  // Allow rescan after a delay
+  setTimeout(() => {
+    issueScannerCooldown = false;
+  }, 2000);
 }
 
 function issueOrderFlow(orderId){
@@ -2072,6 +2256,8 @@ function performIssue(orderId){
   pushNotification('success', 'Заказ выдан', order.number + ' · ' + order.product);
   toast('Заказ ' + order.number + ' выдан', 'success');
   state.issueLookup = {last4:'', orderId:null, code:''};
+  issueScannerCooldown = false;
+  stopIssueAutoScanner();
   render();
 }
 
@@ -2908,7 +3094,6 @@ function bindSectionEvents(){
         if(e.key === 'Enter'){ e.preventDefault(); handleIssueClientCodeInput(); }
       });
     }
-    // If order already selected (e.g. after re-render) rebind button
     bindIssueConfirm();
   }
 
@@ -3080,7 +3265,7 @@ function bindSectionEvents(){
 }
 
 /* ============================================================
-   CAMERA SCANNER
+   CAMERA SCANNER (MODAL - for reception)
    ============================================================ */
 async function openCameraScanner(context){
   if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
@@ -3088,23 +3273,22 @@ async function openCameraScanner(context){
     pushNotification('warning', 'Камера недоступна', 'Используйте ручной ввод');
     return;
   }
-  const supportsBarcode = 'BarcodeDetector' in window;
   const overlay = openModal({
     title:'Сканирование камерой',
-    subtitle: supportsBarcode ? 'Наведите камеру на код' : 'Автоопределение недоступно — введите код вручную',
+    subtitle:'Наведите камеру на штрихкод товара',
     body:`
-      <div id="scannerArea" style="background:var(--surface-2);border-radius:var(--radius);min-height:240px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative">
+      <div id="scannerArea" style="background:var(--surface-2);border-radius:var(--radius);min-height:280px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative">
         <div style="color:var(--text-muted);font-size:.85rem">Запрос доступа к камере…</div>
       </div>
       <div class="form-group" style="margin-top:14px">
-        <label for="scannerManual">Ручной ввод кода</label>
+        <label for="scannerManual">Или введите штрихкод вручную</label>
         <div style="display:flex;gap:8px">
-          <input class="input" id="scannerManual" placeholder="Введите код">
+          <input class="input" id="scannerManual" placeholder="Штрихкод">
           <button class="btn btn-primary" id="scannerManualBtn">ОК</button>
         </div>
       </div>
       <div style="font-size:.78rem;color:var(--text-muted);margin-top:6px">
-        Сканирование камерой требует HTTPS или localhost.
+        Камера работает по HTTPS или localhost.
       </div>`,
     actions:[{label:'Закрыть', cls:'btn-secondary'}]
   });
@@ -3138,6 +3322,7 @@ async function openCameraScanner(context){
   const area = document.getElementById('scannerArea');
   if(!area){ stream.getTracks().forEach(t => t.stop()); return; }
   area.innerHTML = '';
+
   const video = document.createElement('video');
   video.autoplay = true;
   video.playsInline = true;
@@ -3156,24 +3341,61 @@ async function openCameraScanner(context){
     origClose();
   };
 
-  if(!supportsBarcode) return;
+  // Native detector
+  let nativeDetector = null;
+  if('BarcodeDetector' in window){
+    try {
+      nativeDetector = new window.BarcodeDetector({
+        formats: ['qr_code','code_128','code_39','ean_13','codabar','itf']
+      });
+    } catch(e){ nativeDetector = null; }
+  }
 
-  let detector;
-  try{ detector = new window.BarcodeDetector(); }catch(e){ return; }
+  // jsQR fallback
+  let jsQR = null;
+  if(!nativeDetector){
+    try { jsQR = await loadJsQR(); } catch(e){}
+  }
 
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
   let stopped = false;
+  let frameCounter = 0;
+
   const scan = async () => {
     if(stopped) return;
     if(!video.parentNode){ stopped = true; return; }
-    try{
-      const codes = await detector.detect(video);
-      if(codes && codes.length > 0 && codes[0].rawValue){
-        stopped = true;
-        applyScannedCode(codes[0].rawValue, context);
-        overlay._close();
-        return;
+
+    let code = null;
+    try {
+      if(nativeDetector){
+        const codes = await nativeDetector.detect(video);
+        if(codes && codes.length > 0 && codes[0].rawValue){
+          code = codes[0].rawValue;
+        }
+      } else if(jsQR && video.readyState === video.HAVE_ENOUGH_DATA && video.videoWidth > 0){
+        frameCounter++;
+        if(frameCounter % 3 === 0){
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const result = jsQR(imageData.data, imageData.width, imageData.height, {
+            inversionAttempts: 'dontInvert'
+          });
+          if(result && result.data){ code = result.data; }
+        }
       }
-    }catch(e){}
+    } catch(e){}
+
+    if(code){
+      stopped = true;
+      try{ stream.getTracks().forEach(t => t.stop()); }catch(e){}
+      applyScannedCode(code, context);
+      overlay._close();
+      return;
+    }
+
     if(!stopped) requestAnimationFrame(scan);
   };
   requestAnimationFrame(scan);
@@ -3185,17 +3407,7 @@ function applyScannedCode(code, context){
     if(input){ input.value = code; }
     handleReceptionAdd();
   } else {
-    const input = document.getElementById('issueLast4');
-    // take last 4 digits of scanned code
-    const digits = (code||'').replace(/\D/g,'');
-    if(input && digits.length >= 4){
-      input.value = digits.slice(-4);
-      handleIssueLast4Change();
-    } else if(input){
-      input.value = digits;
-      handleIssueLast4Change();
-    }
-    toast('Код отсканирован: ' + code, 'info');
+    handleIssueScanResult(code);
   }
 }
 
@@ -3266,6 +3478,7 @@ function handleLogout(){
     state.currentUser = null;
     saveSession();
     state.currentSection = 'issue';
+    stopIssueAutoScanner();
     showLogin();
     toast('Вы вышли из системы', 'info');
   });
@@ -3455,6 +3668,7 @@ function startClock(){
    DATA RESET
    ============================================================ */
 function resetAllData(){
+  stopIssueAutoScanner();
   state.orders = [];
   state.history = [];
   state.employees = [];
@@ -3487,16 +3701,13 @@ function init(){
   applyTheme();
   applyUiScale();
 
-  // Login form
   document.getElementById('loginForm').addEventListener('submit', handleLogin);
 
-  // Mode toggle
   document.querySelectorAll('#modeToggle .mode-btn').forEach(b => {
     b.addEventListener('click', () => setLoginMode(b.dataset.mode));
   });
   setLoginMode('phone');
 
-  // Password visibility
   const togglePass = document.getElementById('togglePassword');
   togglePass.addEventListener('click', () => {
     const p = document.getElementById('passwordInput');
@@ -3509,14 +3720,11 @@ function init(){
     }
   });
 
-  // Phone formatter on login phone input
   const phoneInput = document.getElementById('phoneInput');
   attachPhoneFormatter(phoneInput, {autoStart:true});
 
-  // Register link
   document.getElementById('registerLink').addEventListener('click', showRegisterView);
 
-  // App controls
   document.getElementById('logoutBtn').addEventListener('click', handleLogout);
   document.getElementById('menuToggle').addEventListener('click', toggleSidebar);
   document.getElementById('sidebarBackdrop').addEventListener('click', closeSidebar);
