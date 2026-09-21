@@ -1168,7 +1168,6 @@ const state = {
   issueLookup: {last4:'', orderId:null, code:''},
   register: {step: 1, phone: '', login: '', password: '', firstName: '', lastName: ''},
   filters: {
-    orders: {q:'', status:'all', date:'all', sort:'date-desc'},
     warehouse: {q:'', status:'all'},
     history: {q:'', type:'all', sort:'time-desc'},
     returns: {q:''},
@@ -1466,7 +1465,6 @@ const MAIN_TABS = [
 const SECTIONS = [
   {id:'home', label:'Главная', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V20a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2z"/></svg>'},
   {id:'warehouse', label:'Склад', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21V12h6v9"/></svg>'},
-  {id:'orders', label:'Все заказы', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>'},
   {id:'history', label:'История', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'},
   {id:'employees', label:'Сотрудники', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>'},
   {id:'notifications', label:'Уведомления', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>'},
@@ -1510,7 +1508,6 @@ function navigate(section){
   if(!ALL_SECTIONS.some(s => s.id === section)) section = 'home';
   stopIssueAutoScanner();
   state.currentSection = section;
-  if(section === 'orders') state.filters.orders = {q:'', status:'all', date:'all', sort:'date-desc'};
   if(section === 'warehouse') state.filters.warehouse = {q:'', status:'all'};
   if(section === 'history') state.filters.history = {q:'', type:'all', sort:'time-desc'};
   if(section === 'issue') state.issueLookup = {last4:'', orderId:null, code:''};
@@ -1546,7 +1543,7 @@ function render(){
   const content = document.getElementById('content');
   const renders = {
     home: renderHome, reception: renderReception, issue: renderIssue,
-    returns: renderReturns, warehouse: renderWarehouse, orders: renderOrders,
+    returns: renderReturns, warehouse: renderWarehouse,
     history: renderHistory, employees: renderEmployees,
     notifications: renderNotifications, settings: renderSettings
   };
@@ -1554,7 +1551,6 @@ function render(){
   bindSectionEvents();
   updateLayout();
 
-  // Scanner/camera lifecycle per section & device
   if(state.currentSection === 'issue'){
     if(isMobileDevice()){
       setTimeout(() => {
@@ -1568,7 +1564,6 @@ function render(){
     }
   } else {
     stopIssueAutoScanner();
-    // Auto-focus barcode input in reception on PC (physical scanner)
     if(state.currentSection === 'reception' && !isMobileDevice()){
       setTimeout(() => {
         const inp = document.getElementById('recvBarcode');
@@ -1629,7 +1624,7 @@ function renderHome(){
     <div class="grid grid-stats" style="margin-bottom:22px">
       ${statCard('issue', 'Ожидают выдачи', stats.awaitingPickup, 'svg-issue', 'b')}
       ${statCard('reception', 'Принято сегодня', stats.acceptedToday, 'svg-inbox', 'y')}
-      ${statCard('orders', 'Выдано сегодня', stats.issuedToday, 'svg-check', 'g')}
+      ${statCard('history', 'Выдано сегодня', stats.issuedToday, 'svg-check', 'g')}
       ${statCard('returns', 'Возвратов сегодня', stats.returnsToday, 'svg-back', 'r')}
       ${statCard('warehouse', 'Товаров на складе', stats.inStock, 'svg-warehouse', '')}
       ${statCard('history', 'Операций за смену', stats.operationsToday, 'svg-list', 'b')}
@@ -1682,9 +1677,9 @@ function renderHome(){
             <div class="qi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></div>
             <div><div class="qt">Оформить возврат</div><div class="qs">Новый возврат</div></div>
           </button>
-          <button class="quick-btn" data-goto="orders">
-            <div class="qi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-            <div><div class="qt">Найти заказ</div><div class="qs">Все заказы</div></div>
+          <button class="quick-btn" data-goto="warehouse">
+            <div class="qi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21V12h6v9"/></svg></div>
+            <div><div class="qt">Склад</div><div class="qs">Все товары</div></div>
           </button>
         </div>
       </div>
@@ -1749,7 +1744,6 @@ function renderReception(){
       <h3 class="reception-scan-title">Отсканируйте штрихкод товара</h3>
       <p class="reception-scan-sub">Наведите камеру на штрихкод или введите его вручную ниже</p>
 
-      <!-- Mobile-only camera button under barcode -->
       <button class="btn btn-success mobile-only" id="recvScanBtn" style="margin-top:16px">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
         Открыть камеру
@@ -1833,7 +1827,7 @@ function handleReceptionAdd(){
   const order = state.orders.find(o => o.barcode === code);
   if(!order){
     state.reception.errors++;
-    toast('Товар со штрихкодом ' + code + ' не найден. Создайте заказ в разделе «Все заказы».', 'error');
+    toast('Товар со штрихкодом ' + code + ' не найден.', 'error');
     render();
     return;
   }
@@ -1896,13 +1890,12 @@ function nextShelf(){
   return shelves[Math.floor(Math.random() * shelves.length)];
 }
 
-/* ============ ISSUE (UNIFIED BLOCK: CAMERA on mobile, SCANNER INPUT on PC) ============ */
+/* ============ ISSUE ============ */
 function renderIssue(){
   const l = state.issueLookup;
   const mobile = isMobileDevice();
 
   const topBlock = mobile ? `
-    <!-- Mobile: live camera QR -->
     <div class="qr-frame">
       <div class="qr-inner" id="issueQrInner">
         ${generateQRsvg()}
@@ -1915,7 +1908,6 @@ function renderIssue(){
     <h2 class="qr-title">Отсканируйте QR-код клиента</h2>
     <p class="qr-sub">Просто поднесите QR-код к камере — распознавание произойдёт автоматически</p>
   ` : `
-    <!-- PC: physical scanner input -->
     <div class="pc-scanner-block">
       <div class="pc-scanner-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -1935,15 +1927,12 @@ function renderIssue(){
   return `
   <div class="section">
     <div class="issue-unified">
-      <!-- QR / Scanner part -->
       <div class="issue-qr-part">
         ${topBlock}
       </div>
 
-      <!-- Divider -->
       <div class="issue-divider"><span>или введите вручную</span></div>
 
-      <!-- Manual input part -->
       <div class="issue-manual-part">
         <div class="manual-step">
           <div class="step-badge">1</div>
@@ -2138,7 +2127,7 @@ function stopIssueAutoScanner(){
 async function startIssueAutoScanner(){
   stopIssueAutoScanner();
   if(state.currentSection !== 'issue') return;
-  if(!isMobileDevice()) return; // Only run camera on mobile
+  if(!isMobileDevice()) return;
   if(issueScannerCooldown) return;
 
   const qrInner = document.getElementById('issueQrInner');
@@ -2264,8 +2253,6 @@ function handleIssueScanResult(code){
   }
 
   const resEl = document.getElementById('issueResult');
-
-  // Clear the scanner input (PC)
   const scanInput = document.getElementById('issueScanInput');
   if(scanInput) scanInput.value = '';
 
@@ -2605,94 +2592,7 @@ function renderWarehouse(){
   </div>`;
 }
 
-/* ============ ALL ORDERS ============ */
-function renderOrders(){
-  const f = state.filters.orders;
-  let list = state.orders.slice();
-  if(f.status !== 'all'){
-    if(f.status === 'accepted_today') list = list.filter(o => o.acceptedAt && isToday(o.acceptedAt));
-    else list = list.filter(o => o.status === f.status);
-  }
-  if(f.q){
-    const q = f.q.toLowerCase();
-    list = list.filter(o =>
-      o.number.toLowerCase().includes(q) ||
-      o.product.toLowerCase().includes(q) ||
-      o.barcode.toLowerCase().includes(q) ||
-      o.pickupCode.includes(q)
-    );
-  }
-  if(f.date === 'today') list = list.filter(o => isToday(o.createdAt));
-  else if(f.date === 'week'){ const t = Date.now() - 7*864e5; list = list.filter(o => new Date(o.createdAt).getTime() >= t); }
-  else if(f.date === 'month'){ const t = Date.now() - 30*864e5; list = list.filter(o => new Date(o.createdAt).getTime() >= t); }
-
-  const sortFns = {
-    'date-desc': (a,b) => new Date(b.createdAt) - new Date(a.createdAt),
-    'date-asc': (a,b) => new Date(a.createdAt) - new Date(b.createdAt),
-    'num-asc': (a,b) => a.number.localeCompare(b.number),
-    'num-desc': (a,b) => b.number.localeCompare(a.number)
-  };
-  list.sort(sortFns[f.sort] || sortFns['date-desc']);
-
-  return `
-  <div class="section">
-    <div class="toolbar">
-      <div class="search">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input class="input" id="ordSearch" placeholder="Поиск по номеру, товару, штрихкоду" value="${escapeHtml(f.q)}">
-      </div>
-      <select class="select" id="ordStatus">
-        <option value="all" ${f.status==='all'?'selected':''}>Все статусы</option>
-        <option value="pending_acceptance" ${f.status==='pending_acceptance'?'selected':''}>Ожидает приёмки</option>
-        <option value="accepted" ${f.status==='accepted'?'selected':''}>Принят</option>
-        <option value="in_stock" ${f.status==='in_stock'?'selected':''}>На складе</option>
-        <option value="awaiting_pickup" ${f.status==='awaiting_pickup'?'selected':''}>Ожидает выдачи</option>
-        <option value="issued" ${f.status==='issued'?'selected':''}>Выдан</option>
-        <option value="returned" ${f.status==='returned'?'selected':''}>Возврат</option>
-        <option value="cancelled" ${f.status==='cancelled'?'selected':''}>Отменён</option>
-        <option value="accepted_today" ${f.status==='accepted_today'?'selected':''}>Принято сегодня</option>
-      </select>
-      <select class="select" id="ordDate">
-        <option value="all" ${f.date==='all'?'selected':''}>Все даты</option>
-        <option value="today" ${f.date==='today'?'selected':''}>Сегодня</option>
-        <option value="week" ${f.date==='week'?'selected':''}>За неделю</option>
-        <option value="month" ${f.date==='month'?'selected':''}>За месяц</option>
-      </select>
-      <select class="select" id="ordSort">
-        <option value="date-desc" ${f.sort==='date-desc'?'selected':''}>Сначала новые</option>
-        <option value="date-asc" ${f.sort==='date-asc'?'selected':''}>Сначала старые</option>
-        <option value="num-asc" ${f.sort==='num-asc'?'selected':''}>По номеру ↑</option>
-        <option value="num-desc" ${f.sort==='num-desc'?'selected':''}>По номеру ↓</option>
-      </select>
-      <button class="btn btn-primary" id="addOrderBtn" style="margin-left:auto">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Добавить заказ
-      </button>
-    </div>
-
-    ${list.length === 0 ? `<div class="card">${emptyState('Заказов пока нет', 'Нажмите «Добавить заказ», чтобы создать первый')}</div>` :
-      `<div class="table-wrap">
-        <table class="table">
-          <thead><tr>
-            <th>Заказ</th><th>Товар</th><th>Штрихкод</th><th>Статус</th><th>Полка</th><th>Дата</th>
-          </tr></thead>
-          <tbody>
-            ${list.map(o => `
-              <tr data-order-details="${o.id}">
-                <td class="td-mono">${escapeHtml(o.number)}</td>
-                <td class="td-name">${escapeHtml(o.product)}<div class="td-sub">${escapeHtml(o.category||'—')}</div></td>
-                <td class="td-mono">${escapeHtml(o.barcode)}</td>
-                <td>${statusBadge(o.status)}</td>
-                <td class="td-mono">${escapeHtml(o.shelf || '—')}</td>
-                <td>${escapeHtml(fmtDate(o.createdAt))}</td>
-              </tr>`).join('')}
-          </tbody>
-        </table>
-      </div>`}
-  </div>`;
-}
-
-/* ============ ADD ORDER ============ */
+/* ============ ADD ORDER (only via reception now) ============ */
 function addOrderFlow(){
   openModal({
     title: 'Новый заказ',
@@ -3176,7 +3076,6 @@ function bindSectionEvents(){
 
   // ===== ISSUE =====
   if(state.currentSection === 'issue'){
-    // PC scanner input
     const scanInput = document.getElementById('issueScanInput');
     if(scanInput){
       scanInput.addEventListener('keydown', e => {
@@ -3244,26 +3143,6 @@ function bindSectionEvents(){
     });
     const wst = document.getElementById('whStatus');
     if(wst) wst.addEventListener('change', () => { state.filters.warehouse.status = wst.value; render(); });
-  }
-
-  // ===== ORDERS =====
-  if(state.currentSection === 'orders'){
-    const os = document.getElementById('ordSearch');
-    if(os) os.addEventListener('input', () => {
-      state.filters.orders.q = os.value;
-      const cur = os.value;
-      render();
-      const ni = document.getElementById('ordSearch');
-      if(ni){ ni.focus(); ni.setSelectionRange(cur.length, cur.length); }
-    });
-    const ost = document.getElementById('ordStatus');
-    if(ost) ost.addEventListener('change', () => { state.filters.orders.status = ost.value; render(); });
-    const od = document.getElementById('ordDate');
-    if(od) od.addEventListener('change', () => { state.filters.orders.date = od.value; render(); });
-    const osrt = document.getElementById('ordSort');
-    if(osrt) osrt.addEventListener('change', () => { state.filters.orders.sort = osrt.value; render(); });
-    const addBtn = document.getElementById('addOrderBtn');
-    if(addBtn) addBtn.addEventListener('click', addOrderFlow);
   }
 
   // ===== HISTORY =====
