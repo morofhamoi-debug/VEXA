@@ -24,6 +24,7 @@
   --shadow-lg:0 12px 32px rgba(16,24,40,.14);
   --radius-sm:8px;--radius:12px;--radius-lg:16px;--radius-xl:20px;
   --ui-scale:1;
+  --topbar-h:62px;
 }
 [data-theme="dark"]{
   --primary:#8b5cf6;--primary-hover:#a78bfa;
@@ -64,6 +65,7 @@ a{color:inherit;text-decoration:none}
 .logo-text{font-size:1.4rem;background:linear-gradient(135deg,#8b5cf6,#6d28d9);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:800}
 [data-theme="dark"] .logo-text{background:linear-gradient(135deg,#a78bfa,#8b5cf6);-webkit-background-clip:text;background-clip:text;color:transparent}
 
+/* ============ LOGIN ============ */
 .login-screen{
   min-height:100vh;min-height:100dvh;
   display:flex;align-items:center;justify-content:center;
@@ -83,7 +85,7 @@ a{color:inherit;text-decoration:none}
 @keyframes cardIn{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
 .login-card .logo{margin-bottom:22px}
 .login-card h1{font-size:1.5rem;font-weight:700;letter-spacing:-.02em;margin-bottom:6px}
-.login-subtitle{color:var(--text-muted);margin-bottom:26px;font-size:.9rem}
+.login-subtitle{color:var(--text-muted);margin-bottom:22px;font-size:.9rem}
 .form-group{margin-bottom:16px}
 .form-group label{display:block;font-size:.82rem;font-weight:600;color:var(--text-2);margin-bottom:7px}
 .input{
@@ -105,9 +107,45 @@ textarea.input{resize:vertical;min-height:80px}
 }
 .password-wrapper .icon-btn:hover{background:var(--muted-soft);color:var(--text)}
 .login-error{color:var(--danger);font-size:.85rem;min-height:18px;margin:4px 0 12px;display:flex;align-items:center;gap:6px}
-.login-hint{margin-top:18px;padding-top:18px;border-top:1px solid var(--border-2);font-size:.8rem;color:var(--text-muted);text-align:center}
-.login-hint b{color:var(--text-2);font-weight:700}
+.login-hint{
+  margin-top:18px;padding-top:18px;border-top:1px solid var(--border-2);
+  font-size:.85rem;color:var(--text-muted);text-align:center;
+}
+.register-link{
+  color:var(--primary);font-weight:700;cursor:pointer;text-decoration:none;
+}
+.register-link:hover{text-decoration:underline}
 
+/* Mode toggle */
+.mode-toggle{
+  display:flex;gap:4px;
+  background:var(--surface-2);border:1px solid var(--border);
+  border-radius:12px;padding:4px;margin-bottom:20px;
+}
+.mode-toggle button{
+  flex:1;padding:9px 12px;border-radius:9px;
+  font-weight:600;font-size:.85rem;color:var(--text-muted);
+  transition:all .15s;cursor:pointer;
+}
+.mode-toggle button.active{
+  background:var(--surface);color:var(--primary);
+  box-shadow:var(--shadow-sm);
+}
+[data-theme="dark"] .mode-toggle button.active{background:var(--surface-2);color:#c4b5fd}
+
+/* Register steps */
+.steps{
+  display:flex;gap:6px;margin-bottom:18px;
+}
+.steps .step{
+  flex:1;height:4px;border-radius:4px;
+  background:var(--border);
+  transition:background .25s;
+}
+.steps .step.active{background:var(--primary)}
+.steps .step.done{background:var(--primary);opacity:.6}
+
+/* ============ BUTTONS ============ */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
   padding:10px 16px;border-radius:var(--radius);
@@ -136,6 +174,7 @@ textarea.input{resize:vertical;min-height:80px}
 .btn-block{width:100%}
 .btn-icon{padding:9px;width:38px;height:38px}
 
+/* ============ APP LAYOUT ============ */
 .app{display:flex;min-height:100vh;min-height:100dvh}
 .sidebar{
   width:250px;flex-shrink:0;
@@ -181,6 +220,7 @@ textarea.input{resize:vertical;min-height:80px}
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
   padding-top:calc(14px + env(safe-area-inset-top,0px));
+  min-height:var(--topbar-h);
 }
 [data-theme="dark"] .topbar{background:rgba(13,13,18,.85)}
 .topbar h2{font-size:1.15rem;font-weight:700;letter-spacing:-.01em;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -200,9 +240,14 @@ textarea.input{resize:vertical;min-height:80px}
   border:2px solid var(--surface);
 }
 
-/* ============ MAIN TOP TABS ============ */
+/* ============ MAIN TOP TABS (STICKY + CENTERED) ============ */
 .main-tabs{
+  position:sticky;
+  top:var(--topbar-h,62px);
+  z-index:25;
   display:flex;gap:10px;
+  justify-content:center;
+  align-items:center;
   padding:12px 24px;
   background:var(--surface);
   border-bottom:1px solid var(--border);
@@ -211,7 +256,8 @@ textarea.input{resize:vertical;min-height:80px}
 }
 .main-tabs::-webkit-scrollbar{display:none}
 .main-tab{
-  flex:1;min-width:150px;max-width:280px;
+  flex:0 1 260px;
+  min-width:150px;
   display:flex;align-items:center;justify-content:center;gap:10px;
   padding:13px 20px;border-radius:12px;
   background:var(--surface-2);border:1px solid var(--border);
@@ -234,14 +280,14 @@ textarea.input{resize:vertical;min-height:80px}
 }
 .main-tab:not(.active) .tab-count{background:var(--muted-soft);color:var(--text-2)}
 @media (max-width:900px){
-  .main-tabs{padding:10px 14px;gap:8px}
-  .main-tab{min-width:auto;padding:11px 14px;font-size:.78rem;gap:7px;letter-spacing:.02em}
+  .main-tabs{padding:10px 12px;gap:6px}
+  .main-tab{flex:1 1 0;min-width:0;padding:11px 8px;font-size:.72rem;gap:5px;letter-spacing:.02em}
   .main-tab svg{width:16px;height:16px}
+  .main-tab .tab-count{display:none}
 }
 @media (max-width:420px){
-  .main-tab{padding:10px 10px;font-size:.72rem;gap:5px}
+  .main-tab{padding:10px 6px;font-size:.68rem;gap:4px}
   .main-tab svg{width:14px;height:14px}
-  .main-tab .tab-count{padding:1px 7px;font-size:.65rem}
 }
 
 .content{flex:1;padding:22px 24px 40px;max-width:1600px;width:100%;margin:0 auto}
@@ -366,28 +412,20 @@ textarea.input{resize:vertical;min-height:80px}
 }
 .qr-scanner::before{
   content:'';position:absolute;inset:0;
-  background:
-    linear-gradient(120deg,transparent 30%,rgba(168,85,247,.08) 50%,transparent 70%);
+  background:linear-gradient(120deg,transparent 30%,rgba(168,85,247,.08) 50%,transparent 70%);
   animation:qrShine 6s linear infinite;
   pointer-events:none;
 }
-@keyframes qrShine{
-  0%{transform:translateX(-100%)}
-  100%{transform:translateX(100%)}
-}
+@keyframes qrShine{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 .qr-frame{
-  position:relative;
-  width:210px;height:210px;
-  padding:16px;
-  border-radius:22px;
+  position:relative;width:210px;height:210px;padding:16px;border-radius:22px;
   background:rgba(10,4,25,.92);
   box-shadow:
     0 0 0 1px rgba(168,85,247,.55),
     0 0 32px rgba(168,85,247,.5),
     0 0 70px rgba(124,58,237,.28),
     inset 0 0 34px rgba(124,58,237,.22);
-  margin-bottom:24px;
-  z-index:1;
+  margin-bottom:24px;z-index:1;
 }
 [data-theme="dark"] .qr-frame{
   background:rgba(3,0,15,.9);
@@ -398,10 +436,8 @@ textarea.input{resize:vertical;min-height:80px}
     inset 0 0 40px rgba(124,58,237,.3);
 }
 .qr-frame::before,.qr-frame::after{
-  content:'';position:absolute;
-  width:28px;height:28px;
-  border:3px solid #22d3ee;
-  border-radius:9px;
+  content:'';position:absolute;width:28px;height:28px;
+  border:3px solid #22d3ee;border-radius:9px;
   box-shadow:0 0 14px #22d3ee,0 0 24px rgba(34,211,238,.6);
   animation:cornerPulse 2.4s ease-in-out infinite;
 }
@@ -419,8 +455,7 @@ textarea.input{resize:vertical;min-height:80px}
   box-shadow:0 0 20px #a855f7,0 0 32px #22d3ee,0 0 45px rgba(34,211,238,.7);
   border-radius:3px;
   animation:qrScan 2.8s cubic-bezier(.45,0,.55,1) infinite;
-  top:8%;
-  pointer-events:none;
+  top:8%;pointer-events:none;
 }
 @keyframes qrScan{
   0%{top:8%;opacity:0}
@@ -457,8 +492,6 @@ textarea.input{resize:vertical;min-height:80px}
 .reception-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:20px;align-items:start}
 .scan-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px}
 .scan-box h3{font-size:1rem;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.scan-input-row{display:flex;gap:8px;margin-bottom:10px}
-.scan-input-row .input{flex:1}
 .scan-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .scan-counts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
 .scan-count{background:var(--surface-2);border-radius:var(--radius);padding:12px 14px;border:1px solid var(--border-2)}
@@ -492,6 +525,40 @@ textarea.input{resize:vertical;min-height:80px}
 .quick-btn .qt{font-weight:600;font-size:.9rem}
 .quick-btn .qs{font-size:.75rem;color:var(--text-muted);margin-top:1px}
 
+/* ============ BIG EMPTY (RETURNS) ============ */
+.big-empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:80px 24px;
+  background:var(--surface);border:1px dashed var(--border);
+  border-radius:var(--radius-lg);
+  text-align:center;
+  min-height:400px;
+  animation:fadeIn .3s ease;
+}
+.big-empty-icon{
+  width:96px;height:96px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--primary-soft) 0%,var(--primary-soft-2) 100%);
+  color:var(--primary);
+  margin-bottom:22px;
+  box-shadow:0 8px 32px rgba(124,58,237,.18);
+  position:relative;
+}
+.big-empty-icon::after{
+  content:'';position:absolute;inset:-8px;border-radius:50%;
+  border:2px solid var(--primary-soft);
+  opacity:.5;
+  animation:emptyPulse 2.6s ease-in-out infinite;
+}
+@keyframes emptyPulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.06);opacity:.2}}
+.big-empty-icon svg{width:46px;height:46px}
+.big-empty h2{
+  font-size:1.4rem;font-weight:800;letter-spacing:-.02em;
+  margin-bottom:10px;color:var(--text);
+}
+.big-empty p{font-size:.9rem;color:var(--text-muted);max-width:380px;line-height:1.55}
+
+/* ============ EMPLOYEES ============ */
 .emp-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;display:flex;flex-direction:column;gap:12px}
 .emp-head{display:flex;align-items:center;gap:12px}
 .emp-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#a78bfa,#7c3aed);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;flex-shrink:0}
@@ -554,6 +621,8 @@ textarea.input{resize:vertical;min-height:80px}
   .toast-wrap{left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px))}
   .toast{min-width:0;max-width:none}
   .order-info{grid-template-columns:1fr}
+  .big-empty{padding:60px 20px;min-height:320px}
+  .big-empty h2{font-size:1.2rem}
 }
 @media (max-width: 480px){
   .toolbar{gap:8px}
@@ -571,42 +640,79 @@ textarea.input{resize:vertical;min-height:80px}
 <!-- ================= LOGIN ================= -->
 <div id="loginScreen" class="login-screen">
   <div class="login-card">
-    <div class="logo">
-      <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
-        <defs>
-          <linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#8b5cf6"/>
-            <stop offset="1" stop-color="#6d28d9"/>
-          </linearGradient>
-        </defs>
-        <rect x="0" y="0" width="40" height="40" rx="11" fill="url(#lg1)"/>
-        <path d="M11.5 13 L20 27.5 L28.5 13" stroke="#fff" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="20" cy="13" r="2.3" fill="#fff"/>
-      </svg>
-      <span class="logo-text">VEXA</span>
-    </div>
-    <h1>Добро пожаловать в VEXA</h1>
-    <p class="login-subtitle">Система управления пунктом выдачи заказов</p>
-    <form id="loginForm" autocomplete="on">
-      <div class="form-group">
-        <label for="loginInput">Логин</label>
-        <input class="input" type="text" id="loginInput" placeholder="admin" autocomplete="username" autofocus>
+
+    <!-- Login view -->
+    <div id="loginView">
+      <div class="logo">
+        <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
+          <defs>
+            <linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#8b5cf6"/>
+              <stop offset="1" stop-color="#6d28d9"/>
+            </linearGradient>
+          </defs>
+          <rect x="0" y="0" width="40" height="40" rx="11" fill="url(#lg1)"/>
+          <path d="M11.5 13 L20 27.5 L28.5 13" stroke="#fff" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="20" cy="13" r="2.3" fill="#fff"/>
+        </svg>
+        <span class="logo-text">VEXA</span>
       </div>
-      <div class="form-group">
-        <label for="passwordInput">Пароль</label>
-        <div class="password-wrapper">
-          <input class="input" type="password" id="passwordInput" placeholder="••••••" autocomplete="current-password">
-          <button type="button" class="icon-btn" id="togglePassword" aria-label="Показать пароль">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
+      <h1>Добро пожаловать в VEXA</h1>
+      <p class="login-subtitle">Система управления пунктом выдачи заказов</p>
+
+      <div class="mode-toggle" id="modeToggle">
+        <button type="button" class="mode-btn active" data-mode="phone">По номеру</button>
+        <button type="button" class="mode-btn" data-mode="login">По логину</button>
+      </div>
+
+      <form id="loginForm" autocomplete="on">
+        <div class="form-group" id="phoneGroup">
+          <label for="phoneInput">Номер телефона</label>
+          <input class="input" type="tel" id="phoneInput" placeholder="+7 900 000-00-00" autocomplete="tel" inputmode="tel">
         </div>
+        <div class="form-group hidden" id="loginGroup">
+          <label for="loginInput">Логин</label>
+          <input class="input" type="text" id="loginInput" placeholder="Ваш логин" autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label for="passwordInput">Пароль</label>
+          <div class="password-wrapper">
+            <input class="input" type="password" id="passwordInput" placeholder="••••••" autocomplete="current-password">
+            <button type="button" class="icon-btn" id="togglePassword" aria-label="Показать пароль">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <div id="loginError" class="login-error"></div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg">Войти</button>
+      </form>
+
+      <div class="login-hint">
+        Нет аккаунта? <span class="register-link" id="registerLink">Регистрация</span>
       </div>
-      <div id="loginError" class="login-error"></div>
-      <button type="submit" class="btn btn-primary btn-block btn-lg">Войти</button>
-    </form>
-    <div class="login-hint">
-      Вход администратора · логин: <b>admin</b> · пароль: <b>admin</b>
     </div>
+
+    <!-- Register view -->
+    <div id="registerView" class="hidden">
+      <div class="logo">
+        <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
+          <rect x="0" y="0" width="40" height="40" rx="11" fill="url(#lg1)"/>
+          <path d="M11.5 13 L20 27.5 L28.5 13" stroke="#fff" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="20" cy="13" r="2.3" fill="#fff"/>
+        </svg>
+        <span class="logo-text">VEXA</span>
+      </div>
+      <h1 id="registerTitle">Регистрация</h1>
+      <div class="steps" id="registerSteps">
+        <div class="step active" data-step="1"></div>
+        <div class="step" data-step="2"></div>
+        <div class="step" data-step="3"></div>
+      </div>
+      <p class="login-subtitle" id="registerSubtitle">Шаг 1 из 3 · Номер телефона</p>
+      <div id="registerError" class="login-error"></div>
+      <div id="registerStepContent"></div>
+    </div>
+
   </div>
 </div>
 
@@ -663,12 +769,12 @@ textarea.input{resize:vertical;min-height:80px}
    DATA LAYER
    ============================================================ */
 const KEYS = {
-  orders:'vexa_orders_v1',
-  history:'vexa_history_v1',
-  employees:'vexa_employees_v1',
-  notifications:'vexa_notifications_v1',
-  settings:'vexa_settings_v1',
-  session:'vexa_session_v1'
+  orders:'vexa_orders_v2',
+  history:'vexa_history_v2',
+  employees:'vexa_employees_v2',
+  notifications:'vexa_notifications_v2',
+  settings:'vexa_settings_v2',
+  session:'vexa_session_v2'
 };
 
 const DEFAULT_SETTINGS = {
@@ -677,20 +783,6 @@ const DEFAULT_SETTINGS = {
   sound:true,
   uiScale:1
 };
-
-const BUILTIN_ADMIN_ID = '__admin__';
-function getBuiltinAdmin(){
-  return {
-    id: BUILTIN_ADMIN_ID,
-    name: 'Администратор',
-    role: 'Администратор',
-    login: 'admin',
-    password: 'admin',
-    active: true,
-    builtin: true,
-    createdAt: nowISO()
-  };
-}
 
 function safeParse(str, fallback){
   if(!str) return fallback;
@@ -735,6 +827,20 @@ function isToday(iso){
   const t = new Date();
   return d.getFullYear()===t.getFullYear() && d.getMonth()===t.getMonth() && d.getDate()===t.getDate();
 }
+function normalizePhone(p){ return (p||'').replace(/\D/g,''); }
+function phoneMatch(a, b){
+  const na = normalizePhone(a), nb = normalizePhone(b);
+  if(!na || !nb) return false;
+  if(na.length < 10 || nb.length < 10) return na === nb;
+  return na.slice(-10) === nb.slice(-10);
+}
+function formatPhoneDisplay(p){
+  const n = normalizePhone(p);
+  if(n.length === 11 && (n[0] === '7' || n[0] === '8')){
+    return '+7 ' + n.slice(1,4) + ' ' + n.slice(4,7) + '-' + n.slice(7,9) + '-' + n.slice(9,11);
+  }
+  return p;
+}
 
 /* ============================================================
    STATUSES & CONSTANTS
@@ -750,10 +856,9 @@ const STATUSES = {
 };
 const ROLE_OPTIONS = ['Администратор', 'Старший сотрудник', 'Сотрудник'];
 const RETURN_REASONS = ['Не подошёл товар', 'Повреждение', 'Ошибка комплектации', 'Другая причина'];
-const CATEGORY_SUGGESTIONS = ['Одежда','Обувь','Электроника','Аксессуары','Товары для дома','Красота','Детские товары','Спорт'];
 
 /* ============================================================
-   STATE (пустые данные — пользователь заполнит сам)
+   STATE
    ============================================================ */
 const state = {
   orders: [],
@@ -764,7 +869,16 @@ const state = {
   currentUser: null,
   currentSection: 'issue',
   sidebarOpen: false,
+  loginMode: 'phone',
   reception: {items:[], errors:0},
+  register: {
+    step: 1,
+    phone: '',
+    login: '',
+    password: '',
+    firstName: '',
+    lastName: ''
+  },
   filters: {
     orders: {q:'', status:'all', date:'all', sort:'date-desc'},
     warehouse: {q:'', status:'all'},
@@ -797,12 +911,8 @@ function loadState(){
 
   const session = lsGet(KEYS.session, null);
   if(session && session.employeeId){
-    if(session.employeeId === BUILTIN_ADMIN_ID){
-      state.currentUser = BUILTIN_ADMIN_ID;
-    } else {
-      const emp = employees.find(e => e.id === session.employeeId);
-      if(emp && emp.active) state.currentUser = emp.id;
-    }
+    const emp = employees.find(e => e.id === session.employeeId);
+    if(emp && emp.active) state.currentUser = emp.id;
   }
 }
 function saveOrders(){ lsSet(KEYS.orders, state.orders); }
@@ -816,7 +926,6 @@ function saveSession(){
 }
 
 function getUser(id){
-  if(id === BUILTIN_ADMIN_ID) return getBuiltinAdmin();
   return state.employees.find(e => e.id === id) || null;
 }
 function currentUserObj(){ return getUser(state.currentUser); }
@@ -1136,6 +1245,14 @@ function render(){
   };
   content.innerHTML = (renders[state.currentSection] || renderHome)();
   bindSectionEvents();
+  updateLayout();
+}
+
+function updateLayout(){
+  const tb = document.querySelector('.topbar');
+  if(tb){
+    document.documentElement.style.setProperty('--topbar-h', tb.offsetHeight + 'px');
+  }
 }
 
 function renderUserCard(){
@@ -1274,25 +1391,37 @@ function computeStats(){
   return {awaitingPickup, acceptedToday, issuedToday, returnsToday, inStock, operationsToday};
 }
 
-/* ============ RECEPTION ============ */
+/* ============ RECEPTION (QR SCANNER FOR PRODUCT) ============ */
 function renderReception(){
   const items = state.reception.items;
   const errors = state.reception.errors;
   return `
   <div class="section">
+    <div class="qr-scanner">
+      <div class="qr-frame">
+        <div class="qr-inner">
+          ${generateQRsvg()}
+          <div class="qr-scan-line"></div>
+        </div>
+      </div>
+      <h2 class="qr-title">Отсканируйте QR-код товара</h2>
+      <p class="qr-sub">Наведите камеру на штрихкод или QR-код на упаковке товара</p>
+      <div class="qr-hint">Или введите штрихкод вручную ниже</div>
+    </div>
+
     <div class="reception-grid">
       <div class="scan-box">
         <h3>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/></svg>
-          Сканирование
+          Ручной ввод
         </h3>
         <div class="form-group">
           <label for="recvBarcode">Штрихкод товара</label>
-          <input class="input" id="recvBarcode" placeholder="Введите штрихкод" autocomplete="off" autofocus>
+          <input class="input" id="recvBarcode" placeholder="Введите штрихкод" autocomplete="off">
         </div>
         <div class="form-group">
           <label for="recvSupply">Номер поставки (необязательно)</label>
-          <input class="input" id="recvSupply" placeholder="SUP-0001" autocomplete="off">
+          <input class="input" id="recvSupply" placeholder="Номер поставки" autocomplete="off">
         </div>
         <div class="scan-actions">
           <button class="btn btn-primary" id="recvAddBtn">
@@ -1305,7 +1434,7 @@ function renderReception(){
           </button>
           <button class="btn btn-ghost" id="recvCreateBtn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Новый товар
+            Новый заказ
           </button>
         </div>
         <div class="scan-counts">
@@ -1328,7 +1457,7 @@ function renderReception(){
           </div>
         </div>
         <div class="list-items" id="recvList">
-          ${items.length === 0 ? emptyState('Список пуст', 'Отсканируйте штрихкод товара из существующего заказа') :
+          ${items.length === 0 ? emptyState('Список пуст', 'Отсканируйте QR-код товара или введите штрихкод вручную') :
             items.map(it => `
               <div class="list-item">
                 <div class="list-item-body">
@@ -1401,6 +1530,7 @@ function completeReception(){
     addHistory('Приёмка', o.number, 'Успешно',
       'Товар принят' + (supply ? ' (поставка ' + supply + ')' : '') + ', полка ' + o.shelf);
   });
+  saveOrders();
   pushNotification('success', 'Приёмка завершена', 'Принято товаров: ' + count);
   state.reception.items = [];
   state.reception.errors = 0;
@@ -1449,7 +1579,7 @@ function renderIssue(){
       <div class="toolbar" style="margin-bottom:0">
         <div class="search">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input class="input" id="issueSearch" placeholder="VX-100001 · 2000... · код 1234" autocomplete="off">
+          <input class="input" id="issueSearch" placeholder="Номер заказа, штрихкод или код" autocomplete="off">
         </div>
         <button class="btn btn-primary" id="issueFindBtn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -1581,10 +1711,27 @@ function performIssue(orderId){
   else render();
 }
 
-/* ============ RETURNS ============ */
+/* ============ RETURNS (BIG EMPTY STATE) ============ */
 function renderReturns(){
   const list = state.orders.filter(o => o.status === 'returned')
     .sort((a,b) => new Date(b.returnedAt||b.createdAt) - new Date(a.returnedAt||a.createdAt));
+
+  if(list.length === 0){
+    return `
+    <div class="section">
+      <div class="big-empty">
+        <div class="big-empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1 4 1 10 7 10"/>
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+          </svg>
+        </div>
+        <h2>На данный момент возвратов нет</h2>
+        <p>Как только будут оформлены возвраты, они появятся в этом разделе</p>
+      </div>
+    </div>`;
+  }
+
   const q = (state.filters.returns.q || '').toLowerCase();
   const filtered = q ? list.filter(o =>
     o.number.toLowerCase().includes(q) ||
@@ -1604,7 +1751,7 @@ function renderReturns(){
       <div class="toolbar" style="margin-bottom:0">
         <div class="search">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input class="input" id="returnSearch" placeholder="VX-100001 · 2000..." autocomplete="off">
+          <input class="input" id="returnSearch" placeholder="Номер заказа, штрихкод или код" autocomplete="off">
         </div>
         <button class="btn btn-primary" id="returnFindBtn">Найти</button>
       </div>
@@ -1622,7 +1769,7 @@ function renderReturns(){
           <input class="input" id="returnListSearch" placeholder="Поиск по возвратам" value="${escapeHtml(state.filters.returns.q||'')}">
         </div>
       </div>
-      ${filtered.length === 0 ? emptyState('Возвратов нет', 'Оформленные возвраты появятся здесь') :
+      ${filtered.length === 0 ? emptyState('Ничего не найдено', 'Измените запрос поиска') :
         `<div class="table-wrap" style="border:none;background:transparent">
           <table class="table">
             <thead><tr>
@@ -1902,26 +2049,23 @@ function addOrderFlow(){
     body: `
       <div class="form-group">
         <label>Номер заказа *</label>
-        <input class="input" id="newOrderNum" placeholder="VX-100001" autofocus>
+        <input class="input" id="newOrderNum" placeholder="Номер заказа" autofocus>
       </div>
       <div class="form-group">
         <label>Название товара *</label>
-        <input class="input" id="newOrderProduct" placeholder="Футболка Oversize">
+        <input class="input" id="newOrderProduct" placeholder="Название товара">
       </div>
       <div class="form-group">
         <label>Категория</label>
-        <input class="input" id="newOrderCategory" placeholder="Одежда" list="categorySuggestions">
-        <datalist id="categorySuggestions">
-          ${CATEGORY_SUGGESTIONS.map(c => `<option value="${escapeHtml(c)}">`).join('')}
-        </datalist>
+        <input class="input" id="newOrderCategory" placeholder="Категория">
       </div>
       <div class="form-group">
         <label>Штрихкод *</label>
-        <input class="input" id="newOrderBarcode" placeholder="2000100000001">
+        <input class="input" id="newOrderBarcode" placeholder="Штрихкод товара">
       </div>
       <div class="form-group">
         <label>Код получения</label>
-        <input class="input" id="newOrderPickup" placeholder="1234" inputmode="numeric">
+        <input class="input" id="newOrderPickup" placeholder="Код получения" inputmode="numeric">
       </div>
       <div class="form-group">
         <label>Количество</label>
@@ -1941,7 +2085,7 @@ function addOrderFlow(){
         const num = overlay.querySelector('#newOrderNum').value.trim();
         const product = overlay.querySelector('#newOrderProduct').value.trim();
         const barcode = overlay.querySelector('#newOrderBarcode').value.trim();
-        const category = overlay.querySelector('#newOrderCategory').value.trim() || 'Без категории';
+        const category = overlay.querySelector('#newOrderCategory').value.trim() || '—';
         const pickupCode = overlay.querySelector('#newOrderPickup').value.trim() || String(1000 + Math.floor(Math.random()*9000));
         const qty = Math.max(1, parseInt(overlay.querySelector('#newOrderQty').value) || 1);
         const status = overlay.querySelector('#newOrderStatus').value;
@@ -2031,7 +2175,7 @@ function showOrderDetails(orderId){
         <div style="margin-top:18px;padding-top:18px;border-top:1px solid var(--border-2)">
           <div style="font-weight:700;font-size:.9rem;margin-bottom:10px">Переместить на полку</div>
           <div style="display:flex;gap:10px">
-            <input class="input" id="moveShelfInput" placeholder="Например, B-05" value="${escapeHtml(o.shelf)}" style="flex:1">
+            <input class="input" id="moveShelfInput" placeholder="Полка" value="${escapeHtml(o.shelf)}" style="flex:1">
             <button class="btn btn-primary" id="moveShelfBtn">Сохранить</button>
           </div>
         </div>` : ''}
@@ -2159,7 +2303,7 @@ function renderEmployees(){
 
 function editEmployee(id){
   const e = getUser(id);
-  if(!e || e.builtin) return;
+  if(!e) return;
   openModal({
     title:'Редактировать сотрудника',
     body:`
@@ -2194,6 +2338,7 @@ function addEmployeeFlow(){
           ${ROLE_OPTIONS.map(r => `<option>${escapeHtml(r)}</option>`).join('')}
         </select>
       </div>
+      <div class="form-group"><label>Номер телефона</label><input class="input" type="tel" id="newEmpPhone" placeholder="+7 900 000-00-00" inputmode="tel"></div>
       <div class="form-group"><label>Логин</label><input class="input" id="newEmpLogin" placeholder="Латинские буквы и цифры"></div>
       <div class="form-group"><label>Пароль</label><input class="input" id="newEmpPass" placeholder="Минимум 3 символа"></div>`,
     actions:[
@@ -2201,14 +2346,20 @@ function addEmployeeFlow(){
       {label:'Создать', cls:'btn-primary', close:false, onClick: (overlay) => {
         const name = (overlay.querySelector('#newEmpName').value || '').trim();
         const role = overlay.querySelector('#newEmpRole').value;
+        const phone = (overlay.querySelector('#newEmpPhone').value || '').trim();
         const login = (overlay.querySelector('#newEmpLogin').value || '').trim().toLowerCase();
         const pass = (overlay.querySelector('#newEmpPass').value || '').trim();
         if(!name || name.length < 2){ toast('Введите корректное имя', 'warning'); return false; }
         if(!/^[a-z0-9_]{3,}$/.test(login)){ toast('Логин: латиница/цифры, минимум 3 символа', 'warning'); return false; }
-        if(login === 'admin'){ toast('Логин admin зарезервирован', 'warning'); return false; }
         if(state.employees.some(e => e.login === login)){ toast('Логин уже используется', 'warning'); return false; }
+        if(phone && state.employees.some(e => phoneMatch(e.phone, phone))){ toast('Телефон уже используется', 'warning'); return false; }
         if(pass.length < 3){ toast('Пароль слишком короткий', 'warning'); return false; }
-        state.employees.push({id: uid('e'), name, role, active:true, login, password: pass, createdAt: nowISO()});
+        state.employees.push({
+          id: uid('e'), name, role, active:true,
+          login, password: pass,
+          phone: normalizePhone(phone),
+          createdAt: nowISO()
+        });
         saveEmployees();
         toast('Сотрудник создан', 'success');
         closeModal(); render();
@@ -2662,40 +2813,64 @@ function applyScannedCode(code){
 }
 
 /* ============================================================
-   LOGIN / LOGOUT
+   LOGIN / REGISTER / LOGOUT
    ============================================================ */
 function showLogin(){
   document.getElementById('loginScreen').classList.remove('hidden');
   document.getElementById('app').classList.add('hidden');
+  showLoginView();
 }
 function hideLogin(){
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
 }
+function showLoginView(){
+  document.getElementById('loginView').classList.remove('hidden');
+  document.getElementById('registerView').classList.add('hidden');
+}
+function showRegisterView(){
+  document.getElementById('loginView').classList.add('hidden');
+  document.getElementById('registerView').classList.remove('hidden');
+  state.register = {step:1, phone:'', login:'', password:'', firstName:'', lastName:''};
+  renderRegisterStep();
+}
+function setLoginMode(mode){
+  state.loginMode = mode;
+  document.querySelectorAll('#modeToggle .mode-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.mode === mode);
+  });
+  document.getElementById('phoneGroup').classList.toggle('hidden', mode !== 'phone');
+  document.getElementById('loginGroup').classList.toggle('hidden', mode !== 'login');
+  document.getElementById('loginError').textContent = '';
+}
 function handleLogin(e){
-  e.preventDefault();
-  const login = (document.getElementById('loginInput').value || '').trim().toLowerCase();
-  const pass = document.getElementById('passwordInput').value || '';
+  if(e) e.preventDefault();
   const errEl = document.getElementById('loginError');
-  errEl.innerHTML = '';
-  if(!login || !pass){ errEl.textContent = 'Введите логин и пароль'; return; }
+  errEl.textContent = '';
+  const pass = document.getElementById('passwordInput').value || '';
 
-  if(login === 'admin' && pass === 'admin'){
-    state.currentUser = BUILTIN_ADMIN_ID;
-    saveSession();
-    document.getElementById('passwordInput').value = '';
-    toast('Добро пожаловать, Администратор!', 'success');
-    render();
-    return;
+  let emp = null;
+  if(state.loginMode === 'phone'){
+    const phone = (document.getElementById('phoneInput').value || '').trim();
+    if(!phone){ errEl.textContent = 'Введите номер телефона'; return; }
+    if(!pass){ errEl.textContent = 'Введите пароль'; return; }
+    emp = state.employees.find(e => phoneMatch(e.phone, phone));
+  } else {
+    const login = (document.getElementById('loginInput').value || '').trim().toLowerCase();
+    if(!login){ errEl.textContent = 'Введите логин'; return; }
+    if(!pass){ errEl.textContent = 'Введите пароль'; return; }
+    emp = state.employees.find(e => e.login === login);
   }
 
-  const emp = state.employees.find(e => e.login === login && e.password === pass);
-  if(!emp){ errEl.textContent = 'Неверный логин или пароль'; return; }
+  if(!emp){ errEl.textContent = 'Аккаунт не найден'; return; }
+  if(emp.password !== pass){ errEl.textContent = 'Неверный пароль'; return; }
   if(!emp.active){ errEl.textContent = 'Учётная запись деактивирована'; return; }
+
   state.currentUser = emp.id;
   saveSession();
   document.getElementById('passwordInput').value = '';
-  toast('Добро пожаловать, ' + emp.name.split(' ')[0] + '!', 'success');
+  const firstName = (emp.name||'').split(' ')[0];
+  toast('Добро пожаловать, ' + (firstName || 'сотрудник') + '!', 'success');
   render();
 }
 function handleLogout(){
@@ -2706,6 +2881,159 @@ function handleLogout(){
     showLogin();
     toast('Вы вышли из системы', 'info');
   });
+}
+
+/* ============================================================
+   REGISTER FLOW
+   ============================================================ */
+function renderRegisterStep(){
+  const step = state.register.step;
+  const titles = {
+    1:'Шаг 1 из 3 · Номер телефона',
+    2:'Шаг 2 из 3 · Логин и пароль',
+    3:'Шаг 3 из 3 · Имя и фамилия'
+  };
+  document.getElementById('registerSubtitle').textContent = titles[step];
+  document.querySelectorAll('#registerSteps .step').forEach(s => {
+    const n = parseInt(s.dataset.step);
+    s.classList.remove('active', 'done');
+    if(n < step) s.classList.add('done');
+    if(n === step) s.classList.add('active');
+  });
+  document.getElementById('registerError').textContent = '';
+
+  const content = document.getElementById('registerStepContent');
+  if(step === 1){
+    content.innerHTML = `
+      <div class="form-group">
+        <label for="regPhone">Номер телефона</label>
+        <input class="input" type="tel" id="regPhone" placeholder="+7 900 000-00-00" value="${escapeHtml(state.register.phone)}" autofocus inputmode="tel">
+      </div>
+      <button type="button" class="btn btn-primary btn-block btn-lg" id="regNext">Далее</button>
+      <div style="margin-top:14px;text-align:center">
+        <span class="register-link" id="regBack">Назад ко входу</span>
+      </div>`;
+    const phoneInput = document.getElementById('regPhone');
+    const next = document.getElementById('regNext');
+    const back = document.getElementById('regBack');
+    next.addEventListener('click', () => {
+      const v = phoneInput.value.trim();
+      if(normalizePhone(v).length < 10){ document.getElementById('registerError').textContent = 'Введите корректный номер телефона'; return; }
+      if(state.employees.some(e => phoneMatch(e.phone, v))){ document.getElementById('registerError').textContent = 'Этот номер уже зарегистрирован'; return; }
+      state.register.phone = v;
+      state.register.step = 2;
+      renderRegisterStep();
+    });
+    back.addEventListener('click', showLoginView);
+    phoneInput.addEventListener('keydown', e => { if(e.key === 'Enter') next.click(); });
+  }
+  else if(step === 2){
+    content.innerHTML = `
+      <div class="form-group">
+        <label for="regLogin">Логин</label>
+        <input class="input" type="text" id="regLogin" placeholder="Латинские буквы и цифры" value="${escapeHtml(state.register.login)}" autofocus>
+      </div>
+      <div class="form-group">
+        <label for="regPassword">Пароль</label>
+        <div class="password-wrapper">
+          <input class="input" type="password" id="regPassword" placeholder="Минимум 3 символа" value="${escapeHtml(state.register.password)}">
+          <button type="button" class="icon-btn" id="regTogglePass" aria-label="Показать пароль">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <button type="button" class="btn btn-primary btn-block btn-lg" id="regNext">Далее</button>
+      <div style="margin-top:14px;text-align:center;display:flex;justify-content:space-between">
+        <span class="register-link" id="regBack">Назад</span>
+        <span class="register-link" id="regCancel">Отмена</span>
+      </div>`;
+    const loginInput = document.getElementById('regLogin');
+    const passInput = document.getElementById('regPassword');
+    const togglePass = document.getElementById('regTogglePass');
+    const next = document.getElementById('regNext');
+    const back = document.getElementById('regBack');
+    const cancel = document.getElementById('regCancel');
+    togglePass.addEventListener('click', () => {
+      if(passInput.type === 'password'){ passInput.type = 'text'; }
+      else { passInput.type = 'password'; }
+    });
+    next.addEventListener('click', () => {
+      const login = loginInput.value.trim().toLowerCase();
+      const pass = passInput.value;
+      if(!/^[a-z0-9_]{3,}$/.test(login)){ document.getElementById('registerError').textContent = 'Логин: латиница/цифры, минимум 3 символа'; return; }
+      if(state.employees.some(e => e.login === login)){ document.getElementById('registerError').textContent = 'Логин уже занят'; return; }
+      if(pass.length < 3){ document.getElementById('registerError').textContent = 'Пароль слишком короткий'; return; }
+      state.register.login = login;
+      state.register.password = pass;
+      state.register.step = 3;
+      renderRegisterStep();
+    });
+    back.addEventListener('click', () => { state.register.step = 1; renderRegisterStep(); });
+    cancel.addEventListener('click', showLoginView);
+    const onEnter = e => { if(e.key === 'Enter') next.click(); };
+    loginInput.addEventListener('keydown', onEnter);
+    passInput.addEventListener('keydown', onEnter);
+  }
+  else if(step === 3){
+    content.innerHTML = `
+      <div class="form-group">
+        <label for="regFirstName">Имя</label>
+        <input class="input" type="text" id="regFirstName" placeholder="Иван" value="${escapeHtml(state.register.firstName)}" autofocus>
+      </div>
+      <div class="form-group">
+        <label for="regLastName">Фамилия</label>
+        <input class="input" type="text" id="regLastName" placeholder="Иванов" value="${escapeHtml(state.register.lastName)}">
+      </div>
+      <button type="button" class="btn btn-primary btn-block btn-lg" id="regFinish">Завершить регистрацию</button>
+      <div style="margin-top:14px;text-align:center;display:flex;justify-content:space-between">
+        <span class="register-link" id="regBack">Назад</span>
+        <span class="register-link" id="regCancel">Отмена</span>
+      </div>`;
+    const fnInput = document.getElementById('regFirstName');
+    const lnInput = document.getElementById('regLastName');
+    const finish = document.getElementById('regFinish');
+    const back = document.getElementById('regBack');
+    const cancel = document.getElementById('regCancel');
+    finish.addEventListener('click', () => {
+      const fn = fnInput.value.trim();
+      const ln = lnInput.value.trim();
+      if(!fn || fn.length < 2){ document.getElementById('registerError').textContent = 'Введите имя'; return; }
+      if(!ln || ln.length < 2){ document.getElementById('registerError').textContent = 'Введите фамилию'; return; }
+      state.register.firstName = fn;
+      state.register.lastName = ln;
+      completeRegistration();
+    });
+    back.addEventListener('click', () => { state.register.step = 2; renderRegisterStep(); });
+    cancel.addEventListener('click', showLoginView);
+    const onEnter = e => { if(e.key === 'Enter') finish.click(); };
+    fnInput.addEventListener('keydown', onEnter);
+    lnInput.addEventListener('keydown', onEnter);
+  }
+}
+
+function completeRegistration(){
+  const r = state.register;
+  const fullName = (r.firstName + ' ' + r.lastName).trim();
+  const emp = {
+    id: uid('e'),
+    name: fullName,
+    role: 'Сотрудник',
+    active: true,
+    login: r.login,
+    password: r.password,
+    phone: normalizePhone(r.phone),
+    createdAt: nowISO()
+  };
+  state.employees.push(emp);
+  saveEmployees();
+  toast('Регистрация завершена! Теперь можно войти', 'success', 'Добро пожаловать!');
+  showLoginView();
+  setLoginMode('login');
+  document.getElementById('loginInput').value = r.login;
+  document.getElementById('phoneInput').value = formatPhoneDisplay(r.phone);
+  document.getElementById('loginError').textContent = '';
+  document.getElementById('passwordInput').value = '';
+  state.register = {step:1, phone:'', login:'', password:'', firstName:'', lastName:''};
 }
 
 /* ============================================================
@@ -2743,11 +3071,11 @@ function resetAllData(){
   state.notifications = [];
   state.reception.items = [];
   state.reception.errors = 0;
-  state.currentUser = BUILTIN_ADMIN_ID;
+  state.currentUser = null;
   saveOrders(); saveHistory(); saveEmployees(); saveNotifications();
   saveSession();
   toast('Все данные удалены', 'success');
-  render();
+  showLogin();
 }
 
 function clearOrdersOnly(){
@@ -2768,7 +3096,16 @@ function init(){
   applyTheme();
   applyUiScale();
 
+  // Login form
   document.getElementById('loginForm').addEventListener('submit', handleLogin);
+
+  // Mode toggle
+  document.querySelectorAll('#modeToggle .mode-btn').forEach(b => {
+    b.addEventListener('click', () => setLoginMode(b.dataset.mode));
+  });
+  setLoginMode('phone');
+
+  // Password visibility
   const togglePass = document.getElementById('togglePassword');
   togglePass.addEventListener('click', () => {
     const p = document.getElementById('passwordInput');
@@ -2781,6 +3118,10 @@ function init(){
     }
   });
 
+  // Register link
+  document.getElementById('registerLink').addEventListener('click', showRegisterView);
+
+  // App controls
   document.getElementById('logoutBtn').addEventListener('click', handleLogout);
   document.getElementById('menuToggle').addEventListener('click', toggleSidebar);
   document.getElementById('sidebarBackdrop').addEventListener('click', closeSidebar);
@@ -2788,6 +3129,7 @@ function init(){
 
   window.addEventListener('resize', () => {
     if(window.innerWidth > 900) closeSidebar();
+    updateLayout();
   });
 
   startClock();
