@@ -4,9 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#7c3aed">
-<title>VEXA — Управление ПВЗ</title>
+<title>VEXA — ПВЗ</title>
 <style>
-/* ============ BASE ============ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --primary:#7c3aed;--primary-hover:#6d28d9;
@@ -60,13 +59,11 @@ a{color:inherit;text-decoration:none}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:6px;border:2px solid var(--bg)}
 ::-webkit-scrollbar-thumb:hover{background:var(--text-muted)}
 
-/* ============ LOGO ============ */
 .logo{display:inline-flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em}
 .logo svg{display:block}
 .logo-text{font-size:1.4rem;background:linear-gradient(135deg,#8b5cf6,#6d28d9);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:800}
 [data-theme="dark"] .logo-text{background:linear-gradient(135deg,#a78bfa,#8b5cf6);-webkit-background-clip:text;background-clip:text;color:transparent}
 
-/* ============ LOGIN ============ */
 .login-screen{
   min-height:100vh;min-height:100dvh;
   display:flex;align-items:center;justify-content:center;
@@ -107,17 +104,10 @@ textarea.input{resize:vertical;min-height:80px}
   border-radius:8px;color:var(--text-muted);
 }
 .password-wrapper .icon-btn:hover{background:var(--muted-soft);color:var(--text)}
-.login-error{
-  color:var(--danger);font-size:.85rem;min-height:18px;margin:4px 0 12px;
-  display:flex;align-items:center;gap:6px;
-}
-.login-hint{
-  margin-top:18px;padding-top:18px;border-top:1px solid var(--border-2);
-  font-size:.8rem;color:var(--text-muted);text-align:center;
-}
+.login-error{color:var(--danger);font-size:.85rem;min-height:18px;margin:4px 0 12px;display:flex;align-items:center;gap:6px}
+.login-hint{margin-top:18px;padding-top:18px;border-top:1px solid var(--border-2);font-size:.8rem;color:var(--text-muted);text-align:center}
 .login-hint b{color:var(--text-2);font-weight:700}
 
-/* ============ BUTTONS ============ */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
   padding:10px 16px;border-radius:var(--radius);
@@ -146,7 +136,6 @@ textarea.input{resize:vertical;min-height:80px}
 .btn-block{width:100%}
 .btn-icon{padding:9px;width:38px;height:38px}
 
-/* ============ APP LAYOUT ============ */
 .app{display:flex;min-height:100vh;min-height:100dvh}
 .sidebar{
   width:250px;flex-shrink:0;
@@ -155,10 +144,7 @@ textarea.input{resize:vertical;min-height:80px}
   position:sticky;top:0;height:100vh;height:100dvh;
   z-index:40;
 }
-.sidebar-header{
-  padding:20px 20px 16px;display:flex;align-items:center;
-  border-bottom:1px solid var(--border-2);
-}
+.sidebar-header{padding:20px 20px 16px;display:flex;align-items:center;border-bottom:1px solid var(--border-2)}
 .nav{flex:1;overflow-y:auto;padding:12px 10px;display:flex;flex-direction:column;gap:2px}
 .nav-item{
   display:flex;align-items:center;gap:12px;
@@ -172,16 +158,10 @@ textarea.input{resize:vertical;min-height:80px}
 .nav-item.active{background:var(--primary-soft);color:var(--primary);font-weight:600}
 .nav-item.active svg{opacity:1}
 [data-theme="dark"] .nav-item.active{color:#c4b5fd}
-.nav-item .nav-count{
-  margin-left:auto;background:var(--muted-soft);color:var(--text-2);
-  font-size:.72rem;padding:1px 7px;border-radius:20px;font-weight:600;
-}
+.nav-item .nav-count{margin-left:auto;background:var(--muted-soft);color:var(--text-2);font-size:.72rem;padding:1px 7px;border-radius:20px;font-weight:600}
 .nav-item.active .nav-count{background:var(--primary);color:#fff}
 .sidebar-footer{padding:12px;border-top:1px solid var(--border-2)}
-.user-card{
-  display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;
-  background:var(--surface-2);margin-bottom:8px;
-}
+.user-card{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;background:var(--surface-2);margin-bottom:8px}
 .user-avatar{
   width:36px;height:36px;border-radius:50%;flex-shrink:0;
   background:linear-gradient(135deg,#8b5cf6,#6d28d9);
@@ -219,19 +199,56 @@ textarea.input{resize:vertical;min-height:80px}
   border-radius:20px;display:flex;align-items:center;justify-content:center;
   border:2px solid var(--surface);
 }
-.content{
-  flex:1;padding:22px 24px 40px;
-  max-width:1600px;width:100%;margin:0 auto;
+
+/* ============ MAIN TOP TABS ============ */
+.main-tabs{
+  display:flex;gap:10px;
+  padding:12px 24px;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  overflow-x:auto;
+  scrollbar-width:none;
 }
+.main-tabs::-webkit-scrollbar{display:none}
+.main-tab{
+  flex:1;min-width:150px;max-width:280px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:13px 20px;border-radius:12px;
+  background:var(--surface-2);border:1px solid var(--border);
+  color:var(--text-2);font-weight:800;font-size:.88rem;
+  text-transform:uppercase;letter-spacing:.05em;
+  cursor:pointer;transition:all .18s;white-space:nowrap;
+  position:relative;
+}
+.main-tab svg{width:18px;height:18px;flex-shrink:0}
+.main-tab:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-soft-2);transform:translateY(-1px)}
+.main-tab.active{
+  background:linear-gradient(135deg,var(--primary) 0%,#5b21b6 100%);
+  color:#fff;border-color:transparent;
+  box-shadow:0 6px 20px rgba(124,58,237,.35);
+}
+.main-tab.active svg{opacity:1}
+.main-tab .tab-count{
+  background:rgba(255,255,255,.28);color:#fff;
+  padding:2px 9px;border-radius:20px;font-size:.7rem;font-weight:800;
+}
+.main-tab:not(.active) .tab-count{background:var(--muted-soft);color:var(--text-2)}
+@media (max-width:900px){
+  .main-tabs{padding:10px 14px;gap:8px}
+  .main-tab{min-width:auto;padding:11px 14px;font-size:.78rem;gap:7px;letter-spacing:.02em}
+  .main-tab svg{width:16px;height:16px}
+}
+@media (max-width:420px){
+  .main-tab{padding:10px 10px;font-size:.72rem;gap:5px}
+  .main-tab svg{width:14px;height:14px}
+  .main-tab .tab-count{padding:1px 7px;font-size:.65rem}
+}
+
+.content{flex:1;padding:22px 24px 40px;max-width:1600px;width:100%;margin:0 auto}
 .section{animation:fadeIn .25s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-/* ============ CARDS ============ */
-.card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius-lg);padding:20px;
-  box-shadow:var(--shadow-sm);
-}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow-sm)}
 .card-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
 .card-title{font-weight:700;font-size:1rem;letter-spacing:-.01em}
 .card-sub{font-size:.8rem;color:var(--text-muted);margin-top:2px}
@@ -241,20 +258,10 @@ textarea.input{resize:vertical;min-height:80px}
 .grid-2{grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
 .grid-3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
 
-/* Stat card */
-.stat{
-  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
-  padding:18px;cursor:pointer;position:relative;
-  transition:transform .15s,box-shadow .15s,border-color .15s;
-  overflow:hidden;
-}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;cursor:pointer;position:relative;transition:transform .15s,box-shadow .15s,border-color .15s;overflow:hidden}
 .stat:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--primary)}
 .stat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.stat-icon{
-  width:40px;height:40px;border-radius:11px;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--primary-soft);color:var(--primary);
-}
+.stat-icon{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:var(--primary-soft);color:var(--primary)}
 .stat-icon svg{width:20px;height:20px}
 .stat-icon.g{background:var(--success-soft);color:var(--success)}
 .stat-icon.r{background:var(--danger-soft);color:var(--danger)}
@@ -263,43 +270,19 @@ textarea.input{resize:vertical;min-height:80px}
 .stat-value{font-size:1.8rem;font-weight:800;letter-spacing:-.03em;line-height:1.1}
 .stat-label{font-size:.82rem;color:var(--text-muted);margin-top:4px}
 
-/* Home hero */
-.hero{
-  background:linear-gradient(135deg,var(--primary) 0%,#5b21b6 100%);
-  color:#fff;border-radius:var(--radius-lg);padding:24px;
-  margin-bottom:20px;position:relative;overflow:hidden;
-}
-.hero::after{
-  content:'';position:absolute;right:-60px;top:-60px;width:260px;height:260px;
-  border-radius:50%;background:rgba(255,255,255,.08);
-}
-.hero::before{
-  content:'';position:absolute;right:60px;bottom:-80px;width:180px;height:180px;
-  border-radius:50%;background:rgba(255,255,255,.06);
-}
+.hero{background:linear-gradient(135deg,var(--primary) 0%,#5b21b6 100%);color:#fff;border-radius:var(--radius-lg);padding:24px;margin-bottom:20px;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.08)}
+.hero::before{content:'';position:absolute;right:60px;bottom:-80px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.06)}
 .hero-inner{position:relative;z-index:1}
 .hero h1{font-size:1.5rem;font-weight:800;letter-spacing:-.02em;margin-bottom:4px}
 .hero-meta{display:flex;flex-wrap:wrap;gap:16px;margin-top:14px;font-size:.86rem;opacity:.95}
 .hero-meta span{display:inline-flex;align-items:center;gap:6px}
-.hero-status{
-  display:inline-flex;align-items:center;gap:6px;
-  background:rgba(255,255,255,.16);padding:4px 10px;border-radius:20px;
-  font-size:.78rem;font-weight:600;
-}
+.hero-status{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.16);padding:4px 10px;border-radius:20px;font-size:.78rem;font-weight:600}
 .dot{width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 3px rgba(74,222,128,.3)}
 
-/* ============ TABLE ============ */
-.table-wrap{
-  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
-  overflow:hidden;
-}
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
 .table{width:100%;border-collapse:collapse;font-size:.86rem}
-.table th{
-  text-align:left;padding:12px 14px;font-size:.75rem;font-weight:700;
-  color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;
-  background:var(--surface-2);border-bottom:1px solid var(--border);
-  white-space:nowrap;
-}
+.table th{text-align:left;padding:12px 14px;font-size:.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;background:var(--surface-2);border-bottom:1px solid var(--border);white-space:nowrap}
 .table td{padding:12px 14px;border-bottom:1px solid var(--border-2);vertical-align:middle}
 .table tr:last-child td{border-bottom:none}
 .table tbody tr{transition:background .1s;cursor:pointer}
@@ -308,13 +291,7 @@ textarea.input{resize:vertical;min-height:80px}
 .td-name{font-weight:600;color:var(--text)}
 .td-sub{font-size:.76rem;color:var(--text-muted);margin-top:1px}
 
-/* ============ BADGES ============ */
-.badge{
-  display:inline-flex;align-items:center;gap:5px;
-  padding:3px 9px;border-radius:20px;
-  font-size:.72rem;font-weight:700;white-space:nowrap;
-  background:var(--muted-soft);color:var(--text-2);
-}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:.72rem;font-weight:700;white-space:nowrap;background:var(--muted-soft);color:var(--text-2)}
 .badge::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.7}
 .badge.b-primary{background:var(--primary-soft);color:var(--primary)}
 .badge.b-success{background:var(--success-soft);color:var(--success)}
@@ -327,13 +304,9 @@ textarea.input{resize:vertical;min-height:80px}
 [data-theme="dark"] .badge.b-warning{color:#fcd34d}
 [data-theme="dark"] .badge.b-info{color:#93c5fd}
 
-/* ============ TOOLBAR ============ */
 .toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;align-items:center}
 .toolbar .search{flex:1;min-width:200px;position:relative}
-.toolbar .search svg{
-  position:absolute;left:12px;top:50%;transform:translateY(-50%);
-  width:17px;height:17px;color:var(--text-muted);pointer-events:none;
-}
+.toolbar .search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--text-muted);pointer-events:none}
 .toolbar .search .input{padding-left:38px}
 .select{
   padding:10px 34px 10px 14px;border-radius:var(--radius);
@@ -346,20 +319,9 @@ textarea.input{resize:vertical;min-height:80px}
 }
 .select:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
 
-/* ============ MODAL ============ */
-.modal-overlay{
-  position:fixed;inset:0;z-index:100;
-  background:rgba(15,15,25,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
-  display:flex;align-items:center;justify-content:center;
-  padding:20px;animation:overlayIn .2s ease;
-}
+.modal-overlay{position:fixed;inset:0;z-index:100;background:rgba(15,15,25,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px;animation:overlayIn .2s ease}
 @keyframes overlayIn{from{opacity:0}to{opacity:1}}
-.modal{
-  width:100%;max-width:520px;max-height:90vh;overflow-y:auto;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius-xl);padding:24px;
-  box-shadow:var(--shadow-lg);animation:modalIn .25s cubic-bezier(.2,.9,.3,1.1);
-}
+.modal{width:100%;max-width:520px;max-height:90vh;overflow-y:auto;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:24px;box-shadow:var(--shadow-lg);animation:modalIn .25s cubic-bezier(.2,.9,.3,1.1)}
 .modal-lg{max-width:720px}
 @keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
 .modal-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}
@@ -370,22 +332,8 @@ textarea.input{resize:vertical;min-height:80px}
 .modal-close{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--text-muted)}
 .modal-close:hover{background:var(--muted-soft);color:var(--text)}
 
-/* ============ TOAST ============ */
-.toast-wrap{
-  position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));right:20px;
-  z-index:200;display:flex;flex-direction:column;gap:10px;
-  pointer-events:none;
-  max-width:calc(100vw - 40px);
-}
-.toast{
-  pointer-events:auto;
-  display:flex;align-items:flex-start;gap:11px;
-  padding:13px 16px;border-radius:var(--radius);
-  background:var(--surface);border:1px solid var(--border);
-  box-shadow:var(--shadow-lg);min-width:260px;max-width:380px;
-  animation:toastIn .3s cubic-bezier(.2,.9,.3,1.1);
-  border-left:3px solid var(--primary);
-}
+.toast-wrap{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));right:20px;z-index:200;display:flex;flex-direction:column;gap:10px;pointer-events:none;max-width:calc(100vw - 40px)}
+.toast{pointer-events:auto;display:flex;align-items:flex-start;gap:11px;padding:13px 16px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow-lg);min-width:260px;max-width:380px;animation:toastIn .3s cubic-bezier(.2,.9,.3,1.1);border-left:3px solid var(--primary)}
 @keyframes toastIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:none}}
 .toast.removing{animation:toastOut .25s ease forwards}
 @keyframes toastOut{to{opacity:0;transform:translateX(30px)}}
@@ -398,20 +346,116 @@ textarea.input{resize:vertical;min-height:80px}
 .toast.warning{border-left-color:var(--warning)}.toast.warning .toast-icon{color:var(--warning)}
 .toast.info{border-left-color:var(--info)}.toast.info .toast-icon{color:var(--info)}
 
-/* ============ EMPTY STATE ============ */
-.empty{
-  padding:50px 20px;text-align:center;color:var(--text-muted);
-}
+.empty{padding:50px 20px;text-align:center;color:var(--text-muted)}
 .empty svg{width:52px;height:52px;opacity:.35;margin-bottom:12px}
 .empty-title{font-weight:600;color:var(--text-2);font-size:.95rem;margin-bottom:4px}
 .empty-text{font-size:.83rem}
 
+/* ============ QR SCANNER ============ */
+.qr-scanner{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:34px 20px 26px;text-align:center;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(124,58,237,.18), transparent 62%),
+    radial-gradient(circle at 50% 70%, rgba(34,211,238,.10), transparent 65%),
+    var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  margin-bottom:20px;
+  position:relative;overflow:hidden;
+}
+.qr-scanner::before{
+  content:'';position:absolute;inset:0;
+  background:
+    linear-gradient(120deg,transparent 30%,rgba(168,85,247,.08) 50%,transparent 70%);
+  animation:qrShine 6s linear infinite;
+  pointer-events:none;
+}
+@keyframes qrShine{
+  0%{transform:translateX(-100%)}
+  100%{transform:translateX(100%)}
+}
+.qr-frame{
+  position:relative;
+  width:210px;height:210px;
+  padding:16px;
+  border-radius:22px;
+  background:rgba(10,4,25,.92);
+  box-shadow:
+    0 0 0 1px rgba(168,85,247,.55),
+    0 0 32px rgba(168,85,247,.5),
+    0 0 70px rgba(124,58,237,.28),
+    inset 0 0 34px rgba(124,58,237,.22);
+  margin-bottom:24px;
+  z-index:1;
+}
+[data-theme="dark"] .qr-frame{
+  background:rgba(3,0,15,.9);
+  box-shadow:
+    0 0 0 1px rgba(168,85,247,.7),
+    0 0 40px rgba(168,85,247,.65),
+    0 0 90px rgba(124,58,237,.35),
+    inset 0 0 40px rgba(124,58,237,.3);
+}
+.qr-frame::before,.qr-frame::after{
+  content:'';position:absolute;
+  width:28px;height:28px;
+  border:3px solid #22d3ee;
+  border-radius:9px;
+  box-shadow:0 0 14px #22d3ee,0 0 24px rgba(34,211,238,.6);
+  animation:cornerPulse 2.4s ease-in-out infinite;
+}
+.qr-frame::before{top:-7px;left:-7px;border-right:none;border-bottom:none;border-top-left-radius:12px}
+.qr-frame::after{bottom:-7px;right:-7px;border-left:none;border-top:none;border-bottom-right-radius:12px}
+@keyframes cornerPulse{
+  0%,100%{box-shadow:0 0 10px #22d3ee,0 0 18px rgba(34,211,238,.4)}
+  50%{box-shadow:0 0 18px #22d3ee,0 0 34px rgba(34,211,238,.75)}
+}
+.qr-inner{width:100%;height:100%;position:relative;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.15)}
+.qr-inner svg{width:100%;height:100%;display:block;filter:drop-shadow(0 0 5px rgba(168,85,247,.95)) drop-shadow(0 0 12px rgba(124,58,237,.6))}
+.qr-scan-line{
+  position:absolute;left:6px;right:6px;height:3px;
+  background:linear-gradient(90deg,transparent 0%,#22d3ee 18%,#a855f7 50%,#22d3ee 82%,transparent 100%);
+  box-shadow:0 0 20px #a855f7,0 0 32px #22d3ee,0 0 45px rgba(34,211,238,.7);
+  border-radius:3px;
+  animation:qrScan 2.8s cubic-bezier(.45,0,.55,1) infinite;
+  top:8%;
+  pointer-events:none;
+}
+@keyframes qrScan{
+  0%{top:8%;opacity:0}
+  12%{opacity:1}
+  88%{opacity:1}
+  100%{top:90%;opacity:0}
+}
+.qr-title{
+  font-size:1.4rem;font-weight:800;letter-spacing:-.015em;line-height:1.25;
+  margin-bottom:8px;
+  background:linear-gradient(135deg,#7c3aed 0%,#22d3ee 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  z-index:1;
+}
+[data-theme="dark"] .qr-title{
+  background:linear-gradient(135deg,#a78bfa 0%,#22d3ee 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.qr-sub{font-size:.88rem;color:var(--text-muted);max-width:360px;z-index:1;line-height:1.5}
+.qr-hint{
+  margin-top:16px;font-size:.78rem;color:var(--text-muted);
+  padding:7px 14px;background:var(--surface-2);border-radius:20px;
+  border:1px solid var(--border);z-index:1;
+}
+@media (max-width:480px){
+  .qr-frame{width:170px;height:170px;padding:12px;border-radius:18px}
+  .qr-frame::before,.qr-frame::after{width:22px;height:22px;border-width:2.5px}
+  .qr-title{font-size:1.15rem}
+  .qr-sub{font-size:.82rem}
+  .qr-scanner{padding:24px 14px 20px}
+}
+
 /* ============ RECEPTION ============ */
 .reception-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:20px;align-items:start}
-.scan-box{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius-lg);padding:20px;
-}
+.scan-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px}
 .scan-box h3{font-size:1rem;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .scan-input-row{display:flex;gap:8px;margin-bottom:10px}
 .scan-input-row .input{flex:1}
@@ -421,69 +465,36 @@ textarea.input{resize:vertical;min-height:80px}
 .scan-count .num{font-size:1.4rem;font-weight:800;letter-spacing:-.02em}
 .scan-count .lbl{font-size:.76rem;color:var(--text-muted)}
 .list-items{display:flex;flex-direction:column;gap:8px;max-height:480px;overflow-y:auto;margin-top:14px}
-.list-item{
-  display:flex;align-items:center;gap:12px;padding:12px;
-  background:var(--surface-2);border-radius:var(--radius);border:1px solid var(--border-2);
-  animation:fadeIn .25s ease;
-}
+.list-item{display:flex;align-items:center;gap:12px;padding:12px;background:var(--surface-2);border-radius:var(--radius);border:1px solid var(--border-2);animation:fadeIn .25s ease}
 .list-item-body{flex:1;min-width:0}
 .list-item-title{font-weight:600;font-size:.88rem;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .list-item-sub{font-size:.76rem;color:var(--text-muted);font-family:ui-monospace,monospace}
 
-/* ============ ORDER CARD ============ */
-.order-card{
-  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
-  padding:20px;box-shadow:var(--shadow-sm);
-}
+.order-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow-sm)}
 .order-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
 .order-num{font-size:1.05rem;font-weight:700;font-family:ui-monospace,monospace;letter-spacing:-.01em}
 .order-name{font-size:.95rem;font-weight:600;margin-top:6px}
 .order-info{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
 .order-info .info-item .lbl{font-size:.74rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600;margin-bottom:3px}
 .order-info .info-item .val{font-size:.9rem;font-weight:500}
-.code-highlight{
-  display:inline-block;padding:4px 10px;border-radius:8px;
-  background:var(--primary-soft);color:var(--primary);
-  font-weight:700;font-family:ui-monospace,monospace;letter-spacing:.08em;
-}
+.code-highlight{display:inline-block;padding:4px 10px;border-radius:8px;background:var(--primary-soft);color:var(--primary);font-weight:700;font-family:ui-monospace,monospace;letter-spacing:.08em}
 
-/* ============ DETAILS ROW ============ */
 .detail-row{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid var(--border-2);font-size:.87rem}
 .detail-row:last-child{border-bottom:none}
 .detail-row .lbl{color:var(--text-muted)}
 .detail-row .val{font-weight:500;text-align:right;word-break:break-word}
 
-/* ============ QUICK ACTIONS ============ */
 .quick-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
-.quick-btn{
-  display:flex;align-items:center;gap:12px;
-  padding:16px;border-radius:var(--radius);
-  background:var(--surface);border:1px solid var(--border);
-  text-align:left;cursor:pointer;
-  transition:transform .12s,border-color .12s,box-shadow .12s;
-}
+.quick-btn{display:flex;align-items:center;gap:12px;padding:16px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);text-align:left;cursor:pointer;transition:transform .12s,border-color .12s,box-shadow .12s}
 .quick-btn:hover{transform:translateY(-2px);border-color:var(--primary);box-shadow:var(--shadow-md)}
-.quick-btn .qi{
-  width:42px;height:42px;border-radius:11px;flex-shrink:0;
-  background:var(--primary-soft);color:var(--primary);
-  display:flex;align-items:center;justify-content:center;
-}
+.quick-btn .qi{width:42px;height:42px;border-radius:11px;flex-shrink:0;background:var(--primary-soft);color:var(--primary);display:flex;align-items:center;justify-content:center}
 .quick-btn .qi svg{width:20px;height:20px}
 .quick-btn .qt{font-weight:600;font-size:.9rem}
 .quick-btn .qs{font-size:.75rem;color:var(--text-muted);margin-top:1px}
 
-/* ============ EMPLOYEES ============ */
-.emp-card{
-  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
-  padding:18px;display:flex;flex-direction:column;gap:12px;
-}
+.emp-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;display:flex;flex-direction:column;gap:12px}
 .emp-head{display:flex;align-items:center;gap:12px}
-.emp-avatar{
-  width:44px;height:44px;border-radius:50%;
-  background:linear-gradient(135deg,#a78bfa,#7c3aed);
-  display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;
-  flex-shrink:0;
-}
+.emp-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#a78bfa,#7c3aed);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;flex-shrink:0}
 .emp-avatar.inactive{background:var(--muted-soft);color:var(--text-muted)}
 .emp-meta{flex:1;min-width:0}
 .emp-name{font-weight:700;font-size:.95rem}
@@ -491,12 +502,7 @@ textarea.input{resize:vertical;min-height:80px}
 .emp-stats{display:flex;gap:8px;flex-wrap:wrap}
 .emp-actions{display:flex;gap:8px;flex-wrap:wrap}
 
-/* ============ NOTIFICATIONS ============ */
-.notif-item{
-  display:flex;gap:12px;padding:14px;
-  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
-  cursor:pointer;transition:border-color .12s;
-}
+.notif-item{display:flex;gap:12px;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:border-color .12s}
 .notif-item:hover{border-color:var(--primary)}
 .notif-item.unread{background:var(--primary-soft-2);border-color:var(--primary)}
 .notif-ic{width:36px;height:36px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
@@ -509,60 +515,26 @@ textarea.input{resize:vertical;min-height:80px}
 .notif-text{font-size:.8rem;color:var(--text-muted);margin-top:2px;word-break:break-word}
 .notif-time{font-size:.74rem;color:var(--text-muted);margin-top:6px}
 
-/* ============ SETTINGS ============ */
-.settings-row{
-  display:flex;align-items:center;justify-content:space-between;gap:16px;
-  padding:16px 0;border-bottom:1px solid var(--border-2);
-}
+.settings-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid var(--border-2)}
 .settings-row:last-child{border-bottom:none}
 .settings-row .lbl{font-weight:600;font-size:.9rem}
 .settings-row .desc{font-size:.78rem;color:var(--text-muted);margin-top:2px}
 .settings-row .ctrl{flex-shrink:0}
-
-.switch{
-  position:relative;display:inline-block;width:46px;height:26px;
-}
+.switch{position:relative;display:inline-block;width:46px;height:26px}
 .switch input{opacity:0;width:0;height:0}
-.switch .slider{
-  position:absolute;inset:0;cursor:pointer;
-  background:var(--border);border-radius:26px;transition:.2s;
-}
-.switch .slider::before{
-  content:'';position:absolute;height:20px;width:20px;left:3px;top:3px;
-  background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2);
-}
+.switch .slider{position:absolute;inset:0;cursor:pointer;background:var(--border);border-radius:26px;transition:.2s}
+.switch .slider::before{content:'';position:absolute;height:20px;width:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
 .switch input:checked+.slider{background:var(--primary)}
 .switch input:checked+.slider::before{transform:translateX(20px)}
-
 .seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:3px;gap:2px}
-.seg button{
-  padding:6px 12px;border-radius:7px;font-size:.82rem;font-weight:600;color:var(--text-muted);
-  transition:background .12s,color .12s;
-}
+.seg button{padding:6px 12px;border-radius:7px;font-size:.82rem;font-weight:600;color:var(--text-muted);transition:background .12s,color .12s}
 .seg button.active{background:var(--surface);color:var(--text);box-shadow:var(--shadow-sm)}
 [data-theme="dark"] .seg button.active{background:var(--surface-2);color:var(--text)}
 
-/* ============ SKELETON ============ */
-.skel{
-  background:linear-gradient(90deg,var(--border-2) 25%,var(--surface-2) 50%,var(--border-2) 75%);
-  background-size:200% 100%;animation:skel 1.2s infinite;border-radius:8px;
-}
-@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.sidebar-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:39;display:none}
 
-/* ============ SIDEBAR BACKDROP (mobile) ============ */
-.sidebar-backdrop{
-  position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:39;
-  display:none;
-}
-
-/* ============ RESPONSIVE ============ */
 @media (max-width: 900px){
-  .sidebar{
-    position:fixed;left:0;top:0;bottom:0;
-    transform:translateX(-100%);transition:transform .28s cubic-bezier(.3,.9,.3,1);
-    box-shadow:var(--shadow-lg);
-    padding-top:env(safe-area-inset-top,0px);
-  }
+  .sidebar{position:fixed;left:0;top:0;bottom:0;transform:translateX(-100%);transition:transform .28s cubic-bezier(.3,.9,.3,1);box-shadow:var(--shadow-lg);padding-top:env(safe-area-inset-top,0px)}
   .sidebar.open{transform:none}
   .sidebar-backdrop.show{display:block}
   .menu-toggle{display:flex}
@@ -590,19 +562,8 @@ textarea.input{resize:vertical;min-height:80px}
   .grid-stats{grid-template-columns:repeat(2,1fr)}
   .login-card{padding:26px 20px}
 }
-@media (max-width: 360px){
-  .grid-stats{grid-template-columns:1fr}
-}
-
-/* hide desktop-only */
-.mobile-only{display:none}
-@media (max-width:900px){.mobile-only{display:block}.desktop-only{display:none}}
-
-/* tablet */
-@media (min-width: 901px) and (max-width: 1180px){
-  .sidebar{width:220px}
-  .content{padding:20px}
-}
+@media (max-width: 360px){.grid-stats{grid-template-columns:1fr}}
+@media (min-width: 901px) and (max-width: 1180px){.sidebar{width:220px}.content{padding:20px}}
 </style>
 </head>
 <body>
@@ -644,7 +605,7 @@ textarea.input{resize:vertical;min-height:80px}
       <button type="submit" class="btn btn-primary btn-block btn-lg">Войти</button>
     </form>
     <div class="login-hint">
-      Демонстрационный вход · логин: <b>admin</b> · пароль: <b>admin</b>
+      Вход администратора · логин: <b>admin</b> · пароль: <b>admin</b>
     </div>
   </div>
 </div>
@@ -686,6 +647,7 @@ textarea.input{resize:vertical;min-height:80px}
         </button>
       </div>
     </header>
+    <div class="main-tabs" id="mainTabs"></div>
     <main class="content" id="content"></main>
   </div>
 </div>
@@ -710,11 +672,25 @@ const KEYS = {
 };
 
 const DEFAULT_SETTINGS = {
-  pvnName:'ПВЗ VEXA Москва-Центр',
+  pvnName:'ПВЗ VEXA',
   theme:'light',
   sound:true,
   uiScale:1
 };
+
+const BUILTIN_ADMIN_ID = '__admin__';
+function getBuiltinAdmin(){
+  return {
+    id: BUILTIN_ADMIN_ID,
+    name: 'Администратор',
+    role: 'Администратор',
+    login: 'admin',
+    password: 'admin',
+    active: true,
+    builtin: true,
+    createdAt: nowISO()
+  };
+}
 
 function safeParse(str, fallback){
   if(!str) return fallback;
@@ -759,17 +735,6 @@ function isToday(iso){
   const t = new Date();
   return d.getFullYear()===t.getFullYear() && d.getMonth()===t.getMonth() && d.getDate()===t.getDate();
 }
-function daysAgo(n, hour, min){
-  const d = new Date();
-  d.setDate(d.getDate() - n);
-  d.setHours(hour!=null?hour:10, min!=null?min:0, 0, 0);
-  return d.toISOString();
-}
-function todayAt(hour, min){
-  const d = new Date();
-  d.setHours(hour, min!=null?min:0, 0, 0);
-  return d.toISOString();
-}
 
 /* ============================================================
    STATUSES & CONSTANTS
@@ -785,168 +750,10 @@ const STATUSES = {
 };
 const ROLE_OPTIONS = ['Администратор', 'Старший сотрудник', 'Сотрудник'];
 const RETURN_REASONS = ['Не подошёл товар', 'Повреждение', 'Ошибка комплектации', 'Другая причина'];
-
-const CATEGORIES = {
-  'Одежда':['Футболка Oversize','Джинсы Slim Fit','Худи с капюшоном','Платье миди','Куртка демисезонная','Рубашка классическая','Свитер вязаный'],
-  'Обувь':['Кроссовки беговые','Ботинки кожаные','Сандалии летние','Кеды текстильные','Сапоги зимние'],
-  'Электроника':['Наушники TWS','Смарт-часы','Повербанк 20000mAh','Колонка Bluetooth','Мышь беспроводная','Клавиатура механическая','Веб-камера HD'],
-  'Аксессуары':['Сумка через плечо','Ремень кожаный','Очки солнцезащитные','Кошелёк','Шапка вязаная','Перчатки кожаные'],
-  'Товары для дома':['Подушка ортопедическая','Одеяло тёплое','Набор полотенец','Органайзер для хранения','Светильник настольный']
-};
+const CATEGORY_SUGGESTIONS = ['Одежда','Обувь','Электроника','Аксессуары','Товары для дома','Красота','Детские товары','Спорт'];
 
 /* ============================================================
-   DEMO DATA
-   ============================================================ */
-function generateDemoEmployees(){
-  return [
-    {id:'e_admin', name:'Иванов Алексей', role:'Администратор', active:true, login:'admin', password:'admin', createdAt:daysAgo(60)},
-    {id:'e_maria', name:'Петрова Мария', role:'Старший сотрудник', active:true, login:'maria', password:'maria', createdAt:daysAgo(45)},
-    {id:'e_dmitry', name:'Сидоров Дмитрий', role:'Сотрудник', active:true, login:'dmitry', password:'dmitry', createdAt:daysAgo(30)},
-    {id:'e_anna', name:'Кузнецова Анна', role:'Сотрудник', active:false, login:'anna', password:'anna', createdAt:daysAgo(20)}
-  ];
-}
-
-function generateDemoOrders(){
-  const orders = [];
-  const statuses = [
-    'pending_acceptance','pending_acceptance','pending_acceptance','pending_acceptance','pending_acceptance',
-    'accepted','accepted','accepted','accepted',
-    'in_stock','in_stock','in_stock','in_stock','in_stock','in_stock',
-    'awaiting_pickup','awaiting_pickup','awaiting_pickup','awaiting_pickup','awaiting_pickup',
-    'awaiting_pickup','awaiting_pickup','awaiting_pickup','awaiting_pickup','awaiting_pickup',
-    'issued','issued','issued','issued','issued','issued',
-    'returned','returned',
-    'cancelled'
-  ];
-  const catList = Object.keys(CATEGORIES);
-  const shelves = ['A-01','A-02','A-03','B-01','B-02','B-03','C-01','C-02','C-03','D-01','D-02','D-03','E-01','E-02','E-03'];
-  const employees = ['e_admin','e_maria','e_dmitry'];
-
-  for(let i=0; i<statuses.length; i++){
-    const st = statuses[i];
-    const cat = catList[i % catList.length];
-    const names = CATEGORIES[cat];
-    const name = names[i % names.length];
-    const orderNum = 'VX-' + (100001 + i);
-    const barcode = '2000' + String(100000000 + i*137).slice(0,10);
-    const pickupCode = String(1000 + ((i*137) % 9000));
-    const createdDaysAgo = (i % 10);
-    const created = createdDaysAgo===0 ? todayAt(8 + (i%10), 15) : daysAgo(createdDaysAgo, 9 + (i%8), (i*7)%60);
-    const shelf = (st === 'in_stock' || st === 'awaiting_pickup' || st === 'accepted' || st === 'issued' || st === 'returned')
-      ? shelves[i % shelves.length] : null;
-    const employee = employees[i % employees.length];
-    let acceptedAt = null, issuedAt = null, returnedAt = null;
-    if(st === 'in_stock' || st === 'awaiting_pickup' || st === 'issued' || st === 'returned'){
-      acceptedAt = created;
-    }
-    if(st === 'issued'){
-      issuedAt = isToday(created) ? todayAt(12 + (i%8), (i*3)%60) : daysAgo(createdDaysAgo, 14 + (i%6), (i*5)%60);
-    }
-    if(st === 'returned'){
-      returnedAt = daysAgo(Math.max(0, createdDaysAgo-1), 15, (i*9)%60);
-    }
-    orders.push({
-      id: uid('o'),
-      number: orderNum,
-      product: name,
-      category: cat,
-      barcode: barcode,
-      pickupCode: pickupCode,
-      status: st,
-      quantity: 1 + (i % 3),
-      createdAt: created,
-      acceptedAt: acceptedAt,
-      issuedAt: issuedAt,
-      returnedAt: returnedAt,
-      shelf: shelf,
-      employee: employee,
-      returnReason: st === 'returned' ? RETURN_REASONS[i % RETURN_REASONS.length] : null,
-      returnComment: null,
-      customer: 'Клиент #' + (1000 + i)
-    });
-  }
-  return orders;
-}
-
-function generateDemoHistory(orders, employees){
-  const history = [];
-  orders.forEach((o, idx) => {
-    const emp = employees[idx % employees.length].id;
-    if(o.status !== 'pending_acceptance' && o.status !== 'cancelled'){
-      history.push({
-        id: uid('h'),
-        timestamp: o.acceptedAt || o.createdAt,
-        type:'Приёмка',
-        orderNumber: o.number,
-        employee: emp,
-        result:'Успешно',
-        info: 'Товар принят на ПВЗ, размещён на полке ' + (o.shelf || '—')
-      });
-    }
-    if(o.status === 'awaiting_pickup'){
-      history.push({
-        id: uid('h'),
-        timestamp: o.acceptedAt || o.createdAt,
-        type:'Изменение статуса',
-        orderNumber: o.number,
-        employee: emp,
-        result:'Успешно',
-        info: 'Статус изменён на «Ожидает выдачи»'
-      });
-    }
-    if(o.status === 'issued'){
-      history.push({
-        id: uid('h'),
-        timestamp: o.issuedAt || o.createdAt,
-        type:'Выдача',
-        orderNumber: o.number,
-        employee: emp,
-        result:'Успешно',
-        info: 'Заказ выдан клиенту ' + o.customer
-      });
-    }
-    if(o.status === 'returned'){
-      history.push({
-        id: uid('h'),
-        timestamp: o.returnedAt || o.createdAt,
-        type:'Возврат',
-        orderNumber: o.number,
-        employee: emp,
-        result:'Оформлен',
-        info: 'Причина: ' + (o.returnReason || '—')
-      });
-    }
-  });
-  history.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
-  return history;
-}
-
-function generateDemoNotifications(orders, employees){
-  const notifs = [];
-  const recent = orders.filter(o => o.status === 'issued' || o.status === 'returned').slice(0, 5);
-  recent.forEach((o, i) => {
-    notifs.push({
-      id: uid('n'),
-      timestamp: o.issuedAt || o.returnedAt || o.createdAt,
-      type: o.status === 'issued' ? 'success' : 'warning',
-      title: o.status === 'issued' ? 'Заказ выдан' : 'Оформлен возврат',
-      message: o.number + ' · ' + o.product,
-      read: i > 1
-    });
-  });
-  return notifs;
-}
-
-function createDemoData(){
-  const employees = generateDemoEmployees();
-  const orders = generateDemoOrders();
-  const history = generateDemoHistory(orders, employees);
-  const notifications = generateDemoNotifications(orders, employees);
-  return {orders, history, employees, notifications};
-}
-
-/* ============================================================
-   STATE
+   STATE (пустые данные — пользователь заполнит сам)
    ============================================================ */
 const state = {
   orders: [],
@@ -955,11 +762,9 @@ const state = {
   notifications: [],
   settings: Object.assign({}, DEFAULT_SETTINGS),
   currentUser: null,
-  currentSection: 'home',
+  currentSection: 'issue',
   sidebarOpen: false,
-  // reception working set
   reception: {items:[], errors:0},
-  // section filters
   filters: {
     orders: {q:'', status:'all', date:'all', sort:'date-desc'},
     warehouse: {q:'', status:'all'},
@@ -970,26 +775,17 @@ const state = {
 };
 
 function loadState(){
-  let orders = lsGet(KEYS.orders, null);
-  let history = lsGet(KEYS.history, null);
-  let employees = lsGet(KEYS.employees, null);
-  let notifications = lsGet(KEYS.notifications, null);
+  let orders = lsGet(KEYS.orders, []);
+  let history = lsGet(KEYS.history, []);
+  let employees = lsGet(KEYS.employees, []);
+  let notifications = lsGet(KEYS.notifications, []);
   let settings = lsGet(KEYS.settings, null);
 
-  if(!Array.isArray(orders) || orders.length === 0 ||
-     !Array.isArray(history) ||
-     !Array.isArray(employees) || employees.length === 0){
-    const demo = createDemoData();
-    orders = demo.orders;
-    history = demo.history;
-    employees = demo.employees;
-    notifications = demo.notifications;
-    lsSet(KEYS.orders, orders);
-    lsSet(KEYS.history, history);
-    lsSet(KEYS.employees, employees);
-    lsSet(KEYS.notifications, notifications);
-  }
+  if(!Array.isArray(orders)) orders = [];
+  if(!Array.isArray(history)) history = [];
+  if(!Array.isArray(employees)) employees = [];
   if(!Array.isArray(notifications)) notifications = [];
+
   if(!settings || typeof settings !== 'object') settings = Object.assign({}, DEFAULT_SETTINGS);
   settings = Object.assign({}, DEFAULT_SETTINGS, settings);
 
@@ -1001,8 +797,12 @@ function loadState(){
 
   const session = lsGet(KEYS.session, null);
   if(session && session.employeeId){
-    const emp = employees.find(e => e.id === session.employeeId);
-    if(emp && emp.active) state.currentUser = emp.id;
+    if(session.employeeId === BUILTIN_ADMIN_ID){
+      state.currentUser = BUILTIN_ADMIN_ID;
+    } else {
+      const emp = employees.find(e => e.id === session.employeeId);
+      if(emp && emp.active) state.currentUser = emp.id;
+    }
   }
 }
 function saveOrders(){ lsSet(KEYS.orders, state.orders); }
@@ -1016,14 +816,13 @@ function saveSession(){
 }
 
 function getUser(id){
+  if(id === BUILTIN_ADMIN_ID) return getBuiltinAdmin();
   return state.employees.find(e => e.id === id) || null;
 }
-function currentUserObj(){
-  return getUser(state.currentUser);
-}
+function currentUserObj(){ return getUser(state.currentUser); }
 
 /* ============================================================
-   HISTORY / NOTIFICATIONS HELPERS
+   HISTORY / NOTIFICATIONS
    ============================================================ */
 function addHistory(type, orderNumber, result, info){
   state.history.unshift({
@@ -1048,9 +847,7 @@ function pushNotification(type, title, message){
   saveNotifications();
   updateNotifBadge();
 }
-function unreadCount(){
-  return state.notifications.filter(n => !n.read).length;
-}
+function unreadCount(){ return state.notifications.filter(n => !n.read).length; }
 function updateNotifBadge(){
   const badge = document.getElementById('notifBadge');
   if(!badge) return;
@@ -1066,8 +863,7 @@ const ICONS = {
   success:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
   error:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
   warning:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
-  info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
-  bell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>'
+  info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
 };
 
 let audioCtx = null;
@@ -1085,7 +881,7 @@ function beep(type){
     g.gain.setValueAtTime(0.08, audioCtx.currentTime);
     g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.18);
     o.start(); o.stop(audioCtx.currentTime + 0.2);
-  }catch(e){ /* audio not critical */ }
+  }catch(e){}
 }
 
 function toast(message, type, title){
@@ -1129,11 +925,45 @@ function initials(name){
 function initialsUpper(name){ return initials(name).toUpperCase(); }
 
 /* ============================================================
+   FAKE QR-CODE SVG
+   ============================================================ */
+function generateQRsvg(){
+  const size = 25;
+  let path = '';
+  let seed = 137;
+  const rnd = () => {
+    seed = (seed * 9301 + 49297) % 233280;
+    return seed / 233280;
+  };
+  const isFinder = (x, y) => {
+    return (x < 7 && y < 7) || (x >= size-7 && y < 7) || (x < 7 && y >= size-7);
+  };
+  for(let y = 0; y < size; y++){
+    for(let x = 0; x < size; x++){
+      if(isFinder(x,y)) continue;
+      if(rnd() > 0.52){
+        path += `M${x} ${y}h1v1h-1z `;
+      }
+    }
+  }
+  const finder = (ox, oy) => {
+    let d = `M${ox} ${oy}h7v7h-7z M${ox+1} ${oy+1}h5v5h-5z `;
+    d += `M${ox+2} ${oy+2}h3v3h-3z `;
+    return `<path d="${d}" fill="currentColor" fill-rule="evenodd"/>`;
+  };
+  return `<svg viewBox="0 0 ${size} ${size}" shape-rendering="crispEdges" style="color:#a855f7" xmlns="http://www.w3.org/2000/svg">
+    <path d="${path}" fill="currentColor"/>
+    ${finder(0,0)}
+    ${finder(size-7,0)}
+    ${finder(0,size-7)}
+  </svg>`;
+}
+
+/* ============================================================
    MODAL SYSTEM
    ============================================================ */
 let modalStack = [];
 function openModal(opts){
-  // opts: {title, subtitle, body (HTML string), actions: [{label, cls, onClick}], onClose, size}
   const root = document.getElementById('modalRoot');
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
@@ -1181,9 +1011,7 @@ function openModal(opts){
   }
   overlay._close = closeThis;
   overlay.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', closeThis));
-  overlay.addEventListener('mousedown', e => {
-    if(e.target === overlay) closeThis();
-  });
+  overlay.addEventListener('mousedown', e => { if(e.target === overlay) closeThis(); });
   document.addEventListener('keydown', escHandler);
   function escHandler(e){
     if(e.key === 'Escape'){
@@ -1215,11 +1043,14 @@ function confirmDialog(title, message, onConfirm, opts){
 /* ============================================================
    ROUTER / NAVIGATION
    ============================================================ */
+const MAIN_TABS = [
+  {id:'issue', label:'Выдача', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M21 3 10 14"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>'},
+  {id:'reception', label:'Приёмка', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>'},
+  {id:'returns', label:'Возвраты', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>'}
+];
+
 const SECTIONS = [
   {id:'home', label:'Главная', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V20a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2z"/></svg>'},
-  {id:'reception', label:'Приёмка', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>'},
-  {id:'issue', label:'Выдача заказов', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M21 3 10 14"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>'},
-  {id:'returns', label:'Возвраты', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>'},
   {id:'warehouse', label:'Склад', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21V12h6v9"/></svg>'},
   {id:'orders', label:'Все заказы', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>'},
   {id:'history', label:'История', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'},
@@ -1227,16 +1058,13 @@ const SECTIONS = [
   {id:'notifications', label:'Уведомления', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>'},
   {id:'settings', label:'Настройки', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>'}
 ];
+const ALL_SECTIONS = MAIN_TABS.concat(SECTIONS);
 
 function renderNav(){
   const nav = document.getElementById('nav');
-  const counts = {
-    issue: state.orders.filter(o => o.status === 'awaiting_pickup').length,
-    notifications: unreadCount()
-  };
   nav.innerHTML = SECTIONS.map(s => {
-    const c = counts[s.id];
-    const countHtml = (c && c>0) ? `<span class="nav-count">${c>99?'99+':c}</span>` : '';
+    const countHtml = (s.id === 'notifications' && unreadCount() > 0)
+      ? `<span class="nav-count">${unreadCount()>99?'99+':unreadCount()}</span>` : '';
     return `<a class="nav-item ${state.currentSection===s.id?'active':''}" data-section="${s.id}">
       ${s.icon}<span>${s.label}</span>${countHtml}
     </a>`;
@@ -1246,13 +1074,30 @@ function renderNav(){
   });
 }
 
-function navigate(section, extra){
-  if(!SECTIONS.some(s => s.id === section)) section = 'home';
+function renderMainTabs(){
+  const el = document.getElementById('mainTabs');
+  if(!el) return;
+  const counts = {
+    issue: state.orders.filter(o => o.status === 'awaiting_pickup' || o.status === 'in_stock').length
+  };
+  el.innerHTML = MAIN_TABS.map(t => {
+    const c = counts[t.id];
+    const countHtml = (c && c>0) ? `<span class="tab-count">${c>99?'99+':c}</span>` : '';
+    return `<button class="main-tab ${state.currentSection===t.id?'active':''}" data-section="${t.id}" type="button">
+      ${t.icon}<span>${t.label}</span>${countHtml}
+    </button>`;
+  }).join('');
+  el.querySelectorAll('[data-section]').forEach(b => {
+    b.addEventListener('click', () => navigate(b.dataset.section));
+  });
+}
+
+function navigate(section){
+  if(!ALL_SECTIONS.some(s => s.id === section)) section = 'home';
   state.currentSection = section;
-  // reset filters on direct navigation
-  if(section === 'orders' && (!extra || !extra.keepFilter)) state.filters.orders = {q:'', status:'all', date:'all', sort:'date-desc'};
-  if(section === 'warehouse' && (!extra || !extra.keepFilter)) state.filters.warehouse = {q:'', status:'all'};
-  if(section === 'history' && (!extra || !extra.keepFilter)) state.filters.history = {q:'', type:'all', sort:'time-desc'};
+  if(section === 'orders') state.filters.orders = {q:'', status:'all', date:'all', sort:'date-desc'};
+  if(section === 'warehouse') state.filters.warehouse = {q:'', status:'all'};
+  if(section === 'history') state.filters.history = {q:'', type:'all', sort:'time-desc'};
   closeSidebar();
   render();
   window.scrollTo({top:0, behavior:'instant'});
@@ -1276,10 +1121,11 @@ function render(){
   if(!state.currentUser){ showLogin(); return; }
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
-  const sec = SECTIONS.find(s => s.id === state.currentSection) || SECTIONS[0];
+  const sec = ALL_SECTIONS.find(s => s.id === state.currentSection) || ALL_SECTIONS[0];
   document.getElementById('pageTitle').textContent = sec.label;
   renderUserCard();
   renderNav();
+  renderMainTabs();
   updateNotifBadge();
   const content = document.getElementById('content');
   const renders = {
@@ -1336,7 +1182,7 @@ function renderHome(){
     <div class="grid grid-stats" style="margin-bottom:22px">
       ${statCard('issue', 'Ожидают выдачи', stats.awaitingPickup, 'svg-issue', 'b')}
       ${statCard('reception', 'Принято сегодня', stats.acceptedToday, 'svg-inbox', 'y')}
-      ${statCard('orders', 'Выдано сегодня', stats.issuedToday, 'svg-check', 'g', 'issued')}
+      ${statCard('orders', 'Выдано сегодня', stats.issuedToday, 'svg-check', 'g')}
       ${statCard('returns', 'Возвратов сегодня', stats.returnsToday, 'svg-back', 'r')}
       ${statCard('warehouse', 'Товаров на складе', stats.inStock, 'svg-warehouse', '')}
       ${statCard('history', 'Операций за смену', stats.operationsToday, 'svg-list', 'b')}
@@ -1383,7 +1229,7 @@ function renderHome(){
           </button>
           <button class="quick-btn" data-goto="issue">
             <div class="qi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M21 3 10 14"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg></div>
-            <div><div class="qt">Выдать заказ</div><div class="qs">Поиск и выдача</div></div>
+            <div><div class="qt">Выдать заказ</div><div class="qs">Сканирование QR</div></div>
           </button>
           <button class="quick-btn" data-goto="returns">
             <div class="qi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></div>
@@ -1398,7 +1244,7 @@ function renderHome(){
     </div>
   </div>`;
 }
-function statCard(goto, label, value, icon, colorCls, statusFilter){
+function statCard(goto, label, value, icon, colorCls){
   const icons = {
     'svg-issue':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M21 3 10 14"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>',
     'svg-inbox':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>',
@@ -1407,7 +1253,7 @@ function statCard(goto, label, value, icon, colorCls, statusFilter){
     'svg-warehouse':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21V12h6v9"/></svg>',
     'svg-list':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>'
   };
-  return `<div class="stat" data-goto="${goto}" data-status="${statusFilter||''}">
+  return `<div class="stat" data-goto="${goto}">
     <div class="stat-top">
       <div class="stat-icon ${colorCls}">${icons[icon]||''}</div>
     </div>
@@ -1423,7 +1269,7 @@ function computeStats(){
   const acceptedToday = state.orders.filter(o => o.acceptedAt && new Date(o.acceptedAt).getTime() >= startOfDay).length;
   const issuedToday = state.orders.filter(o => o.issuedAt && new Date(o.issuedAt).getTime() >= startOfDay).length;
   const returnsToday = state.orders.filter(o => o.returnedAt && new Date(o.returnedAt).getTime() >= startOfDay).length;
-  const inStock = state.orders.filter(o => o.status === 'in_stock' || o.status === 'awaiting_pickup' || o.status === 'accepted').length;
+  const inStock = state.orders.filter(o => ['in_stock','awaiting_pickup','accepted'].includes(o.status)).length;
   const operationsToday = state.history.filter(h => new Date(h.timestamp).getTime() >= startOfDay).length;
   return {awaitingPickup, acceptedToday, issuedToday, returnsToday, inStock, operationsToday};
 }
@@ -1442,7 +1288,7 @@ function renderReception(){
         </h3>
         <div class="form-group">
           <label for="recvBarcode">Штрихкод товара</label>
-          <input class="input" id="recvBarcode" placeholder="Например, 2000100000001" autocomplete="off" autofocus>
+          <input class="input" id="recvBarcode" placeholder="Введите штрихкод" autocomplete="off" autofocus>
         </div>
         <div class="form-group">
           <label for="recvSupply">Номер поставки (необязательно)</label>
@@ -1456,6 +1302,10 @@ function renderReception(){
           <button class="btn btn-secondary" id="recvScanBtn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
             Открыть камеру
+          </button>
+          <button class="btn btn-ghost" id="recvCreateBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Новый товар
           </button>
         </div>
         <div class="scan-counts">
@@ -1478,7 +1328,7 @@ function renderReception(){
           </div>
         </div>
         <div class="list-items" id="recvList">
-          ${items.length === 0 ? emptyState('Список пуст', 'Отсканируйте или введите штрихкод') :
+          ${items.length === 0 ? emptyState('Список пуст', 'Отсканируйте штрихкод товара из существующего заказа') :
             items.map(it => `
               <div class="list-item">
                 <div class="list-item-body">
@@ -1511,59 +1361,56 @@ function handleReceptionAdd(){
   const order = state.orders.find(o => o.barcode === code);
   if(!order){
     state.reception.errors++;
-    toast('Товар со штрихкодом ' + code + ' не найден в базе', 'error');
+    toast('Товар со штрихкодом ' + code + ' не найден. Создайте заказ в разделе «Все заказы».', 'error');
     render();
     return;
   }
   if(order.status === 'issued'){
     state.reception.errors++;
-    toast('Заказ ' + order.number + ' уже выдан и не может быть принят повторно', 'error');
+    toast('Заказ ' + order.number + ' уже выдан', 'error');
     render();
     return;
   }
   if(state.reception.items.some(i => i.id === order.id)){
     state.reception.errors++;
-    toast('Товар уже добавлен в текущую приёмку', 'warning');
+    toast('Товар уже в списке приёмки', 'warning');
     render();
     return;
   }
   state.reception.items.push({
     id: order.id, number: order.number, product: order.product, barcode: order.barcode, status: order.status
   });
-  toast('Товар «' + order.product + '» добавлен в приёмку', 'success');
+  toast('Товар «' + order.product + '» добавлен', 'success');
   render();
   const ni = document.getElementById('recvBarcode');
   if(ni) ni.focus();
 }
 
 function completeReception(){
-  if(state.reception.items.length === 0){
-    toast('Список приёмки пуст', 'warning'); return;
-  }
+  if(state.reception.items.length === 0){ toast('Список приёмки пуст', 'warning'); return; }
   const supply = (document.getElementById('recvSupply')||{}).value || '';
   let count = 0;
   state.reception.items.forEach(it => {
     const o = state.orders.find(x => x.id === it.id);
-    if(!o) return;
-    if(o.status === 'issued') return;
+    if(!o || o.status === 'issued') return;
     o.status = 'in_stock';
     o.acceptedAt = nowISO();
     o.shelf = o.shelf || nextShelf();
     o.employee = state.currentUser;
     count++;
     addHistory('Приёмка', o.number, 'Успешно',
-      'Товар принят на ПВЗ' + (supply ? ' (поставка ' + supply + ')' : '') + ', полка ' + o.shelf);
+      'Товар принят' + (supply ? ' (поставка ' + supply + ')' : '') + ', полка ' + o.shelf);
   });
   pushNotification('success', 'Приёмка завершена', 'Принято товаров: ' + count);
   state.reception.items = [];
   state.reception.errors = 0;
-  toast('Приёмка завершена: ' + count + ' товар(ов)', 'success');
+  toast('Приёмка завершена: ' + count, 'success');
   render();
 }
 
 function cancelReception(){
-  if(state.reception.items.length === 0){ return; }
-  confirmDialog('Отменить приёмку?', 'Все добавленные товары будут убраны из списка приёмки.', () => {
+  if(state.reception.items.length === 0) return;
+  confirmDialog('Отменить приёмку?', 'Все добавленные товары будут убраны из списка.', () => {
     state.reception.items = [];
     state.reception.errors = 0;
     toast('Приёмка отменена', 'info');
@@ -1580,11 +1427,23 @@ function nextShelf(){
 function renderIssue(){
   return `
   <div class="section">
-    <div class="card" style="margin-bottom:20px">
+    <div class="qr-scanner">
+      <div class="qr-frame">
+        <div class="qr-inner">
+          ${generateQRsvg()}
+          <div class="qr-scan-line"></div>
+        </div>
+      </div>
+      <h2 class="qr-title">Отсканируйте QR-код клиента</h2>
+      <p class="qr-sub">Наведите камеру на экран клиента, чтобы считать код получения заказа</p>
+      <div class="qr-hint">Или введите номер заказа, штрихкод / код получения вручную</div>
+    </div>
+
+    <div class="card">
       <div class="card-header">
         <div>
-          <div class="card-title">Выдача заказов</div>
-          <div class="card-sub">Поиск по номеру заказа, штрихкоду или коду получения</div>
+          <div class="card-title">Поиск заказа</div>
+          <div class="card-sub">По номеру заказа, штрихкоду или коду получения</div>
         </div>
       </div>
       <div class="toolbar" style="margin-bottom:0">
@@ -1595,6 +1454,10 @@ function renderIssue(){
         <button class="btn btn-primary" id="issueFindBtn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           Найти
+        </button>
+        <button class="btn btn-secondary" id="issueScanBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          Сканировать
         </button>
       </div>
       <div id="issueResult" style="margin-top:18px"></div>
@@ -1618,10 +1481,7 @@ function searchIssueOrder(query){
 function renderIssueResult(query){
   const container = document.getElementById('issueResult');
   if(!container) return;
-  if(!query){
-    container.innerHTML = '';
-    return;
-  }
+  if(!query){ container.innerHTML = ''; return; }
   const order = searchIssueOrder(query);
   if(!order){
     container.innerHTML = `<div class="empty">
@@ -1632,7 +1492,7 @@ function renderIssueResult(query){
     return;
   }
   const u = getUser(order.employee);
-  const canIssue = order.status === 'awaiting_pickup' || order.status === 'in_stock' || order.status === 'accepted';
+  const canIssue = ['awaiting_pickup','in_stock','accepted'].includes(order.status);
   container.innerHTML = `
     <div class="order-card">
       <div class="order-head">
@@ -1643,7 +1503,7 @@ function renderIssueResult(query){
         ${statusBadge(order.status)}
       </div>
       <div class="order-info">
-        <div class="info-item"><div class="lbl">Категория</div><div class="val">${escapeHtml(order.category)}</div></div>
+        <div class="info-item"><div class="lbl">Категория</div><div class="val">${escapeHtml(order.category||'—')}</div></div>
         <div class="info-item"><div class="lbl">Количество</div><div class="val">${order.quantity} шт.</div></div>
         <div class="info-item"><div class="lbl">Штрихкод</div><div class="val" style="font-family:ui-monospace,monospace;font-size:.82rem">${escapeHtml(order.barcode)}</div></div>
         <div class="info-item"><div class="lbl">Место хранения</div><div class="val">${escapeHtml(order.shelf || '—')}</div></div>
@@ -1676,11 +1536,7 @@ function renderIssueResult(query){
 function issueOrderFlow(orderId){
   const order = state.orders.find(o => o.id === orderId);
   if(!order) return;
-  if(order.status === 'issued'){
-    toast('Заказ уже выдан', 'error');
-    pushNotification('error', 'Ошибка выдачи', 'Заказ ' + order.number + ' уже выдан');
-    return;
-  }
+  if(order.status === 'issued'){ toast('Заказ уже выдан', 'error'); return; }
   openModal({
     title:'Подтвердить выдачу',
     subtitle:'Заказ ' + order.number,
@@ -1716,19 +1572,13 @@ function performIssue(orderId){
   order.status = 'issued';
   order.issuedAt = nowISO();
   order.employee = state.currentUser;
-  addHistory('Выдача', order.number, 'Успешно', 'Заказ выдан клиенту ' + (order.customer || ''));
+  saveOrders();
+  addHistory('Выдача', order.number, 'Успешно', 'Заказ выдан клиенту');
   pushNotification('success', 'Заказ выдан', order.number + ' · ' + order.product);
-  toast('Заказ ' + order.number + ' успешно выдан', 'success');
-  renderIssueResultAfter();
-  renderNav();
-}
-function renderIssueResultAfter(){
+  toast('Заказ ' + order.number + ' выдан', 'success');
   const inp = document.getElementById('issueSearch');
-  const q = inp ? inp.value : '';
-  if(q) renderIssueResult(q);
+  if(inp && inp.value.trim()) renderIssueResult(inp.value);
   else render();
-  // update dashboard if needed
-  updateNotifBadge();
 }
 
 /* ============ RETURNS ============ */
@@ -1781,7 +1631,7 @@ function renderReturns(){
             <tbody>
               ${filtered.map(o => {
                 const u = getUser(o.employee);
-                return `<tr data-order="${o.id}">
+                return `<tr data-order-details="${o.id}">
                   <td class="td-mono">${escapeHtml(o.number)}</td>
                   <td class="td-name">${escapeHtml(o.product)}</td>
                   <td><span class="badge b-danger">${escapeHtml(o.returnReason || '—')}</span></td>
@@ -1806,68 +1656,39 @@ function renderReturnResult(query){
     o.pickupCode === query
   );
   if(!order){
-    container.innerHTML = `<div class="empty">
-      <div class="empty-title">Заказ не найден</div>
-      <div class="empty-text">Проверьте введённые данные</div>
-    </div>`;
+    container.innerHTML = `<div class="empty"><div class="empty-title">Заказ не найден</div><div class="empty-text">Проверьте введённые данные</div></div>`;
     return;
   }
   if(order.status === 'returned'){
-    container.innerHTML = `
-      <div class="order-card">
-        <div class="order-head">
-          <div>
-            <div class="order-num">${escapeHtml(order.number)}</div>
-            <div class="order-name">${escapeHtml(order.product)}</div>
-          </div>
-          ${statusBadge(order.status)}
-        </div>
-        <div style="padding:12px;border-radius:var(--radius);background:var(--danger-soft);color:var(--danger);font-size:.85rem;font-weight:600">
-          Возврат уже оформлен ${escapeHtml(fmtDT(order.returnedAt))} · причина: ${escapeHtml(order.returnReason || '—')}
-        </div>
-      </div>`;
+    container.innerHTML = `<div class="order-card">
+      <div class="order-head">
+        <div><div class="order-num">${escapeHtml(order.number)}</div><div class="order-name">${escapeHtml(order.product)}</div></div>
+        ${statusBadge(order.status)}
+      </div>
+      <div style="padding:12px;border-radius:var(--radius);background:var(--danger-soft);color:var(--danger);font-size:.85rem;font-weight:600">
+        Возврат уже оформлен ${escapeHtml(fmtDT(order.returnedAt))} · ${escapeHtml(order.returnReason || '—')}
+      </div></div>`;
     return;
   }
   if(order.status === 'issued'){
-    container.innerHTML = `
-      <div class="order-card">
-        <div class="order-head">
-          <div>
-            <div class="order-num">${escapeHtml(order.number)}</div>
-            <div class="order-name">${escapeHtml(order.product)}</div>
-          </div>
-          ${statusBadge(order.status)}
-        </div>
-        <div style="padding:12px;border-radius:var(--radius);background:var(--warning-soft);color:var(--warning);font-size:.85rem;font-weight:600">
-          Заказ уже выдан — оформление возврата недоступно
-        </div>
-      </div>`;
+    container.innerHTML = `<div class="order-card">
+      <div class="order-head">
+        <div><div class="order-num">${escapeHtml(order.number)}</div><div class="order-name">${escapeHtml(order.product)}</div></div>
+        ${statusBadge(order.status)}
+      </div>
+      <div style="padding:12px;border-radius:var(--radius);background:var(--warning-soft);color:var(--warning);font-size:.85rem;font-weight:600">
+        Заказ уже выдан — возврат недоступен
+      </div></div>`;
     return;
   }
   if(order.status === 'cancelled'){
-    container.innerHTML = `
-      <div class="order-card">
-        <div class="order-head">
-          <div>
-            <div class="order-num">${escapeHtml(order.number)}</div>
-            <div class="order-name">${escapeHtml(order.product)}</div>
-          </div>
-          ${statusBadge(order.status)}
-        </div>
-        <div style="padding:12px;border-radius:var(--radius);background:var(--muted-soft);color:var(--text-muted);font-size:.85rem">
-          Заказ отменён
-        </div>
-      </div>`;
+    container.innerHTML = `<div class="order-card"><div style="padding:12px;color:var(--text-muted)">Заказ отменён</div></div>`;
     return;
   }
-  // available for return
   container.innerHTML = `
     <div class="order-card">
       <div class="order-head">
-        <div>
-          <div class="order-num">${escapeHtml(order.number)}</div>
-          <div class="order-name">${escapeHtml(order.product)}</div>
-        </div>
+        <div><div class="order-num">${escapeHtml(order.number)}</div><div class="order-name">${escapeHtml(order.product)}</div></div>
         ${statusBadge(order.status)}
       </div>
       <div class="order-info">
@@ -1881,10 +1702,10 @@ function renderReturnResult(query){
         </select>
       </div>
       <div class="form-group">
-        <label for="returnComment">Комментарий (необязательно)</label>
-        <textarea class="input" id="returnComment" placeholder="Дополнительная информация"></textarea>
+        <label for="returnComment">Комментарий</label>
+        <textarea class="input" id="returnComment" placeholder="Необязательно"></textarea>
       </div>
-      <button class="btn btn-danger btn-block" id="returnConfirmBtn" data-id="${order.id}">Оформить возврат</button>
+      <button class="btn btn-danger btn-block" id="returnConfirmBtn">Оформить возврат</button>
     </div>`;
   const btn = document.getElementById('returnConfirmBtn');
   if(btn) btn.addEventListener('click', () => {
@@ -1914,6 +1735,7 @@ function performReturn(orderId, reason, comment){
   order.returnReason = reason;
   order.returnComment = comment || null;
   order.employee = state.currentUser;
+  saveOrders();
   addHistory('Возврат', order.number, 'Оформлен', 'Причина: ' + reason + (comment ? ' · ' + comment : ''));
   pushNotification('warning', 'Оформлен возврат', order.number + ' · ' + order.product);
   toast('Возврат по заказу ' + order.number + ' оформлен', 'success');
@@ -1970,7 +1792,7 @@ function renderWarehouse(){
               const u = getUser(o.employee);
               return `<tr data-order-details="${o.id}">
                 <td class="td-mono">${escapeHtml(o.number)}</td>
-                <td class="td-name">${escapeHtml(o.product)}<div class="td-sub">${escapeHtml(o.category)}</div></td>
+                <td class="td-name">${escapeHtml(o.product)}<div class="td-sub">${escapeHtml(o.category||'—')}</div></td>
                 <td class="td-mono">${escapeHtml(o.barcode)}</td>
                 <td>${statusBadge(o.status)}</td>
                 <td class="td-mono">${escapeHtml(o.shelf || '—')}</td>
@@ -2018,7 +1840,7 @@ function renderOrders(){
     <div class="toolbar">
       <div class="search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input class="input" id="ordSearch" placeholder="Поиск по номеру, товару, штрихкоду или коду" value="${escapeHtml(f.q)}">
+        <input class="input" id="ordSearch" placeholder="Поиск по номеру, товару, штрихкоду" value="${escapeHtml(f.q)}">
       </div>
       <select class="select" id="ordStatus">
         <option value="all" ${f.status==='all'?'selected':''}>Все статусы</option>
@@ -2043,9 +1865,13 @@ function renderOrders(){
         <option value="num-asc" ${f.sort==='num-asc'?'selected':''}>По номеру ↑</option>
         <option value="num-desc" ${f.sort==='num-desc'?'selected':''}>По номеру ↓</option>
       </select>
+      <button class="btn btn-primary" id="addOrderBtn" style="margin-left:auto">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Добавить заказ
+      </button>
     </div>
 
-    ${list.length === 0 ? emptyState('Заказы не найдены', 'Измените условия поиска') :
+    ${list.length === 0 ? `<div class="card">${emptyState('Заказов пока нет', 'Нажмите «Добавить заказ», чтобы создать первый')}</div>` :
       `<div class="table-wrap">
         <table class="table">
           <thead><tr>
@@ -2055,7 +1881,7 @@ function renderOrders(){
             ${list.map(o => `
               <tr data-order-details="${o.id}">
                 <td class="td-mono">${escapeHtml(o.number)}</td>
-                <td class="td-name">${escapeHtml(o.product)}<div class="td-sub">${escapeHtml(o.category)}</div></td>
+                <td class="td-name">${escapeHtml(o.product)}<div class="td-sub">${escapeHtml(o.category||'—')}</div></td>
                 <td class="td-mono">${escapeHtml(o.barcode)}</td>
                 <td>${statusBadge(o.status)}</td>
                 <td class="td-mono">${escapeHtml(o.shelf || '—')}</td>
@@ -2067,7 +1893,108 @@ function renderOrders(){
   </div>`;
 }
 
-/* ============ ORDER DETAILS MODAL ============ */
+/* ============ ADD ORDER ============ */
+function addOrderFlow(){
+  openModal({
+    title: 'Новый заказ',
+    subtitle: 'Заполните данные товара',
+    size: 'lg',
+    body: `
+      <div class="form-group">
+        <label>Номер заказа *</label>
+        <input class="input" id="newOrderNum" placeholder="VX-100001" autofocus>
+      </div>
+      <div class="form-group">
+        <label>Название товара *</label>
+        <input class="input" id="newOrderProduct" placeholder="Футболка Oversize">
+      </div>
+      <div class="form-group">
+        <label>Категория</label>
+        <input class="input" id="newOrderCategory" placeholder="Одежда" list="categorySuggestions">
+        <datalist id="categorySuggestions">
+          ${CATEGORY_SUGGESTIONS.map(c => `<option value="${escapeHtml(c)}">`).join('')}
+        </datalist>
+      </div>
+      <div class="form-group">
+        <label>Штрихкод *</label>
+        <input class="input" id="newOrderBarcode" placeholder="2000100000001">
+      </div>
+      <div class="form-group">
+        <label>Код получения</label>
+        <input class="input" id="newOrderPickup" placeholder="1234" inputmode="numeric">
+      </div>
+      <div class="form-group">
+        <label>Количество</label>
+        <input class="input" type="number" id="newOrderQty" value="1" min="1">
+      </div>
+      <div class="form-group">
+        <label>Начальный статус</label>
+        <select class="select" id="newOrderStatus" style="width:100%">
+          <option value="pending_acceptance">Ожидает приёмки</option>
+          <option value="awaiting_pickup">Ожидает выдачи (уже на ПВЗ)</option>
+        </select>
+      </div>
+    `,
+    actions: [
+      {label: 'Отмена', cls: 'btn-secondary'},
+      {label: 'Создать', cls: 'btn-primary', close: false, onClick: (overlay) => {
+        const num = overlay.querySelector('#newOrderNum').value.trim();
+        const product = overlay.querySelector('#newOrderProduct').value.trim();
+        const barcode = overlay.querySelector('#newOrderBarcode').value.trim();
+        const category = overlay.querySelector('#newOrderCategory').value.trim() || 'Без категории';
+        const pickupCode = overlay.querySelector('#newOrderPickup').value.trim() || String(1000 + Math.floor(Math.random()*9000));
+        const qty = Math.max(1, parseInt(overlay.querySelector('#newOrderQty').value) || 1);
+        const status = overlay.querySelector('#newOrderStatus').value;
+
+        if(!num || !product || !barcode){
+          toast('Заполните обязательные поля', 'warning');
+          return false;
+        }
+        if(state.orders.some(o => o.number.toLowerCase() === num.toLowerCase())){
+          toast('Заказ с таким номером уже существует', 'error');
+          return false;
+        }
+        if(state.orders.some(o => o.barcode === barcode)){
+          toast('Товар с таким штрихкодом уже существует', 'error');
+          return false;
+        }
+
+        const o = {
+          id: uid('o'),
+          number: num,
+          product,
+          category,
+          barcode,
+          pickupCode,
+          status,
+          quantity: qty,
+          createdAt: nowISO(),
+          acceptedAt: status === 'awaiting_pickup' ? nowISO() : null,
+          issuedAt: null,
+          returnedAt: null,
+          shelf: status === 'awaiting_pickup' ? nextShelf() : null,
+          employee: status === 'awaiting_pickup' ? state.currentUser : null,
+          returnReason: null,
+          returnComment: null,
+          customer: ''
+        };
+        state.orders.unshift(o);
+        saveOrders();
+
+        if(status === 'awaiting_pickup'){
+          addHistory('Приёмка', o.number, 'Успешно', 'Товар добавлен вручную на полку ' + o.shelf);
+        }
+
+        toast('Заказ ' + o.number + ' добавлен', 'success');
+        pushNotification('success', 'Создан заказ', o.number + ' · ' + o.product);
+        closeModal();
+        render();
+      }}
+    ]
+  });
+}
+
+/* ============ ORDER DETAILS ============ */
 function showOrderDetails(orderId){
   const o = state.orders.find(x => x.id === orderId);
   if(!o) return;
@@ -2082,7 +2009,7 @@ function showOrderDetails(orderId){
         ${statusBadge(o.status)}
         <div class="code-highlight">${escapeHtml(o.pickupCode)}</div>
       </div>
-      <div class="detail-row"><span class="lbl">Категория</span><span class="val">${escapeHtml(o.category)}</span></div>
+      <div class="detail-row"><span class="lbl">Категория</span><span class="val">${escapeHtml(o.category||'—')}</span></div>
       <div class="detail-row"><span class="lbl">Количество</span><span class="val">${o.quantity} шт.</span></div>
       <div class="detail-row"><span class="lbl">Штрихкод</span><span class="val" style="font-family:ui-monospace,monospace">${escapeHtml(o.barcode)}</span></div>
       <div class="detail-row"><span class="lbl">Место хранения</span><span class="val">${escapeHtml(o.shelf || '—')}</span></div>
@@ -2102,7 +2029,7 @@ function showOrderDetails(orderId){
       </div>
       ${o.status !== 'issued' && o.status !== 'returned' && o.status !== 'cancelled' && o.shelf ? `
         <div style="margin-top:18px;padding-top:18px;border-top:1px solid var(--border-2)">
-          <div style="font-weight:700;font-size:.9rem;margin-bottom:10px">Перемещение на другую полку</div>
+          <div style="font-weight:700;font-size:.9rem;margin-bottom:10px">Переместить на полку</div>
           <div style="display:flex;gap:10px">
             <input class="input" id="moveShelfInput" placeholder="Например, B-05" value="${escapeHtml(o.shelf)}" style="flex:1">
             <button class="btn btn-primary" id="moveShelfBtn">Сохранить</button>
@@ -2116,13 +2043,13 @@ function showOrderDetails(orderId){
     moveBtn.addEventListener('click', () => {
       const val = (document.getElementById('moveShelfInput').value || '').trim();
       if(!val){ toast('Введите полку', 'warning'); return; }
-      if(val === o.shelf){ toast('Место хранения не изменилось', 'info'); return; }
+      if(val === o.shelf){ toast('Полка не изменилась', 'info'); return; }
       const old = o.shelf || '—';
       o.shelf = val;
       saveOrders();
       addHistory('Перемещение', o.number, 'Успешно', 'Полка: ' + old + ' → ' + val);
       pushNotification('info', 'Товар перемещён', o.number + ' · ' + old + ' → ' + val);
-      toast('Место хранения обновлено', 'success');
+      toast('Полка обновлена', 'success');
       closeModal();
       render();
     });
@@ -2159,7 +2086,6 @@ function renderHistory(){
         <option value="Выдача" ${f.type==='Выдача'?'selected':''}>Выдача</option>
         <option value="Возврат" ${f.type==='Возврат'?'selected':''}>Возврат</option>
         <option value="Перемещение" ${f.type==='Перемещение'?'selected':''}>Перемещение</option>
-        <option value="Изменение статуса" ${f.type==='Изменение статуса'?'selected':''}>Изменение статуса</option>
       </select>
       <select class="select" id="histSort">
         <option value="time-desc" ${f.sort==='time-desc'?'selected':''}>Сначала новые</option>
@@ -2200,48 +2126,45 @@ function renderEmployees(){
   return `
   <div class="section">
     <div class="toolbar">
-      <div style="color:var(--text-muted);font-size:.85rem">Всего сотрудников: ${emps.length}</div>
+      <div style="color:var(--text-muted);font-size:.85rem">Сотрудников: ${emps.length}</div>
       <button class="btn btn-primary" id="addEmployeeBtn" style="margin-left:auto">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Добавить сотрудника
       </button>
     </div>
-    <div class="grid grid-3">
-      ${emps.map(e => `
-        <div class="emp-card">
-          <div class="emp-head">
-            <div class="emp-avatar ${e.active?'':'inactive'}">${escapeHtml(initialsUpper(e.name))}</div>
-            <div class="emp-meta">
-              <div class="emp-name">${escapeHtml(e.name)}</div>
-              <div class="emp-role">${escapeHtml(e.role)}</div>
+    ${emps.length === 0 ? `<div class="card">${emptyState('Сотрудников пока нет', 'Нажмите «Добавить сотрудника», чтобы создать первого')}</div>` :
+      `<div class="grid grid-3">
+        ${emps.map(e => `
+          <div class="emp-card">
+            <div class="emp-head">
+              <div class="emp-avatar ${e.active?'':'inactive'}">${escapeHtml(initialsUpper(e.name))}</div>
+              <div class="emp-meta">
+                <div class="emp-name">${escapeHtml(e.name)}</div>
+                <div class="emp-role">${escapeHtml(e.role)}</div>
+              </div>
             </div>
-          </div>
-          <div class="emp-stats">
-            <span class="badge ${e.active?'b-success':''}">${e.active?'Активен':'Неактивен'}</span>
-            <span class="badge b-info">Операций: ${e.ops}</span>
-          </div>
-          <div class="emp-actions">
-            <button class="btn btn-secondary btn-sm" data-emp-edit="${e.id}">Изменить</button>
-            ${e.active && e.id !== state.currentUser ? `<button class="btn btn-danger-outline btn-sm" data-emp-deact="${e.id}">Деактивировать</button>` : ''}
-            ${!e.active ? `<button class="btn btn-secondary btn-sm" data-emp-activate="${e.id}">Активировать</button>` : ''}
-          </div>
-        </div>`).join('')}
-    </div>
+            <div class="emp-stats">
+              <span class="badge ${e.active?'b-success':''}">${e.active?'Активен':'Неактивен'}</span>
+              <span class="badge b-info">Операций: ${e.ops}</span>
+            </div>
+            <div class="emp-actions">
+              <button class="btn btn-secondary btn-sm" data-emp-edit="${e.id}">Изменить</button>
+              ${e.active && e.id !== state.currentUser ? `<button class="btn btn-danger-outline btn-sm" data-emp-deact="${e.id}">Деактивировать</button>` : ''}
+              ${!e.active ? `<button class="btn btn-secondary btn-sm" data-emp-activate="${e.id}">Активировать</button>` : ''}
+            </div>
+          </div>`).join('')}
+      </div>`}
   </div>`;
 }
 
 function editEmployee(id){
   const e = getUser(id);
-  if(!e) return;
+  if(!e || e.builtin) return;
   openModal({
     title:'Редактировать сотрудника',
     body:`
-      <div class="form-group">
-        <label>Имя</label>
-        <input class="input" id="empName" value="${escapeHtml(e.name)}">
-      </div>
-      <div class="form-group">
-        <label>Роль</label>
+      <div class="form-group"><label>Имя</label><input class="input" id="empName" value="${escapeHtml(e.name)}"></div>
+      <div class="form-group"><label>Роль</label>
         <select class="select" id="empRole" style="width:100%">
           ${ROLE_OPTIONS.map(r => `<option ${r===e.role?'selected':''}>${escapeHtml(r)}</option>`).join('')}
         </select>
@@ -2265,24 +2188,14 @@ function addEmployeeFlow(){
   openModal({
     title:'Новый сотрудник',
     body:`
-      <div class="form-group">
-        <label>Имя и фамилия</label>
-        <input class="input" id="newEmpName" placeholder="Иванов Иван" autofocus>
-      </div>
-      <div class="form-group">
-        <label>Роль</label>
+      <div class="form-group"><label>Имя и фамилия</label><input class="input" id="newEmpName" placeholder="Иванов Иван" autofocus></div>
+      <div class="form-group"><label>Роль</label>
         <select class="select" id="newEmpRole" style="width:100%">
           ${ROLE_OPTIONS.map(r => `<option>${escapeHtml(r)}</option>`).join('')}
         </select>
       </div>
-      <div class="form-group">
-        <label>Логин</label>
-        <input class="input" id="newEmpLogin" placeholder="Латинские буквы и цифры">
-      </div>
-      <div class="form-group">
-        <label>Пароль</label>
-        <input class="input" id="newEmpPass" placeholder="Минимум 3 символа">
-      </div>`,
+      <div class="form-group"><label>Логин</label><input class="input" id="newEmpLogin" placeholder="Латинские буквы и цифры"></div>
+      <div class="form-group"><label>Пароль</label><input class="input" id="newEmpPass" placeholder="Минимум 3 символа"></div>`,
     actions:[
       {label:'Отмена', cls:'btn-secondary'},
       {label:'Создать', cls:'btn-primary', close:false, onClick: (overlay) => {
@@ -2292,11 +2205,10 @@ function addEmployeeFlow(){
         const pass = (overlay.querySelector('#newEmpPass').value || '').trim();
         if(!name || name.length < 2){ toast('Введите корректное имя', 'warning'); return false; }
         if(!/^[a-z0-9_]{3,}$/.test(login)){ toast('Логин: латиница/цифры, минимум 3 символа', 'warning'); return false; }
+        if(login === 'admin'){ toast('Логин admin зарезервирован', 'warning'); return false; }
         if(state.employees.some(e => e.login === login)){ toast('Логин уже используется', 'warning'); return false; }
         if(pass.length < 3){ toast('Пароль слишком короткий', 'warning'); return false; }
-        state.employees.push({
-          id: uid('e'), name, role, active:true, login, password: pass, createdAt: nowISO()
-        });
+        state.employees.push({id: uid('e'), name, role, active:true, login, password: pass, createdAt: nowISO()});
         saveEmployees();
         toast('Сотрудник создан', 'success');
         closeModal(); render();
@@ -2316,21 +2228,17 @@ function renderNotifications(){
   return `
   <div class="section">
     <div class="toolbar">
-      <div style="color:var(--text-muted);font-size:.85rem">
-        Всего: ${state.notifications.length} · Непрочитанных: ${unreadCount()}
-      </div>
+      <div style="color:var(--text-muted);font-size:.85rem">Всего: ${state.notifications.length} · Непрочитанных: ${unreadCount()}</div>
       <div style="margin-left:auto;display:flex;gap:8px">
-        <button class="btn btn-secondary btn-sm" id="notifToggleUnread">
-          ${showUnread ? 'Показать все' : 'Только непрочитанные'}
-        </button>
-        <button class="btn btn-secondary btn-sm" id="notifMarkAll">Отметить все как прочитанные</button>
+        <button class="btn btn-secondary btn-sm" id="notifToggleUnread">${showUnread ? 'Показать все' : 'Только непрочитанные'}</button>
+        <button class="btn btn-secondary btn-sm" id="notifMarkAll">Отметить все прочитанными</button>
       </div>
     </div>
-    ${list.length === 0 ? emptyState('Уведомлений нет', 'Здесь появятся последние события') :
+    ${list.length === 0 ? emptyState('Уведомлений нет', 'Здесь появятся события') :
       `<div style="display:flex;flex-direction:column;gap:10px">
         ${list.map(n => {
-          const ic = n.type === 'success' ? 'success' : n.type === 'error' ? 'error' : n.type === 'warning' ? 'warning' : 'info';
-          const icon = ic === 'success' ? ICONS.success : ic === 'error' ? ICONS.error : ic === 'warning' ? ICONS.warning : ICONS.info;
+          const ic = ['success','error','warning','info'].includes(n.type) ? n.type : 'info';
+          const icon = ICONS[ic];
           return `<div class="notif-item ${n.read?'':'unread'}" data-notif="${n.id}">
             <div class="notif-ic ${ic}">${icon}</div>
             <div class="notif-body">
@@ -2351,98 +2259,53 @@ function renderSettings(){
   <div class="section" style="max-width:720px">
     <div class="card" style="margin-bottom:16px">
       <div class="card-header">
-        <div>
-          <div class="card-title">Пункт выдачи</div>
-          <div class="card-sub">Основные параметры ПВЗ</div>
-        </div>
+        <div><div class="card-title">Пункт выдачи</div><div class="card-sub">Основные параметры</div></div>
       </div>
-      <div class="form-group">
-        <label for="setPvnName">Название ПВЗ</label>
-        <input class="input" id="setPvnName" value="${escapeHtml(s.pvnName)}">
-      </div>
-      <div class="form-group">
-        <label>Текущий сотрудник</label>
-        <input class="input" value="${escapeHtml((currentUserObj()||{}).name || '')}" disabled>
-      </div>
+      <div class="form-group"><label for="setPvnName">Название ПВЗ</label><input class="input" id="setPvnName" value="${escapeHtml(s.pvnName)}"></div>
+      <div class="form-group"><label>Текущий сотрудник</label><input class="input" value="${escapeHtml((currentUserObj()||{}).name || '')}" disabled></div>
       <button class="btn btn-primary" id="savePvnBtn">Сохранить</button>
     </div>
 
     <div class="card" style="margin-bottom:16px">
-      <div class="card-header">
-        <div>
-          <div class="card-title">Интерфейс</div>
-          <div class="card-sub">Внешний вид и поведение приложения</div>
-        </div>
+      <div class="card-header"><div><div class="card-title">Интерфейс</div><div class="card-sub">Внешний вид</div></div></div>
+      <div class="settings-row">
+        <div><div class="lbl">Тема</div><div class="desc">Светлая или тёмная</div></div>
+        <div class="ctrl"><div class="seg" id="themeSeg">
+          <button data-theme-btn="light" class="${s.theme==='light'?'active':''}">Светлая</button>
+          <button data-theme-btn="dark" class="${s.theme==='dark'?'active':''}">Тёмная</button>
+        </div></div>
       </div>
       <div class="settings-row">
-        <div>
-          <div class="lbl">Тема оформления</div>
-          <div class="desc">Светлая или тёмная</div>
-        </div>
-        <div class="ctrl">
-          <div class="seg" id="themeSeg">
-            <button data-theme-btn="light" class="${s.theme==='light'?'active':''}">Светлая</button>
-            <button data-theme-btn="dark" class="${s.theme==='dark'?'active':''}">Тёмная</button>
-          </div>
-        </div>
+        <div><div class="lbl">Размер интерфейса</div><div class="desc">Влияет на размер текста</div></div>
+        <div class="ctrl"><div class="seg" id="scaleSeg">
+          <button data-scale="0.9" class="${s.uiScale===0.9?'active':''}">Компактный</button>
+          <button data-scale="1" class="${s.uiScale===1?'active':''}">Обычный</button>
+          <button data-scale="1.1" class="${s.uiScale===1.1?'active':''}">Крупный</button>
+        </div></div>
       </div>
       <div class="settings-row">
-        <div>
-          <div class="lbl">Размер интерфейса</div>
-          <div class="desc">Влияет на размер текста и элементов</div>
-        </div>
-        <div class="ctrl">
-          <div class="seg" id="scaleSeg">
-            <button data-scale="0.9" class="${s.uiScale===0.9?'active':''}">Компактный</button>
-            <button data-scale="1" class="${s.uiScale===1?'active':''}">Обычный</button>
-            <button data-scale="1.1" class="${s.uiScale===1.1?'active':''}">Крупный</button>
-          </div>
-        </div>
-      </div>
-      <div class="settings-row">
-        <div>
-          <div class="lbl">Звуки уведомлений</div>
-          <div class="desc">Короткий сигнал при операциях</div>
-        </div>
-        <div class="ctrl">
-          <label class="switch">
-            <input type="checkbox" id="soundToggle" ${s.sound?'checked':''}>
-            <span class="slider"></span>
-          </label>
-        </div>
+        <div><div class="lbl">Звуки</div><div class="desc">Короткий сигнал при операциях</div></div>
+        <div class="ctrl"><label class="switch">
+          <input type="checkbox" id="soundToggle" ${s.sound?'checked':''}>
+          <span class="slider"></span>
+        </label></div>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-header">
-        <div>
-          <div class="card-title">Демонстрационные данные</div>
-          <div class="card-sub">Управление тестовым содержимым приложения</div>
-        </div>
+      <div class="card-header"><div><div class="card-title">Управление данными</div><div class="card-sub">Сброс и очистка</div></div></div>
+      <div class="settings-row">
+        <div><div class="lbl">Полный сброс</div><div class="desc">Удалить все заказы, историю и сотрудников</div></div>
+        <div class="ctrl"><button class="btn btn-danger-outline" id="resetAllBtn">Сбросить всё</button></div>
       </div>
       <div class="settings-row">
-        <div>
-          <div class="lbl">Сбросить демо-данные</div>
-          <div class="desc">Полная замена заказов, истории и сотрудников на исходные</div>
-        </div>
-        <div class="ctrl">
-          <button class="btn btn-danger-outline" id="resetAllBtn">Сбросить всё</button>
-        </div>
-      </div>
-      <div class="settings-row">
-        <div>
-          <div class="lbl">Восстановить тестовые заказы</div>
-          <div class="desc">Пересоздать только демонстрационные заказы и историю</div>
-        </div>
-        <div class="ctrl">
-          <button class="btn btn-secondary" id="restoreOrdersBtn">Восстановить</button>
-        </div>
+        <div><div class="lbl">Очистить заказы</div><div class="desc">Удалить только заказы и связанную историю</div></div>
+        <div class="ctrl"><button class="btn btn-secondary" id="restoreOrdersBtn">Очистить</button></div>
       </div>
     </div>
   </div>`;
 }
 
-/* ============ EMPTY STATE HELPER ============ */
 function emptyState(title, text){
   return `<div class="empty">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>
@@ -2457,37 +2320,12 @@ function emptyState(title, text){
 function bindSectionEvents(){
   const content = document.getElementById('content');
 
-  // generic "goto" buttons
   content.querySelectorAll('[data-goto]').forEach(el => {
-    el.addEventListener('click', () => {
-      const target = el.dataset.goto;
-      const statusFilter = el.dataset.status;
-      if(target === 'orders' && statusFilter){
-        state.filters.orders.status = statusFilter;
-        navigate('orders', {keepFilter:true});
-      } else if(target === 'warehouse'){
-        state.filters.warehouse.status = 'all';
-        navigate('warehouse', {keepFilter:true});
-      } else if(target === 'returns'){
-        navigate('returns');
-      } else if(target === 'reception'){
-        navigate('reception');
-      } else if(target === 'issue'){
-        navigate('issue');
-      } else if(target === 'history'){
-        navigate('history');
-      } else {
-        navigate(target);
-      }
-    });
+    el.addEventListener('click', () => navigate(el.dataset.goto));
   });
-
-  // order details rows
   content.querySelectorAll('[data-order-details]').forEach(el => {
     el.addEventListener('click', () => showOrderDetails(el.dataset.orderDetails));
   });
-
-  // history detail rows
   content.querySelectorAll('[data-history-details]').forEach(el => {
     el.addEventListener('click', () => {
       const h = state.history.find(x => x.id === el.dataset.historyDetails);
@@ -2506,7 +2344,6 @@ function bindSectionEvents(){
     });
   });
 
-  // ====== RECEPTION ======
   if(state.currentSection === 'reception'){
     const barcodeInput = document.getElementById('recvBarcode');
     if(barcodeInput){
@@ -2518,6 +2355,8 @@ function bindSectionEvents(){
     if(addBtn) addBtn.addEventListener('click', handleReceptionAdd);
     const scanBtn = document.getElementById('recvScanBtn');
     if(scanBtn) scanBtn.addEventListener('click', openCameraScanner);
+    const createBtn = document.getElementById('recvCreateBtn');
+    if(createBtn) createBtn.addEventListener('click', addOrderFlow);
     const completeBtn = document.getElementById('recvComplete');
     if(completeBtn) completeBtn.addEventListener('click', completeReception);
     const cancelBtn = document.getElementById('recvCancel');
@@ -2530,7 +2369,6 @@ function bindSectionEvents(){
     });
   }
 
-  // ====== ISSUE ======
   if(state.currentSection === 'issue'){
     const searchInput = document.getElementById('issueSearch');
     const findBtn = document.getElementById('issueFindBtn');
@@ -2538,30 +2376,23 @@ function bindSectionEvents(){
       searchInput.addEventListener('keydown', e => {
         if(e.key === 'Enter'){ e.preventDefault(); renderIssueResult(searchInput.value); }
       });
-      searchInput.addEventListener('input', () => {
-        if(!searchInput.value.trim()){ const r = document.getElementById('issueResult'); if(r) r.innerHTML = ''; }
-      });
     }
-    if(findBtn && searchInput){
-      findBtn.addEventListener('click', () => renderIssueResult(searchInput.value));
-    }
+    if(findBtn && searchInput) findBtn.addEventListener('click', () => renderIssueResult(searchInput.value));
+    const scanBtn = document.getElementById('issueScanBtn');
+    if(scanBtn) scanBtn.addEventListener('click', openCameraScanner);
   }
 
-  // ====== RETURNS ======
   if(state.currentSection === 'returns'){
     const rs = document.getElementById('returnSearch');
     const rb = document.getElementById('returnFindBtn');
     if(rs && rb){
       rb.addEventListener('click', () => renderReturnResult(rs.value.trim()));
-      rs.addEventListener('keydown', e => {
-        if(e.key === 'Enter'){ e.preventDefault(); renderReturnResult(rs.value.trim()); }
-      });
+      rs.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); renderReturnResult(rs.value.trim()); }});
     }
     const rls = document.getElementById('returnListSearch');
     if(rls){
       rls.addEventListener('input', () => {
         state.filters.returns.q = rls.value;
-        // full render to filter table
         const cur = rls.value;
         render();
         const ni = document.getElementById('returnListSearch');
@@ -2570,7 +2401,6 @@ function bindSectionEvents(){
     }
   }
 
-  // ====== WAREHOUSE ======
   if(state.currentSection === 'warehouse'){
     const ws = document.getElementById('whSearch');
     if(ws) ws.addEventListener('input', () => {
@@ -2581,13 +2411,9 @@ function bindSectionEvents(){
       if(ni){ ni.focus(); ni.setSelectionRange(cur.length, cur.length); }
     });
     const wst = document.getElementById('whStatus');
-    if(wst) wst.addEventListener('change', () => {
-      state.filters.warehouse.status = wst.value;
-      render();
-    });
+    if(wst) wst.addEventListener('change', () => { state.filters.warehouse.status = wst.value; render(); });
   }
 
-  // ====== ORDERS ======
   if(state.currentSection === 'orders'){
     const os = document.getElementById('ordSearch');
     if(os) os.addEventListener('input', () => {
@@ -2603,9 +2429,10 @@ function bindSectionEvents(){
     if(od) od.addEventListener('change', () => { state.filters.orders.date = od.value; render(); });
     const osrt = document.getElementById('ordSort');
     if(osrt) osrt.addEventListener('change', () => { state.filters.orders.sort = osrt.value; render(); });
+    const addBtn = document.getElementById('addOrderBtn');
+    if(addBtn) addBtn.addEventListener('click', addOrderFlow);
   }
 
-  // ====== HISTORY ======
   if(state.currentSection === 'history'){
     const hs = document.getElementById('histSearch');
     if(hs) hs.addEventListener('input', () => {
@@ -2621,7 +2448,6 @@ function bindSectionEvents(){
     if(hsort) hsort.addEventListener('change', () => { state.filters.history.sort = hsort.value; render(); });
   }
 
-  // ====== EMPLOYEES ======
   if(state.currentSection === 'employees'){
     const addBtn = document.getElementById('addEmployeeBtn');
     if(addBtn) addBtn.addEventListener('click', addEmployeeFlow);
@@ -2646,7 +2472,6 @@ function bindSectionEvents(){
     });
   }
 
-  // ====== NOTIFICATIONS ======
   if(state.currentSection === 'notifications'){
     const toggle = document.getElementById('notifToggleUnread');
     if(toggle) toggle.addEventListener('click', () => {
@@ -2659,25 +2484,22 @@ function bindSectionEvents(){
       saveNotifications();
       updateNotifBadge();
       renderNav();
-      toast('Все уведомления прочитаны', 'success');
+      toast('Все прочитаны', 'success');
       render();
     });
     content.querySelectorAll('[data-notif]').forEach(el => {
       el.addEventListener('click', () => {
         const n = state.notifications.find(x => x.id === el.dataset.notif);
-        if(!n) return;
-        if(!n.read){
-          n.read = true;
-          saveNotifications();
-          updateNotifBadge();
-          renderNav();
-          render();
-        }
+        if(!n || n.read) return;
+        n.read = true;
+        saveNotifications();
+        updateNotifBadge();
+        renderNav();
+        render();
       });
     });
   }
 
-  // ====== SETTINGS ======
   if(state.currentSection === 'settings'){
     const savePvn = document.getElementById('savePvnBtn');
     if(savePvn) savePvn.addEventListener('click', () => {
@@ -2690,17 +2512,13 @@ function bindSectionEvents(){
     content.querySelectorAll('[data-theme-btn]').forEach(b => {
       b.addEventListener('click', () => {
         state.settings.theme = b.dataset.themeBtn;
-        saveSettings();
-        applyTheme();
-        render();
+        saveSettings(); applyTheme(); render();
       });
     });
     content.querySelectorAll('[data-scale]').forEach(b => {
       b.addEventListener('click', () => {
         state.settings.uiScale = parseFloat(b.dataset.scale);
-        saveSettings();
-        applyUiScale();
-        render();
+        saveSettings(); applyUiScale(); render();
       });
     });
     const soundToggle = document.getElementById('soundToggle');
@@ -2711,15 +2529,15 @@ function bindSectionEvents(){
     });
     const resetAll = document.getElementById('resetAllBtn');
     if(resetAll) resetAll.addEventListener('click', () => {
-      confirmDialog('Сбросить все данные?', 'Все заказы, история, сотрудники и настройки будут заменены демонстрационными. Действие необратимо.', () => {
-        resetAllData(true);
+      confirmDialog('Сбросить все данные?', 'Все заказы, история и сотрудники будут удалены. Действие необратимо.', () => {
+        resetAllData();
       }, {danger:true, confirmLabel:'Сбросить'});
     });
     const restore = document.getElementById('restoreOrdersBtn');
     if(restore) restore.addEventListener('click', () => {
-      confirmDialog('Восстановить тестовые заказы?', 'Текущие заказы и история будут заменены на демонстрационные.', () => {
-        restoreTestOrders();
-      });
+      confirmDialog('Очистить все заказы?', 'Заказы и история будут удалены.', () => {
+        clearOrdersOnly();
+      }, {danger:true, confirmLabel:'Очистить'});
     });
   }
 }
@@ -2728,16 +2546,15 @@ function bindSectionEvents(){
    CAMERA SCANNER
    ============================================================ */
 async function openCameraScanner(){
-  // Проверка доступности
   if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
     toast('Камера недоступна: браузер не поддерживает MediaDevices', 'warning');
-    pushNotification('warning', 'Камера недоступна', 'Используйте ручной ввод штрихкода');
+    pushNotification('warning', 'Камера недоступна', 'Используйте ручной ввод');
     return;
   }
   const supportsBarcode = 'BarcodeDetector' in window;
   const overlay = openModal({
     title:'Сканирование камерой',
-    subtitle: supportsBarcode ? 'Наведите камеру на штрихкод' : 'Автоопределение недоступно — введите код вручную',
+    subtitle: supportsBarcode ? 'Наведите камеру на код' : 'Автоопределение недоступно — введите код вручную',
     body:`
       <div id="scannerArea" style="background:var(--surface-2);border-radius:var(--radius);min-height:240px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative">
         <div style="color:var(--text-muted);font-size:.85rem">Запрос доступа к камере…</div>
@@ -2745,12 +2562,12 @@ async function openCameraScanner(){
       <div class="form-group" style="margin-top:14px">
         <label for="scannerManual">Ручной ввод кода</label>
         <div style="display:flex;gap:8px">
-          <input class="input" id="scannerManual" placeholder="Введите штрихкод">
-          <button class="btn btn-primary" id="scannerManualBtn">Использовать</button>
+          <input class="input" id="scannerManual" placeholder="Введите код">
+          <button class="btn btn-primary" id="scannerManualBtn">ОК</button>
         </div>
       </div>
       <div style="font-size:.78rem;color:var(--text-muted);margin-top:6px">
-        Подсказка: сканирование камерой требует разрешения и работает в HTTPS или на localhost.
+        Сканирование камерой требует HTTPS или localhost.
       </div>`,
     actions:[{label:'Закрыть', cls:'btn-secondary'}]
   });
@@ -2774,7 +2591,7 @@ async function openCameraScanner(){
     if(area){
       area.innerHTML = `<div style="padding:22px;text-align:center;color:var(--text-muted);font-size:.85rem">
         <div style="font-weight:600;color:var(--text-2);margin-bottom:6px">Нет доступа к камере</div>
-        Разрешите доступ в настройках браузера или воспользуйтесь ручным вводом
+        Разрешите доступ в браузере или используйте ручной ввод
       </div>`;
     }
     toast('Доступ к камере не получен', 'warning');
@@ -2782,10 +2599,7 @@ async function openCameraScanner(){
   }
 
   const area = document.getElementById('scannerArea');
-  if(!area){ // modal closed
-    stream.getTracks().forEach(t => t.stop());
-    return;
-  }
+  if(!area){ stream.getTracks().forEach(t => t.stop()); return; }
   area.innerHTML = '';
   const video = document.createElement('video');
   video.autoplay = true;
@@ -2799,20 +2613,16 @@ async function openCameraScanner(){
   video.srcObject = stream;
   try{ await video.play(); }catch(e){}
 
-  // stop on modal close
   const origClose = overlay._close;
   overlay._close = () => {
     try{ stream.getTracks().forEach(t => t.stop()); }catch(e){}
     origClose();
   };
 
-  if(!supportsBarcode){
-    return; // manual entry available
-  }
+  if(!supportsBarcode) return;
+
   let detector;
-  try{
-    detector = new window.BarcodeDetector();
-  }catch(e){ return; }
+  try{ detector = new window.BarcodeDetector(); }catch(e){ return; }
 
   let stopped = false;
   const scan = async () => {
@@ -2820,16 +2630,13 @@ async function openCameraScanner(){
     if(!video.parentNode){ stopped = true; return; }
     try{
       const codes = await detector.detect(video);
-      if(codes && codes.length > 0){
-        const val = codes[0].rawValue;
-        if(val){
-          stopped = true;
-          applyScannedCode(val);
-          overlay._close();
-          return;
-        }
+      if(codes && codes.length > 0 && codes[0].rawValue){
+        stopped = true;
+        applyScannedCode(codes[0].rawValue);
+        overlay._close();
+        return;
       }
-    }catch(e){ /* ignore */ }
+    }catch(e){}
     if(!stopped) requestAnimationFrame(scan);
   };
   requestAnimationFrame(scan);
@@ -2872,6 +2679,16 @@ function handleLogin(e){
   const errEl = document.getElementById('loginError');
   errEl.innerHTML = '';
   if(!login || !pass){ errEl.textContent = 'Введите логин и пароль'; return; }
+
+  if(login === 'admin' && pass === 'admin'){
+    state.currentUser = BUILTIN_ADMIN_ID;
+    saveSession();
+    document.getElementById('passwordInput').value = '';
+    toast('Добро пожаловать, Администратор!', 'success');
+    render();
+    return;
+  }
+
   const emp = state.employees.find(e => e.login === login && e.password === pass);
   if(!emp){ errEl.textContent = 'Неверный логин или пароль'; return; }
   if(!emp.active){ errEl.textContent = 'Учётная запись деактивирована'; return; }
@@ -2885,7 +2702,7 @@ function handleLogout(){
   confirmDialog('Выйти из системы?', 'Текущая сессия будет завершена.', () => {
     state.currentUser = null;
     saveSession();
-    state.currentSection = 'home';
+    state.currentSection = 'issue';
     showLogin();
     toast('Вы вышли из системы', 'info');
   });
@@ -2902,17 +2719,14 @@ function applyTheme(){
   if(tc) tc.setAttribute('content', theme === 'dark' ? '#0d0d12' : '#7c3aed');
 }
 function applyUiScale(){
-  const sc = state.settings.uiScale || 1;
-  document.documentElement.style.setProperty('--ui-scale', String(sc));
+  document.documentElement.style.setProperty('--ui-scale', String(state.settings.uiScale || 1));
 }
 function startClock(){
   const t = document.getElementById('topbarTime');
-  const hero = () => document.getElementById('heroClock');
   const tick = () => {
-    const now = new Date();
-    const str = now.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
+    const str = new Date().toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
     if(t) t.textContent = str;
-    const h = hero();
+    const h = document.getElementById('heroClock');
     if(h) h.textContent = str;
   };
   tick();
@@ -2920,37 +2734,29 @@ function startClock(){
 }
 
 /* ============================================================
-   DATA RESET / RESTORE
+   DATA RESET
    ============================================================ */
-function resetAllData(alsoSettings){
-  const demo = createDemoData();
-  state.orders = demo.orders;
-  state.history = demo.history;
-  state.employees = demo.employees;
-  state.notifications = demo.notifications;
+function resetAllData(){
+  state.orders = [];
+  state.history = [];
+  state.employees = [];
+  state.notifications = [];
+  state.reception.items = [];
+  state.reception.errors = 0;
+  state.currentUser = BUILTIN_ADMIN_ID;
   saveOrders(); saveHistory(); saveEmployees(); saveNotifications();
-  if(alsoSettings){
-    state.settings = Object.assign({}, DEFAULT_SETTINGS);
-    saveSettings();
-    applyTheme();
-    applyUiScale();
-  }
-  // if current user removed, log out
-  if(!state.employees.find(e => e.id === state.currentUser)){
-    state.currentUser = null;
-    saveSession();
-    showLogin();
-  }
-  toast('Демонстрационные данные сброшены', 'success');
+  saveSession();
+  toast('Все данные удалены', 'success');
   render();
 }
 
-function restoreTestOrders(){
-  const demo = createDemoData();
-  state.orders = demo.orders;
-  state.history = demo.history;
+function clearOrdersOnly(){
+  state.orders = [];
+  state.history = [];
+  state.reception.items = [];
+  state.reception.errors = 0;
   saveOrders(); saveHistory();
-  toast('Тестовые заказы восстановлены', 'success');
+  toast('Заказы и история очищены', 'success');
   render();
 }
 
@@ -2966,40 +2772,34 @@ function init(){
   const togglePass = document.getElementById('togglePassword');
   togglePass.addEventListener('click', () => {
     const p = document.getElementById('passwordInput');
-    if(p.type === 'password'){ p.type = 'text'; togglePass.querySelector('svg').innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>'; }
-    else { p.type = 'password'; togglePass.querySelector('svg').innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>'; }
+    if(p.type === 'password'){
+      p.type = 'text';
+      togglePass.querySelector('svg').innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+    } else {
+      p.type = 'password';
+      togglePass.querySelector('svg').innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+    }
   });
 
   document.getElementById('logoutBtn').addEventListener('click', handleLogout);
   document.getElementById('menuToggle').addEventListener('click', toggleSidebar);
   document.getElementById('sidebarBackdrop').addEventListener('click', closeSidebar);
-  document.getElementById('notifBtn').addEventListener('click', () => {
-    navigate('notifications');
-  });
+  document.getElementById('notifBtn').addEventListener('click', () => navigate('notifications'));
 
-  // window resize -> close sidebar
   window.addEventListener('resize', () => {
     if(window.innerWidth > 900) closeSidebar();
   });
 
   startClock();
 
-  if(state.currentUser){
-    hideLogin();
-    render();
-  } else {
-    showLogin();
-  }
+  if(state.currentUser){ hideLogin(); render(); }
+  else { showLogin(); }
 }
 
-// Expose for debugging (optional)
 window.VEXA = {state, toast};
 
-if(document.readyState === 'loading'){
-  document.addEventListener('DOMContentLoaded', init);
-} else {
-  init();
-}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+else init();
 
 })();
 </script>
