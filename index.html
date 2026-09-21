@@ -389,20 +389,27 @@ textarea.input{resize:vertical;min-height:80px}
 .empty-title{font-weight:600;color:var(--text-2);font-size:.95rem;margin-bottom:4px}
 .empty-text{font-size:.83rem}
 
-/* ============ QR SCANNER (ISSUE) ============ */
-.qr-scanner{
+/* ============================================================
+   ISSUE (UNIFIED: QR + MANUAL IN ONE BLOCK)
+   ============================================================ */
+.issue-unified{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  margin-bottom:20px;
+  overflow:hidden;
+  box-shadow:var(--shadow-sm);
+  position:relative;
+}
+.issue-qr-part{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:34px 20px 26px;text-align:center;
   background:
     radial-gradient(circle at 50% 35%, rgba(124,58,237,.18), transparent 62%),
-    radial-gradient(circle at 50% 70%, rgba(34,211,238,.10), transparent 65%),
-    var(--surface);
-  border:1px solid var(--border);
-  border-radius:var(--radius-lg);
-  margin-bottom:20px;
+    radial-gradient(circle at 50% 70%, rgba(34,211,238,.10), transparent 65%);
   position:relative;overflow:hidden;
 }
-.qr-scanner::before{
+.issue-qr-part::before{
   content:'';position:absolute;inset:0;
   background:linear-gradient(120deg,transparent 30%,rgba(168,85,247,.08) 50%,transparent 70%);
   animation:qrShine 6s linear infinite;
@@ -467,35 +474,29 @@ textarea.input{resize:vertical;min-height:80px}
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
 .qr-sub{font-size:.88rem;color:var(--text-muted);max-width:360px;z-index:1;line-height:1.5}
-@media (max-width:480px){
-  .qr-frame{width:170px;height:170px;padding:12px;border-radius:18px}
-  .qr-frame::before,.qr-frame::after{width:22px;height:22px;border-width:2.5px}
-  .qr-title{font-size:1.15rem}
-  .qr-sub{font-size:.82rem}
-  .qr-scanner{padding:24px 14px 20px}
+
+.issue-divider{
+  display:flex;align-items:center;gap:14px;
+  padding:0 22px;
+}
+.issue-divider::before,
+.issue-divider::after{
+  content:'';flex:1;height:1px;background:var(--border);
+}
+.issue-divider span{
+  font-size:.74rem;font-weight:800;color:var(--text-muted);
+  text-transform:uppercase;letter-spacing:.08em;
+  padding:16px 0;white-space:nowrap;
 }
 
-/* ============ ISSUE MANUAL LOOKUP ============ */
-.issue-manual{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:var(--radius-lg);
-  padding:22px;
-  margin-bottom:20px;
-  box-shadow:var(--shadow-sm);
+.issue-manual-part{
+  padding:4px 22px 22px;
 }
-.issue-manual-header{
-  display:flex;align-items:center;gap:10px;
-  font-size:.92rem;font-weight:700;
-  color:var(--text-2);
-  margin-bottom:16px;
-}
-.issue-manual-header svg{width:18px;height:18px;color:var(--primary)}
 .manual-step{
   display:flex;gap:14px;align-items:flex-start;
   animation:fadeIn .28s ease;
 }
-.manual-step + .manual-step{margin-top:14px;padding-top:14px;border-top:1px dashed var(--border)}
+.manual-step + .manual-step{margin-top:16px;padding-top:16px;border-top:1px dashed var(--border)}
 .step-badge{
   width:34px;height:34px;border-radius:50%;
   background:linear-gradient(135deg,var(--primary) 0%,#5b21b6 100%);
@@ -508,10 +509,7 @@ textarea.input{resize:vertical;min-height:80px}
 .step-label{
   font-size:.82rem;font-weight:700;
   color:var(--text-2);margin-bottom:8px;
-}
-.step-hint{
-  font-size:.75rem;color:var(--text-muted);
-  margin-top:6px;
+  display:block;
 }
 #issueLast4{
   font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
@@ -525,7 +523,7 @@ textarea.input{resize:vertical;min-height:80px}
 #issueClientCode{
   font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
   font-size:1.3rem;
-  letter-spacing:.25em;
+  letter-spacing:.35em;
   text-align:center;
   font-weight:800;
   padding:16px 14px;
@@ -784,7 +782,9 @@ textarea.input{resize:vertical;min-height:80px}
   .order-info{grid-template-columns:1fr}
   .big-empty{padding:60px 20px;min-height:320px}
   .big-empty h2{font-size:1.2rem}
-  .issue-manual{padding:18px}
+  .issue-qr-part{padding:26px 16px 20px}
+  .issue-manual-part{padding:4px 16px 18px}
+  .issue-divider{padding:0 16px}
   .manual-step{gap:12px}
   .step-badge{width:30px;height:30px;margin-top:20px;font-size:.82rem}
   .reception-hero{padding:18px 20px;gap:14px}
@@ -797,7 +797,7 @@ textarea.input{resize:vertical;min-height:80px}
   .reception-scan-title{font-size:1rem}
   .reception-scan-sub{font-size:.8rem}
   #issueLast4{font-size:1.1rem;padding:14px;letter-spacing:.4em;text-indent:.2em}
-  #issueClientCode{font-size:1.1rem;padding:14px;letter-spacing:.2em}
+  #issueClientCode{font-size:1.1rem;padding:14px;letter-spacing:.28em}
 }
 @media (max-width: 480px){
   .toolbar{gap:8px}
@@ -806,6 +806,13 @@ textarea.input{resize:vertical;min-height:80px}
   .grid-stats{grid-template-columns:repeat(2,1fr)}
   .login-card{padding:26px 20px}
   .barcode-display{width:180px;height:70px;padding:10px}
+  .qr-frame{width:170px;height:170px;padding:12px;border-radius:18px}
+  .qr-frame::before,.qr-frame::after{width:22px;height:22px;border-width:2.5px}
+  .qr-title{font-size:1.15rem}
+  .qr-sub{font-size:.82rem}
+  .issue-qr-part{padding:22px 12px 16px}
+  .issue-manual-part{padding:4px 14px 16px}
+  .issue-divider{padding:0 14px}
 }
 @media (max-width: 360px){.grid-stats{grid-template-columns:1fr}}
 @media (min-width: 901px) and (max-width: 1180px){.sidebar{width:220px}.content{padding:20px}}
@@ -1635,7 +1642,7 @@ function computeStats(){
   return {awaitingPickup, acceptedToday, issuedToday, returnsToday, inStock, operationsToday};
 }
 
-/* ============ RECEPTION (GREEN VISUAL, DIFFERENT FROM ISSUE) ============ */
+/* ============ RECEPTION ============ */
 function renderReception(){
   const items = state.reception.items;
   const errors = state.reception.errors;
@@ -1808,45 +1815,45 @@ function nextShelf(){
   return shelves[Math.floor(Math.random() * shelves.length)];
 }
 
-/* ============ ISSUE ============ */
+/* ============ ISSUE (UNIFIED BLOCK) ============ */
 function renderIssue(){
   const l = state.issueLookup;
   return `
   <div class="section">
-    <div class="qr-scanner">
-      <div class="qr-frame">
-        <div class="qr-inner">
-          ${generateQRsvg()}
-          <div class="qr-scan-line"></div>
+    <div class="issue-unified">
+      <!-- QR part -->
+      <div class="issue-qr-part">
+        <div class="qr-frame">
+          <div class="qr-inner">
+            ${generateQRsvg()}
+            <div class="qr-scan-line"></div>
+          </div>
         </div>
-      </div>
-      <h2 class="qr-title">Отсканируйте QR-код клиента</h2>
-      <p class="qr-sub">Наведите камеру на экран клиента, чтобы считать код получения заказа</p>
-    </div>
-
-    <div class="issue-manual">
-      <div class="issue-manual-header">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
-        Ввод вручную
+        <h2 class="qr-title">Отсканируйте QR-код клиента</h2>
+        <p class="qr-sub">Наведите камеру на экран клиента, чтобы считать код получения заказа</p>
       </div>
 
-      <div class="manual-step">
-        <div class="step-badge">1</div>
-        <div class="step-content">
-          <label class="step-label" for="issueLast4">Последние 4 цифры номера</label>
-          <input class="input" id="issueLast4" inputmode="numeric" maxlength="4" placeholder="_ _ _ _" autocomplete="off" value="${escapeHtml(l.last4||'')}">
-          <div class="step-hint">Введите последние 4 цифры номера заказа, например 0001</div>
-          <div id="issueStep1Msg"></div>
+      <!-- Divider -->
+      <div class="issue-divider"><span>или введите вручную</span></div>
+
+      <!-- Manual input part -->
+      <div class="issue-manual-part">
+        <div class="manual-step">
+          <div class="step-badge">1</div>
+          <div class="step-content">
+            <label class="step-label" for="issueLast4">Последние 4 цифры номера</label>
+            <input class="input" id="issueLast4" inputmode="numeric" maxlength="4" placeholder="_ _ _ _" autocomplete="off" value="${escapeHtml(l.last4||'')}">
+            <div id="issueStep1Msg"></div>
+          </div>
         </div>
-      </div>
 
-      <div class="manual-step hidden" id="issueStep2">
-        <div class="step-badge">2</div>
-        <div class="step-content">
-          <label class="step-label" for="issueClientCode">Введите код клиента</label>
-          <input class="input" id="issueClientCode" inputmode="numeric" placeholder="Код получения" autocomplete="off" value="${escapeHtml(l.code||'')}">
-          <div class="step-hint" id="issueStep2Hint">4-значный код, который назвал клиент</div>
-          <div id="issueStep2Msg"></div>
+        <div class="manual-step hidden" id="issueStep2">
+          <div class="step-badge">2</div>
+          <div class="step-content">
+            <label class="step-label" for="issueClientCode">Введите код клиента</label>
+            <input class="input" id="issueClientCode" inputmode="numeric" maxlength="6" placeholder="Код получения" autocomplete="off" value="${escapeHtml(l.code||'')}">
+            <div id="issueStep2Msg"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -1906,34 +1913,6 @@ function renderIssueResultForOrder(order, matchedByCode){
     </div>`;
 }
 
-function renderIssueList(orders){
-  return `
-    <div class="card" style="margin-top:16px">
-      <div class="card-header">
-        <div>
-          <div class="card-title">Найдено заказов: ${orders.length}</div>
-          <div class="card-sub">Выберите нужный заказ</div>
-        </div>
-      </div>
-      <div class="table-wrap" style="border:none;background:transparent">
-        <table class="table">
-          <thead><tr>
-            <th>Заказ</th><th>Товар</th><th>Статус</th><th>Полка</th>
-          </tr></thead>
-          <tbody>
-            ${orders.map(o => `
-              <tr data-issue-pick="${o.id}">
-                <td class="td-mono">${escapeHtml(o.number)}</td>
-                <td class="td-name">${escapeHtml(o.product)}</td>
-                <td>${statusBadge(o.status)}</td>
-                <td class="td-mono">${escapeHtml(o.shelf||'—')}</td>
-              </tr>`).join('')}
-          </tbody>
-        </table>
-      </div>
-    </div>`;
-}
-
 function handleIssueLast4Change(){
   const inp = document.getElementById('issueLast4');
   if(!inp) return;
@@ -1948,6 +1927,12 @@ function handleIssueLast4Change(){
   const msg1 = document.getElementById('issueStep1Msg');
   if(resEl) resEl.innerHTML = '';
   if(msg1) msg1.innerHTML = '';
+
+  // reset step 2 code
+  const codeInput = document.getElementById('issueClientCode');
+  if(codeInput) codeInput.value = '';
+  const msg2 = document.getElementById('issueStep2Msg');
+  if(msg2) msg2.innerHTML = '';
 
   if(v.length < 4){
     if(step2) step2.classList.add('hidden');
@@ -1964,12 +1949,6 @@ function handleIssueLast4Change(){
   }
   if(step2){
     step2.classList.remove('hidden');
-    const hint = document.getElementById('issueStep2Hint');
-    if(hint){
-      hint.textContent = matches.length === 1
-        ? 'Найден 1 заказ. Введите 4-значный код получения'
-        : `Найдено ${matches.length} заказов. Введите код получения для выбора`;
-    }
     setTimeout(() => {
       const ci = document.getElementById('issueClientCode');
       if(ci) ci.focus();
@@ -1980,7 +1959,7 @@ function handleIssueLast4Change(){
 function handleIssueClientCodeInput(){
   const inp = document.getElementById('issueClientCode');
   if(!inp) return;
-  let v = inp.value.replace(/\D/g,'');
+  let v = inp.value.replace(/\D/g,'').slice(0,6);
   if(inp.value !== v) inp.value = v;
   state.issueLookup.code = v;
 
@@ -1989,7 +1968,7 @@ function handleIssueClientCodeInput(){
   if(msg2) msg2.innerHTML = '';
   if(resEl) resEl.innerHTML = '';
 
-  if(v.length < 4) return;
+  if(v.length < 6) return;
 
   const matches = findOrdersByLast4(state.issueLookup.last4);
   if(matches.length === 0) return;
@@ -2062,7 +2041,7 @@ function issueOrderFlow(orderId){
       <div class="detail-row"><span class="lbl">Код получения</span><span class="val"><span class="code-highlight">${escapeHtml(order.pickupCode)}</span></span></div>
       <div class="form-group" style="margin-top:14px">
         <label for="confirmCode">Введите код получения для подтверждения</label>
-        <input class="input" id="confirmCode" placeholder="${escapeHtml(order.pickupCode)}" autocomplete="off" inputmode="numeric">
+        <input class="input" id="confirmCode" placeholder="${escapeHtml(order.pickupCode)}" autocomplete="off" inputmode="numeric" maxlength="6">
       </div>`,
     actions:[
       {label:'Отмена', cls:'btn-secondary'},
@@ -2096,7 +2075,7 @@ function performIssue(orderId){
   render();
 }
 
-/* ============ RETURNS (BIG EMPTY STATE) ============ */
+/* ============ RETURNS ============ */
 function renderReturns(){
   const list = state.orders.filter(o => o.status === 'returned')
     .sort((a,b) => new Date(b.returnedAt||b.createdAt) - new Date(a.returnedAt||a.createdAt));
@@ -2450,7 +2429,7 @@ function addOrderFlow(){
       </div>
       <div class="form-group">
         <label>Код получения</label>
-        <input class="input" id="newOrderPickup" placeholder="Код получения" inputmode="numeric">
+        <input class="input" id="newOrderPickup" placeholder="Код получения" inputmode="numeric" maxlength="6">
       </div>
       <div class="form-group">
         <label>Количество</label>
@@ -2471,7 +2450,7 @@ function addOrderFlow(){
         const product = overlay.querySelector('#newOrderProduct').value.trim();
         const barcode = overlay.querySelector('#newOrderBarcode').value.trim();
         const category = overlay.querySelector('#newOrderCategory').value.trim() || '—';
-        const pickupCode = overlay.querySelector('#newOrderPickup').value.trim() || String(1000 + Math.floor(Math.random()*9000));
+        const pickupCode = overlay.querySelector('#newOrderPickup').value.trim() || String(100000 + Math.floor(Math.random()*900000));
         const qty = Math.max(1, parseInt(overlay.querySelector('#newOrderQty').value) || 1);
         const status = overlay.querySelector('#newOrderStatus').value;
 
@@ -2931,10 +2910,6 @@ function bindSectionEvents(){
     }
     // If order already selected (e.g. after re-render) rebind button
     bindIssueConfirm();
-
-    // scanner button for issue
-    const scanBtn = document.getElementById('issueScanBtn');
-    if(scanBtn) scanBtn.addEventListener('click', () => openCameraScanner('issue'));
   }
 
   // ===== RETURNS =====
