@@ -1,0 +1,3072 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4C1D95">
+<title>VEXA-SELLER — панель продавца</title>
+<style>
+:root{
+  --p900:#2E1065; --p800:#3B0F7A; --p700:#4C1D95; --p600:#6D28D9; --p500:#7C3AED; --p400:#9F67FA;
+  --lav50:#F5F3FF; --lav100:#EDE9FE; --lav200:#DDD6FE; --lav300:#C4B5FD;
+  --bg:#F3F2F7; --card:#FFFFFF; --text:#191627; --muted:#6B6880; --border:#E7E4EF;
+  --ok:#0EA36B; --okbg:#E6F7F0; --warn:#C77700; --warnbg:#FFF5E5; --err:#DC2626; --errbg:#FDECEC;
+  --info:#2563EB; --infobg:#E8EFFE; --gray:#6B6880; --graybg:#EFEEF4;
+  --radius:14px; --radius-sm:10px; --radius-lg:20px;
+  --shadow:0 1px 2px rgba(20,10,50,.05), 0 6px 20px rgba(20,10,50,.06);
+  --shadow-lg:0 10px 40px rgba(20,10,50,.14);
+  --sidebar:260px;
+}
+[data-theme="dark"]{
+  --bg:#100E19; --card:#1A1726; --text:#F3F1FA; --muted:#A29DB8; --border:#2B2739;
+  --lav50:#1F1B2E; --lav100:#272238; --lav200:#372F52; --lav300:#4A3F6E;
+  --okbg:#0E2A21; --warnbg:#33260C; --errbg:#331717; --infobg:#152238; --graybg:#252231;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.35);
+  --shadow-lg:0 10px 40px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  background:var(--bg); color:var(--text); font-size:14px; line-height:1.45;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+h1,h2,h3,h4{margin:0;font-weight:700;letter-spacing:-.01em}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--lav200);border-radius:8px}
+::-webkit-scrollbar-track{background:transparent}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:10px 16px;border-radius:var(--radius-sm);border:1px solid transparent;
+  background:var(--lav100);color:var(--p700);font-weight:600;cursor:pointer;
+  transition:background .16s ease,transform .1s ease,box-shadow .16s ease,color .16s;
+  white-space:nowrap;min-height:42px;user-select:none;
+}
+.btn:hover{background:var(--lav200)}
+.btn:active{transform:scale(.985)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary{background:linear-gradient(135deg,var(--p600),var(--p700));color:#fff;box-shadow:0 4px 14px rgba(109,40,217,.28)}
+.btn-primary:hover{background:linear-gradient(135deg,var(--p500),var(--p600))}
+.btn-ghost{background:transparent;border-color:var(--border);color:var(--text)}
+.btn-ghost:hover{background:var(--lav50)}
+.btn-danger{background:var(--errbg);color:var(--err)}
+.btn-danger:hover{background:#FAD4D4}
+.btn-ok{background:var(--okbg);color:var(--ok)}
+.btn-sm{padding:7px 12px;min-height:34px;font-size:13px;border-radius:9px}
+.btn-icon{padding:8px;min-height:38px;width:38px}
+.btn-block{width:100%}
+
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text)}
+.field .hint{font-size:12px;color:var(--muted);margin-top:5px}
+.input,input[type=text],input[type=number],input[type=email],input[type=tel],input[type=date],select,textarea{
+  width:100%;padding:11px 13px;border-radius:var(--radius-sm);border:1px solid var(--border);
+  background:var(--card);color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s;
+  min-height:44px;
+}
+textarea{min-height:88px;resize:vertical;line-height:1.5}
+.input:focus,input:focus,select:focus,textarea:focus{border-color:var(--p500);box-shadow:0 0 0 3px rgba(124,58,237,.14)}
+.input.err{border-color:var(--err);box-shadow:0 0 0 3px rgba(220,38,38,.12)}
+.err-text{color:var(--err);font-size:12px;margin-top:5px}
+.row{display:grid;gap:12px}
+.row-2{grid-template-columns:1fr 1fr}
+.row-3{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:640px){.row-2,.row-3{grid-template-columns:1fr}}
+.checkbox{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:13px}
+.checkbox input{width:18px;height:18px;min-height:18px;flex:0 0 18px;margin-top:1px;accent-color:var(--p600)}
+
+.auth-root{
+  min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;
+  padding:24px 16px;
+  background:
+    radial-gradient(900px 500px at 12% -10%, rgba(124,58,237,.20), transparent 60%),
+    radial-gradient(800px 500px at 105% 110%, rgba(159,103,250,.18), transparent 55%),
+    var(--bg);
+}
+.auth-card{
+  width:100%;max-width:440px;background:var(--card);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-lg);padding:32px 28px;border:1px solid var(--border);
+  animation:pop .3s ease;
+}
+@keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.auth-logo{display:flex;align-items:center;gap:12px;margin-bottom:22px;justify-content:center}
+.auth-title{font-size:26px;text-align:center;margin-bottom:8px;letter-spacing:-.02em}
+.auth-sub{text-align:center;color:var(--muted);margin-bottom:26px;font-size:14px}
+.auth-brand{font-size:20px;font-weight:800;color:var(--p700);letter-spacing:.02em}
+[data-theme="dark"] .auth-brand{color:var(--lav300)}
+
+.code-row{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:6px 0 4px}
+.code-row input{
+  text-align:center;font-size:22px;font-weight:700;padding:12px 0;min-height:56px;
+  border-radius:12px;border:1.5px solid var(--border);background:var(--lav50);
+}
+.code-row input:focus{background:var(--card)}
+@media(max-width:400px){.code-row{gap:6px}.code-row input{font-size:18px;min-height:48px;padding:10px 0}}
+
+.app{display:grid;grid-template-columns:var(--sidebar) 1fr;min-height:100vh;min-height:100dvh}
+.sidebar{
+  background:linear-gradient(180deg,var(--p900),var(--p700) 65%,#3F1580);
+  color:#fff;padding:18px 14px;display:flex;flex-direction:column;gap:6px;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.22)}
+.sb-brand{display:flex;align-items:center;gap:10px;padding:6px 8px 16px}
+.sb-brand .name{font-weight:800;font-size:17px;letter-spacing:.03em}
+.sb-brand .sub{font-size:11px;opacity:.7;letter-spacing:.08em;text-transform:uppercase}
+.nav-item{
+  display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:11px;
+  color:rgba(255,255,255,.82);cursor:pointer;font-weight:500;transition:background .15s,color .15s;
+  position:relative;font-size:14px;
+}
+.nav-item:hover{background:rgba(255,255,255,.1);color:#fff}
+.nav-item.active{background:rgba(255,255,255,.18);color:#fff;font-weight:600}
+.nav-item.active::before{content:'';position:absolute;left:-14px;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:#fff}
+.nav-badge{margin-left:auto;background:#fff;color:var(--p700);font-size:11px;font-weight:700;border-radius:20px;padding:1px 7px;min-width:20px;text-align:center}
+.sb-foot{margin-top:auto;padding-top:14px;border-top:1px solid rgba(255,255,255,.14);font-size:12px;opacity:.75;padding-left:8px}
+
+.main{display:flex;flex-direction:column;min-width:0}
+.topbar{
+  position:sticky;top:0;z-index:40;background:var(--card);border-bottom:1px solid var(--border);
+  padding:12px 20px;display:flex;align-items:center;gap:14px;min-height:62px;
+}
+.topbar h2{font-size:17px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.topbar .sub{font-size:12px;color:var(--muted);font-weight:400;display:block;margin-top:1px}
+.burger{display:none}
+.iconbtn{
+  position:relative;width:40px;height:40px;border-radius:11px;border:1px solid var(--border);
+  background:var(--card);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);
+  transition:background .15s;flex:0 0 auto;
+}
+.iconbtn:hover{background:var(--lav50)}
+.dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:var(--err);border:2px solid var(--card)}
+.content{padding:20px;flex:1;min-width:0;max-width:1500px;width:100%}
+.bottomnav{display:none}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.card-h h3{font-size:15px}
+.page-head{margin-bottom:18px}
+.page-head h1{font-size:22px;margin-bottom:4px}
+.page-head p{color:var(--muted);font-size:13.5px;margin:0}
+.grid{display:grid;gap:14px}
+.stats{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:1100px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:420px){.stats{grid-template-columns:1fr 1fr;gap:10px}}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:15px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.stat .lbl{font-size:12px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:6px;margin-bottom:7px}
+.stat .val{font-size:23px;font-weight:800;letter-spacing:-.02em;line-height:1.15}
+.stat .dlt{font-size:11.5px;margin-top:5px;color:var(--muted)}
+.stat .ic{position:absolute;right:12px;top:12px;opacity:.14}
+.grid-cards{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.grid-2{grid-template-columns:2fr 1fr}
+@media(max-width:1000px){.grid-2{grid-template-columns:1fr}}
+
+.pcard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s}
+.pcard:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.pcard .thumb{aspect-ratio:1/1;background:var(--lav50);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.pcard .thumb img{width:100%;height:100%;object-fit:cover}
+.pcard .body{padding:12px;display:flex;flex-direction:column;gap:6px;flex:1}
+.pcard .nm{font-weight:600;font-size:13.5px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:35px}
+.pcard .meta{font-size:11.5px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
+.pcard .price{font-weight:800;font-size:17px;color:var(--p700)}
+[data-theme="dark"] .pcard .price{color:var(--lav300)}
+.pcard .price small{font-size:12px;color:var(--muted);text-decoration:line-through;font-weight:500;margin-left:6px}
+.pcard .acts{display:flex;gap:6px;margin-top:auto;padding-top:8px}
+
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.b-ok{background:var(--okbg);color:var(--ok)}
+.b-warn{background:var(--warnbg);color:var(--warn)}
+.b-err{background:var(--errbg);color:var(--err)}
+.b-info{background:var(--infobg);color:var(--info)}
+.b-gray{background:var(--graybg);color:var(--gray)}
+.b-purple{background:var(--lav100);color:var(--p700)}
+[data-theme="dark"] .b-purple{color:var(--lav300)}
+
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -18px;padding:0 18px}
+table.tbl{width:100%;border-collapse:collapse;font-size:13px;min-width:560px}
+table.tbl th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--border);font-weight:700;white-space:nowrap}
+table.tbl td{padding:11px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+table.tbl tr:last-child td{border-bottom:none}
+table.tbl tbody tr:hover{background:var(--lav50)}
+table.tbl td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.link{color:var(--p600);font-weight:600;cursor:pointer}
+.link:hover{text-decoration:underline}
+[data-theme="dark"] .link{color:var(--lav300)}
+
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.searchbox{position:relative;flex:1;min-width:180px}
+.searchbox input{padding-left:38px}
+.searchbox svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{padding:7px 13px;border-radius:20px;border:1px solid var(--border);background:var(--card);font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s;color:var(--muted);white-space:nowrap}
+.chip:hover{border-color:var(--p400);color:var(--p600)}
+.chip.active{background:var(--p700);border-color:var(--p700);color:#fff}
+select.mini{width:auto;min-height:40px;padding:8px 30px 8px 12px;font-size:13px}
+.empty{text-align:center;padding:44px 20px;color:var(--muted)}
+.empty svg{opacity:.3;margin-bottom:12px}
+.empty h4{font-size:15px;color:var(--text);margin-bottom:5px}
+.empty p{font-size:13px;margin:0 0 14px}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.mt{margin-top:14px}
+.mb{margin-bottom:14px}
+.flex{display:flex;gap:10px;align-items:center}
+.flex-between{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.divider{height:1px;background:var(--border);margin:14px 0}
+.progress{height:7px;border-radius:6px;background:var(--lav100);overflow:hidden}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--p500),var(--p700));border-radius:6px;transition:width .35s ease}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13.5px}
+.kv:last-child{border-bottom:none}
+.kv .k{color:var(--muted)}
+.kv .v{font-weight:600;text-align:right}
+
+.modal-backdrop{position:fixed;inset:0;background:rgba(20,10,50,.5);backdrop-filter:blur(3px);z-index:100;display:flex;align-items:center;justify-content:center;padding:18px;animation:fade .18s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.modal{background:var(--card);border-radius:var(--radius-lg);width:100%;max-width:560px;max-height:92vh;display:flex;flex-direction:column;box-shadow:var(--shadow-lg);animation:pop .22s ease;border:1px solid var(--border)}
+.modal.wide{max-width:800px}
+.modal-h{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.modal-h h3{flex:1;font-size:16px}
+.modal-b{padding:20px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
+.modal-f{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+@media(max-width:520px){
+  .modal-backdrop{padding:0;align-items:flex-end}
+  .modal{max-width:100%;border-radius:20px 20px 0 0;max-height:94vh}
+  .modal-f{flex-direction:column-reverse}
+  .modal-f .btn{width:100%}
+}
+
+.toasts{position:fixed;top:14px;right:14px;z-index:200;display:flex;flex-direction:column;gap:9px;max-width:min(360px,calc(100vw - 28px))}
+.toast{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--p600);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow-lg);display:flex;gap:10px;align-items:flex-start;animation:slidein .25s ease;font-size:13.5px}
+@keyframes slidein{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+.toast.ok{border-left-color:var(--ok)}
+.toast.err{border-left-color:var(--err)}
+.toast.warn{border-left-color:var(--warn)}
+.toast .tt{font-weight:600;margin-bottom:2px}
+.toast .tx{color:var(--muted);font-size:12.5px}
+
+.qr-box{background:#fff;padding:14px;border-radius:14px;display:inline-block;border:1px solid var(--border)}
+.qr-box canvas{display:block;image-rendering:pixelated;max-width:100%;height:auto}
+
+.chart{width:100%;overflow:visible}
+.chart .bar{fill:url(#gradBar);transition:opacity .15s}
+.chart .bar:hover{opacity:.8}
+.bars-list{display:flex;flex-direction:column;gap:10px}
+.bar-row{display:grid;grid-template-columns:1fr;gap:4px}
+.bar-row .top{display:flex;justify-content:space-between;font-size:12.5px;gap:10px}
+.bar-row .track{height:8px;background:var(--lav100);border-radius:6px;overflow:hidden}
+.bar-row .track i{display:block;height:100%;background:linear-gradient(90deg,var(--p500),var(--p700));border-radius:6px}
+
+@media(max-width:980px){
+  .app{grid-template-columns:1fr}
+  .sidebar{
+    position:fixed;left:0;top:0;bottom:0;width:min(300px,84vw);z-index:90;
+    transform:translateX(-102%);transition:transform .26s cubic-bezier(.4,0,.2,1);height:100dvh;
+  }
+  .sidebar.open{transform:none;box-shadow:0 0 60px rgba(0,0,0,.5)}
+  .scrim{position:fixed;inset:0;background:rgba(10,5,25,.5);z-index:85;animation:fade .2s}
+  .burger{display:flex}
+  .content{padding:14px 14px 92px}
+  .bottomnav{
+    display:flex;position:fixed;bottom:0;left:0;right:0;z-index:70;background:var(--card);
+    border-top:1px solid var(--border);padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+    justify-content:space-around;
+  }
+  .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;font-size:10.5px;color:var(--muted);cursor:pointer;border-radius:10px;font-weight:600;position:relative}
+  .bn-item.active{color:var(--p600)}
+  [data-theme="dark"] .bn-item.active{color:var(--lav300)}
+  .bn-item .bn-badge{position:absolute;top:2px;right:calc(50% - 20px);background:var(--err);color:#fff;font-size:9.5px;border-radius:10px;padding:0 5px;min-width:16px;text-align:center;font-weight:700}
+  .topbar{padding:10px 14px;min-height:58px}
+  .table-wrap{margin:0 -14px;padding:0 14px}
+  .card{padding:15px}
+}
+@media(max-width:390px){
+  .content{padding:12px 11px 90px}
+  .stat .val{font-size:20px}
+  .page-head h1{font-size:19px}
+}
+</style>
+</head>
+<body>
+
+<div id="authRoot" class="auth-root"></div>
+
+<div id="app" class="app" hidden>
+  <div class="scrim" id="scrim" hidden></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <svg width="34" height="34" viewBox="0 0 48 48" aria-hidden="true">
+        <defs><linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#C4B5FD"/><stop offset="1" stop-color="#8B5CF6"/>
+        </linearGradient></defs>
+        <rect x="2" y="2" width="44" height="44" rx="13" fill="rgba(255,255,255,.14)"/>
+        <path d="M13 14 L24 34 L35 14" stroke="url(#lg1)" stroke-width="4.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="24" cy="38.5" r="2.6" fill="#fff"/>
+      </svg>
+      <div>
+        <div class="name">VEXA</div>
+        <div class="sub">Seller</div>
+      </div>
+    </div>
+    <nav id="sideNav"></nav>
+    <div class="sb-foot">
+      <div id="sbShop">Магазин</div>
+      <div style="opacity:.7;margin-top:3px">Локальное хранилище</div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="iconbtn burger" id="burger" aria-label="Меню">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <h2 id="pageTitle">Главная<span class="sub" id="pageSub"></span></h2>
+      <button class="iconbtn" id="btnTheme" aria-label="Тема">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+      <button class="iconbtn" id="btnNotif" aria-label="Уведомления">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <span class="dot" id="notifDot" hidden></span>
+      </button>
+    </header>
+    <main class="content" id="content"></main>
+  </div>
+
+  <nav class="bottomnav" id="bottomNav"></nav>
+</div>
+
+<div class="toasts" id="toasts"></div>
+<div id="modalRoot"></div>
+
+<script>
+"use strict";
+/* ==========================================================================
+   VEXA-SELLER — единый файл приложения
+   Разделы: QR-кодер → утилиты → хранилище → сервисы → UI → инициализация
+   ========================================================================== */
+
+/* ==========================================================================
+   1. QR-КОДЕР (собственная реализация, без внешних библиотек)
+   ========================================================================== */
+const QRCode = (function () {
+  const EXP = new Uint8Array(512), LOG = new Uint8Array(256);
+  (function () {
+    let x = 1;
+    for (let i = 0; i < 255; i++) { EXP[i] = x; LOG[x] = i; x <<= 1; if (x & 0x100) x ^= 0x11d; }
+    for (let i = 255; i < 512; i++) EXP[i] = EXP[i - 255];
+  })();
+  const mul = (a, b) => (a === 0 || b === 0) ? 0 : EXP[LOG[a] + LOG[b]];
+
+  const RS = {
+    1:  { ec: 10, g: [[1, 16]] },
+    2:  { ec: 16, g: [[1, 28]] },
+    3:  { ec: 26, g: [[1, 44]] },
+    4:  { ec: 18, g: [[2, 32]] },
+    5:  { ec: 24, g: [[2, 43]] },
+    6:  { ec: 16, g: [[4, 27]] },
+    7:  { ec: 18, g: [[4, 31]] },
+    8:  { ec: 22, g: [[2, 38], [2, 39]] },
+    9:  { ec: 22, g: [[3, 36], [2, 37]] },
+    10: { ec: 26, g: [[4, 43], [1, 44]] }
+  };
+  const ALIGN = {
+    1: [], 2: [6, 18], 3: [6, 22], 4: [6, 26], 5: [6, 30],
+    6: [6, 34], 7: [6, 22, 38], 8: [6, 24, 42], 9: [6, 26, 46], 10: [6, 28, 50]
+  };
+
+  function genPoly(deg) {
+    let poly = [1];
+    for (let i = 0; i < deg; i++) {
+      const next = new Array(poly.length + 1).fill(0);
+      for (let j = 0; j < poly.length; j++) {
+        next[j] ^= poly[j];
+        next[j + 1] ^= mul(poly[j], EXP[i]);
+      }
+      poly = next;
+    }
+    return poly;
+  }
+
+  function rsEncode(data, ecLen) {
+    const gen = genPoly(ecLen);
+    const res = new Uint8Array(data.length + ecLen);
+    res.set(data);
+    for (let i = 0; i < data.length; i++) {
+      const coef = res[i];
+      if (coef !== 0) for (let j = 0; j < gen.length; j++) res[i + j] ^= mul(gen[j], coef);
+    }
+    return Array.from(res.slice(data.length));
+  }
+
+  function chooseVersion(byteLen) {
+    for (let v = 1; v <= 10; v++) {
+      let total = 0;
+      RS[v].g.forEach(([c, l]) => { total += c * l; });
+      const countBits = v <= 9 ? 8 : 16;
+      if (total * 8 >= 4 + countBits + byteLen * 8) return { v, dataCW: total };
+    }
+    return null;
+  }
+
+  function encode(text) {
+    const bytes = Array.from(new TextEncoder().encode(text));
+    const pick = chooseVersion(bytes.length);
+    if (!pick) throw new Error('Текст слишком длинный для QR-кода (максимум ~214 байт)');
+    const { v: version, dataCW } = pick;
+    const countBits = version <= 9 ? 8 : 16;
+
+    const bits = [];
+    const push = (val, len) => { for (let i = len - 1; i >= 0; i--) bits.push((val >>> i) & 1); };
+    push(4, 4);
+    push(bytes.length, countBits);
+    bytes.forEach(b => push(b, 8));
+
+    const cap = dataCW * 8;
+    for (let i = 0; i < 4 && bits.length < cap; i++) bits.push(0);
+    while (bits.length % 8 !== 0) bits.push(0);
+
+    const dataBytes = [];
+    for (let i = 0; i < bits.length; i += 8) {
+      let val = 0;
+      for (let j = 0; j < 8; j++) val = (val << 1) | bits[i + j];
+      dataBytes.push(val);
+    }
+    const pads = [0xEC, 0x11];
+    let pi = 0;
+    while (dataBytes.length < dataCW) dataBytes.push(pads[pi++ % 2]);
+
+    const spec = RS[version];
+    const blocks = [];
+    let off = 0;
+    spec.g.forEach(([cnt, len]) => {
+      for (let i = 0; i < cnt; i++) {
+        const d = dataBytes.slice(off, off + len);
+        off += len;
+        blocks.push({ data: d, ec: rsEncode(d, spec.ec) });
+      }
+    });
+    const stream = [];
+    const maxData = Math.max.apply(null, blocks.map(b => b.data.length));
+    for (let i = 0; i < maxData; i++) blocks.forEach(b => { if (i < b.data.length) stream.push(b.data[i]); });
+    for (let i = 0; i < spec.ec; i++) blocks.forEach(b => stream.push(b.ec[i]));
+
+    return buildMatrix(version, stream);
+  }
+
+  function buildMatrix(version, codewords) {
+    const size = version * 4 + 17;
+    const mod = Array.from({ length: size }, () => new Array(size).fill(0));
+    const fn = Array.from({ length: size }, () => new Array(size).fill(false));
+    const set = (r, c, v) => { mod[r][c] = v; fn[r][c] = true; };
+
+    [[0, 0], [0, size - 7], [size - 7, 0]].forEach(([r0, c0]) => {
+      for (let r = -1; r <= 7; r++) for (let c = -1; c <= 7; c++) {
+        const rr = r0 + r, cc = c0 + c;
+        if (rr < 0 || rr >= size || cc < 0 || cc >= size) continue;
+        const border = (r >= 0 && r <= 6 && (c === 0 || c === 6)) || (c >= 0 && c <= 6 && (r === 0 || r === 6));
+        const core = r >= 2 && r <= 4 && c >= 2 && c <= 4;
+        set(rr, cc, (border || core) ? 1 : 0);
+      }
+    });
+
+    for (let i = 8; i < size - 8; i++) {
+      const v = (i % 2 === 0) ? 1 : 0;
+      set(6, i, v); set(i, 6, v);
+    }
+
+    const al = ALIGN[version];
+    for (const r of al) for (const c of al) {
+      if ((r === 6 && c === 6) || (r === 6 && c === size - 7) || (r === size - 7 && c === 6)) continue;
+      for (let dr = -2; dr <= 2; dr++) for (let dc = -2; dc <= 2; dc++) {
+        const dist = Math.max(Math.abs(dr), Math.abs(dc));
+        set(r + dr, c + dc, dist !== 1 ? 1 : 0);
+      }
+    }
+
+    if (version >= 7) {
+      let rem = version;
+      for (let i = 0; i < 12; i++) rem = (rem << 1) ^ ((rem >>> 11) * 0x1F25);
+      const vb = (version << 12) | rem;
+      for (let i = 0; i < 18; i++) {
+        const bit = (vb >>> i) & 1, a = Math.floor(i / 3), b = i % 3;
+        set(a, size - 11 + b, bit);
+        set(size - 11 + b, a, bit);
+      }
+    }
+
+    for (let i = 0; i < 9; i++) { if (!fn[8][i]) set(8, i, 0); if (!fn[i][8]) set(i, 8, 0); }
+    for (let i = 0; i < 8; i++) {
+      if (!fn[8][size - 1 - i]) set(8, size - 1 - i, 0);
+      if (!fn[size - 1 - i][8]) set(size - 1 - i, 8, 0);
+    }
+
+    let bitIdx = 0;
+    const totalBits = codewords.length * 8;
+    let upward = true;
+    for (let right = size - 1; right >= 1; right -= 2) {
+      if (right === 6) right = 5;
+      for (let vert = 0; vert < size; vert++) {
+        for (let j = 0; j < 2; j++) {
+          const c = right - j;
+          const r = upward ? size - 1 - vert : vert;
+          if (!fn[r][c]) {
+            let bit = 0;
+            if (bitIdx < totalBits) bit = (codewords[bitIdx >> 3] >>> (7 - (bitIdx & 7))) & 1;
+            mod[r][c] = bit;
+            bitIdx++;
+          }
+        }
+      }
+      upward = !upward;
+    }
+
+    const maskFns = [
+      (r, c) => (r + c) % 2 === 0,
+      (r) => r % 2 === 0,
+      (r, c) => c % 3 === 0,
+      (r, c) => (r + c) % 3 === 0,
+      (r, c) => (Math.floor(r / 2) + Math.floor(c / 3)) % 2 === 0,
+      (r, c) => ((r * c) % 2 + (r * c) % 3) === 0,
+      (r, c) => (((r * c) % 2 + (r * c) % 3) % 2) === 0,
+      (r, c) => (((r + c) % 2 + (r * c) % 3) % 2) === 0
+    ];
+
+    let best = null, bestMask = 0, bestScore = Infinity;
+    for (let m = 0; m < 8; m++) {
+      const test = mod.map(row => row.slice());
+      for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
+        if (!fn[r][c] && maskFns[m](r, c)) test[r][c] ^= 1;
+      }
+      drawFormat(test, size, m);
+      const score = penalty(test, size);
+      if (score < bestScore) { bestScore = score; best = test; bestMask = m; }
+    }
+    drawFormat(best, size, bestMask);
+    return { size, modules: best };
+  }
+
+  function drawFormat(m, size, mask) {
+    const eccBits = 0b00;
+    const data = (eccBits << 3) | mask;
+    let rem = data;
+    for (let i = 0; i < 10; i++) rem = (rem << 1) ^ ((rem >>> 9) * 0x537);
+    const bits = ((data << 10) | rem) ^ 0x5412;
+    const bit = i => (bits >>> i) & 1;
+    for (let i = 0; i <= 5; i++) m[i][8] = bit(i);
+    m[7][8] = bit(6); m[8][8] = bit(7); m[8][7] = bit(8);
+    for (let i = 9; i < 15; i++) m[8][14 - i] = bit(i);
+    for (let i = 0; i < 8; i++) m[8][size - 1 - i] = bit(i);
+    for (let i = 8; i < 15; i++) m[size - 15 + i][8] = bit(i);
+    m[size - 8][8] = 1;
+  }
+
+  function penalty(m, size) {
+    let p = 0;
+    for (let r = 0; r < size; r++) {
+      let run = 1;
+      for (let c = 1; c < size; c++) {
+        if (m[r][c] === m[r][c - 1]) run++;
+        else { if (run >= 5) p += 3 + (run - 5); run = 1; }
+      }
+      if (run >= 5) p += 3 + (run - 5);
+    }
+    for (let c = 0; c < size; c++) {
+      let run = 1;
+      for (let r = 1; r < size; r++) {
+        if (m[r][c] === m[r - 1][c]) run++;
+        else { if (run >= 5) p += 3 + (run - 5); run = 1; }
+      }
+      if (run >= 5) p += 3 + (run - 5);
+    }
+    for (let r = 0; r < size - 1; r++) for (let c = 0; c < size - 1; c++) {
+      const v = m[r][c];
+      if (v === m[r][c + 1] && v === m[r + 1][c] && v === m[r + 1][c + 1]) p += 3;
+    }
+    const pat1 = [1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0];
+    const pat2 = [0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1];
+    for (let r = 0; r < size; r++) for (let c = 0; c <= size - 11; c++) {
+      let o1 = true, o2 = true;
+      for (let k = 0; k < 11; k++) { if (m[r][c + k] !== pat1[k]) o1 = false; if (m[r][c + k] !== pat2[k]) o2 = false; }
+      if (o1) p += 40; if (o2) p += 40;
+    }
+    for (let c = 0; c < size; c++) for (let r = 0; r <= size - 11; r++) {
+      let o1 = true, o2 = true;
+      for (let k = 0; k < 11; k++) { if (m[r + k][c] !== pat1[k]) o1 = false; if (m[r + k][c] !== pat2[k]) o2 = false; }
+      if (o1) p += 40; if (o2) p += 40;
+    }
+    let dark = 0;
+    for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) if (m[r][c]) dark++;
+    p += Math.floor(Math.abs(dark * 100 / (size * size) - 50) / 5) * 10;
+    return p;
+  }
+
+  return { encode };
+})();
+
+/* ==========================================================================
+   2. УТИЛИТЫ
+   ========================================================================== */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.prototype.slice.call(r.querySelectorAll(s));
+const pad2 = n => String(n).padStart(2, '0');
+
+function esc(s) {
+  return String(s === null || s === undefined ? '' : s).replace(/[&<>"']/g, c => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+}
+function uid(prefix) {
+  return prefix + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+function fmtMoney(n) {
+  const v = Math.round(Number(n) || 0);
+  return v.toLocaleString('ru-RU').replace(/\u00A0/g, ' ') + ' ₽';
+}
+function fmtNum(n) { return (Number(n) || 0).toLocaleString('ru-RU').replace(/\u00A0/g, ' '); }
+function fmtDate(ts) {
+  const d = new Date(ts);
+  return pad2(d.getDate()) + '.' + pad2(d.getMonth() + 1) + '.' + d.getFullYear();
+}
+function fmtDateTime(ts) {
+  const d = new Date(ts);
+  return fmtDate(ts) + ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+}
+function relTime(ts) {
+  const diff = Date.now() - ts;
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return 'только что';
+  if (m < 60) return m + ' мин назад';
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + ' ч назад';
+  const d = Math.floor(h / 24);
+  if (d < 7) return d + ' дн назад';
+  return fmtDate(ts);
+}
+function startOfDay(ts) { const d = new Date(ts); d.setHours(0, 0, 0, 0); return d.getTime(); }
+function daysAgo(n) { return startOfDay(Date.now() - n * 86400000); }
+
+function download(filename, content, mime) {
+  const blob = content instanceof Blob ? content : new Blob([content], { type: mime || 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
+
+function placeholderImage(name, seed) {
+  const colors = ['#7C3AED', '#4C1D95', '#9333EA', '#6366F1', '#8B5CF6', '#6D28D9', '#A855F7'];
+  const c = colors[Math.abs(seed || 0) % colors.length];
+  const letter = (String(name || '?').trim()[0] || '?').toUpperCase();
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240">' +
+    '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
+    '<stop offset="0" stop-color="' + c + '"/><stop offset="1" stop-color="#2E1065"/></linearGradient></defs>' +
+    '<rect width="240" height="240" fill="url(#g)"/>' +
+    '<text x="120" y="152" font-size="104" font-family="Arial,Helvetica,sans-serif" font-weight="bold" fill="#ffffff" text-anchor="middle">' +
+    letter + '</text></svg>';
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+
+const ICONS = {
+  home: '<path d="M3 10.4 12 3.2l9 7.2"/><path d="M5.4 9.3V20.8h13.2V9.3"/><path d="M9.8 20.8v-5.6h4.4v5.6"/>',
+  box: '<path d="M21 7.8 12 3 3 7.8v8.4L12 21l9-4.8z"/><path d="M3 7.8 12 12.6l9-4.8"/><path d="M12 12.6V21"/>',
+  cart: '<circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.6 12.1a1.8 1.8 0 0 0 1.8 1.4h8.5a1.8 1.8 0 0 0 1.8-1.4L21 7H5.2"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  qr: '<rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.6"/><path d="M14 14h3v3h-3zM20 14v3M14 20h6"/>',
+  scan: '<path d="M3 8V5.4A2.4 2.4 0 0 1 5.4 3H8"/><path d="M16 3h2.6A2.4 2.4 0 0 1 21 5.4V8"/><path d="M21 16v2.6a2.4 2.4 0 0 1-2.4 2.4H16"/><path d="M8 21H5.4A2.4 2.4 0 0 1 3 18.6V16"/><path d="M3 12h18"/>',
+  layers: '<path d="m12 2 9 5-9 5-9-5z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/>',
+  chart: '<path d="M3 3v18h18"/><path d="M7 15v-4M12 17V7M17 15v-7"/>',
+  users: '<path d="M16 20v-1.8a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4V20"/><circle cx="9" cy="7.5" r="3.4"/><path d="M22 20v-1.8a4 4 0 0 0-3-3.86"/><path d="M16.5 4.1a4 4 0 0 1 0 7.75"/>',
+  bell: '<path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',
+  gear: '<circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.9 19.3a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.7 8.9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9.1a1.7 1.7 0 0 0 1.03-1.56V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87v.01a1.7 1.7 0 0 0 1.56 1.03H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.56 1.03z"/>',
+  search: '<circle cx="11" cy="11" r="7.2"/><path d="m20.5 20.5-4.2-4.2"/>',
+  close: '<path d="M18 6 6 18M6 6l12 12"/>',
+  trash: '<path d="M3 6h18M8 6V4.2A1.2 1.2 0 0 1 9.2 3h5.6A1.2 1.2 0 0 1 16 4.2V6"/><path d="M5.5 6 6.4 20a2 2 0 0 0 2 1.9h7.2a2 2 0 0 0 2-1.9L18.5 6"/>',
+  edit: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+  download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/>',
+  print: '<path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/>',
+  copy: '<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  warn: '<path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',
+  plus2: '<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
+  logout: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/>'
+};
+function icon(name, size) {
+  size = size || 20;
+  return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+    'stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONS[name] || '') + '</svg>';
+}
+
+function qrCanvas(text, px, margin) {
+  px = px || 260; margin = (margin === undefined) ? 3 : margin;
+  const qr = QRCode.encode(text);
+  const total = qr.size + margin * 2;
+  const scale = Math.max(2, Math.floor(px / total));
+  const c = document.createElement('canvas');
+  c.width = total * scale; c.height = total * scale;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, c.width, c.height);
+  ctx.fillStyle = '#000000';
+  for (let r = 0; r < qr.size; r++) for (let col = 0; col < qr.size; col++) {
+    if (qr.modules[r][col]) ctx.fillRect((col + margin) * scale, (r + margin) * scale, scale, scale);
+  }
+  c.setAttribute('data-qr-text', text);
+  return c;
+}
+
+/* ==========================================================================
+   3. ХРАНИЛИЩЕ
+   ========================================================================== */
+const DB = (function () {
+  const NAME = 'vexa_seller_db', VER = 1;
+  const STORES = ['products', 'orders', 'customers', 'movements', 'notifications', 'meta'];
+  const LS_PREFIX = 'vexa_ls_';
+  let mode = 'idb', db = null;
+
+  function idbOpen() {
+    return new Promise((resolve, reject) => {
+      let req;
+      try { req = indexedDB.open(NAME, VER); } catch (e) { return reject(e); }
+      req.onupgradeneeded = () => {
+        const d = req.result;
+        STORES.forEach(s => { if (!d.objectStoreNames.contains(s)) d.createObjectStore(s, { keyPath: 'id' }); });
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error || new Error('idb error'));
+      req.onblocked = () => reject(new Error('idb blocked'));
+    });
+  }
+
+  function lsRead(store) {
+    try { return JSON.parse(localStorage.getItem(LS_PREFIX + store) || '{}'); }
+    catch (e) { return {}; }
+  }
+  function lsWrite(store, obj) {
+    try { localStorage.setItem(LS_PREFIX + store, JSON.stringify(obj)); }
+    catch (e) { console.warn('localStorage переполнен', e); }
+  }
+
+  function tx(store, mode2, fn) {
+    return new Promise((resolve, reject) => {
+      const t = db.transaction(store, mode2);
+      const s = t.objectStore(store);
+      const r = fn(s);
+      t.oncomplete = () => resolve(r && r.result !== undefined ? r.result : undefined);
+      t.onerror = () => reject(t.error);
+      t.onabort = () => reject(t.error);
+    });
+  }
+
+  return {
+    async init() {
+      try { db = await idbOpen(); mode = 'idb'; }
+      catch (e) { console.warn('IndexedDB недоступна, используется localStorage:', e && e.message); mode = 'ls'; }
+      return mode;
+    },
+    get mode() { return mode; },
+    async getAll(store) {
+      if (mode === 'idb') {
+        return new Promise((resolve, reject) => {
+          const t = db.transaction(store, 'readonly');
+          const req = t.objectStore(store).getAll();
+          req.onsuccess = () => resolve(req.result || []);
+          req.onerror = () => reject(req.error);
+        });
+      }
+      const o = lsRead(store);
+      return Object.keys(o).map(k => o[k]);
+    },
+    async get(store, id) {
+      if (mode === 'idb') {
+        return new Promise((resolve, reject) => {
+          const req = db.transaction(store, 'readonly').objectStore(store).get(id);
+          req.onsuccess = () => resolve(req.result || null);
+          req.onerror = () => reject(req.error);
+        });
+      }
+      return lsRead(store)[id] || null;
+    },
+    async put(store, obj) {
+      if (mode === 'idb') return tx(store, 'readwrite', s => s.put(obj));
+      const o = lsRead(store); o[obj.id] = obj; lsWrite(store, o);
+    },
+    async putMany(store, arr) {
+      if (mode === 'idb') {
+        return new Promise((resolve, reject) => {
+          const t = db.transaction(store, 'readwrite');
+          const s = t.objectStore(store);
+          arr.forEach(o => s.put(o));
+          t.oncomplete = resolve; t.onerror = () => reject(t.error);
+        });
+      }
+      const o = lsRead(store); arr.forEach(x => { o[x.id] = x; }); lsWrite(store, o);
+    },
+    async del(store, id) {
+      if (mode === 'idb') return tx(store, 'readwrite', s => s.delete(id));
+      const o = lsRead(store); delete o[id]; lsWrite(store, o);
+    },
+    async clear(store) {
+      if (mode === 'idb') return tx(store, 'readwrite', s => s.clear());
+      lsWrite(store, {});
+    },
+    async clearAll() {
+      for (const s of STORES) await this.clear(s);
+    }
+  };
+})();
+
+/* ==========================================================================
+   4. КОНСТАНТЫ ДОМЕНА
+   ========================================================================== */
+const ORDER_STATUS = {
+  new:        { label: 'Новый',              cls: 'b-info',   step: 0 },
+  pending:    { label: 'Ожидает сборки',     cls: 'b-warn',   step: 1 },
+  assembling: { label: 'Собирается',         cls: 'b-warn',   step: 2 },
+  ready:      { label: 'Готов к отправке',   cls: 'b-purple', step: 3 },
+  shipped:    { label: 'Передан в доставку', cls: 'b-purple', step: 4 },
+  done:       { label: 'Выполнен',           cls: 'b-ok',     step: 5 },
+  cancelled:  { label: 'Отменён',            cls: 'b-err',    step: -1 }
+};
+const TRANSITIONS = {
+  new: ['pending', 'cancelled'],
+  pending: ['assembling', 'cancelled'],
+  assembling: ['ready', 'cancelled'],
+  ready: ['shipped', 'cancelled'],
+  shipped: ['done', 'cancelled'],
+  done: [],
+  cancelled: []
+};
+const CATEGORIES = ['Электроника', 'Одежда', 'Аксессуары', 'Дом', 'Спорт', 'Косметика'];
+const DELIVERY_METHODS = ['Курьером по адресу', 'Пункт выдачи VEXA', 'Почта России', 'Самовывоз со склада'];
+const PRODUCT_STATUS = {
+  active:   { label: 'Активен',       cls: 'b-ok' },
+  draft:    { label: 'Черновик',      cls: 'b-gray' },
+  out:      { label: 'Нет в наличии', cls: 'b-err' },
+  archived: { label: 'В архиве',      cls: 'b-gray' }
+};
+
+/* ==========================================================================
+   5. СОСТОЯНИЕ
+   ========================================================================== */
+const state = {
+  route: 'dashboard',
+  seller: null,
+  products: [],
+  orders: [],
+  customers: [],
+  movements: [],
+  notifications: [],
+  filters: {
+    products: { q: '', status: 'all', sort: 'created_desc' },
+    orders: { q: '', status: 'all', sort: 'date_desc' },
+    analytics: { range: 7, from: null, to: null },
+    dashboard: { range: 7 }
+  }
+};
+
+/* ==========================================================================
+   6. СЕРВИСЫ
+   ========================================================================== */
+const NotificationService = {
+  async add(type, title, text) {
+    const n = { id: uid('n'), type, title, text: text || '', at: Date.now(), read: false };
+    state.notifications.unshift(n);
+    if (state.notifications.length > 200) state.notifications.length = 200;
+    await DB.put('notifications', n);
+    updateNotifBadge();
+    return n;
+  },
+  unreadCount() { return state.notifications.filter(n => !n.read).length; },
+  async markRead(id) {
+    const n = state.notifications.find(x => x.id === id);
+    if (n) { n.read = true; await DB.put('notifications', n); updateNotifBadge(); }
+  },
+  async markAllRead() {
+    const unread = state.notifications.filter(n => !n.read);
+    unread.forEach(n => { n.read = true; });
+    await DB.putMany('notifications', unread);
+    updateNotifBadge();
+  },
+  async clear() {
+    state.notifications = [];
+    await DB.clear('notifications');
+    updateNotifBadge();
+  }
+};
+
+const ProductService = {
+  all() { return state.products.slice(); },
+  byId(id) { return state.products.find(p => p.id === id) || null; },
+  bySkuOrBarcode(v) {
+    const s = String(v).toLowerCase();
+    return state.products.find(p => p.sku.toLowerCase() === s || (p.barcode && p.barcode.toLowerCase() === s)) || null;
+  },
+  available(p) { return Math.max(0, (p.qty || 0) - (p.reserved || 0)); },
+
+  generateSku() {
+    let n = state.products.length + 1, sku;
+    do { sku = 'VX-' + String(n).padStart(4, '0'); n++; }
+    while (state.products.some(p => p.sku === sku));
+    return sku;
+  },
+  generateBarcode() {
+    let code;
+    do { code = '46' + String(Math.floor(Math.random() * 1e11)).padStart(11, '0'); }
+    while (state.products.some(p => p.barcode === code));
+    return code;
+  },
+
+  async create(data) {
+    const now = Date.now();
+    const product = {
+      id: uid('p'),
+      name: data.name,
+      sku: data.sku || this.generateSku(),
+      category: data.category || CATEGORIES[0],
+      description: data.description || '',
+      price: Number(data.price) || 0,
+      oldPrice: Number(data.oldPrice) || 0,
+      qty: Math.max(0, Math.floor(Number(data.qty) || 0)),
+      reserved: 0, sold: 0, returned: 0,
+      barcode: data.barcode || this.generateBarcode(),
+      weight: Number(data.weight) || 0,
+      length: Number(data.length) || 0,
+      width: Number(data.width) || 0,
+      height: Number(data.height) || 0,
+      color: data.color || '',
+      size: data.size || '',
+      brand: data.brand || '',
+      image: data.image || null,
+      status: data.status || 'active',
+      createdAt: now, updatedAt: now
+    };
+    if (product.status === 'active' && product.qty === 0) product.status = 'out';
+    state.products.unshift(product);
+    await DB.put('products', product);
+    if (product.qty > 0) {
+      await InventoryService.record(product.id, 'in', product.qty, 'Начальный остаток', null);
+    }
+    await NotificationService.add('product', 'Товар создан', product.name + ' · ' + product.sku);
+    return product;
+  },
+
+  async update(id, data) {
+    const p = this.byId(id);
+    if (!p) throw new Error('Товар не найден');
+    const qtyChanged = data.qty !== undefined && Number(data.qty) !== p.qty;
+    const oldQty = p.qty;
+    Object.assign(p, data);
+    p.price = Math.max(0, Number(p.price) || 0);
+    p.oldPrice = Math.max(0, Number(p.oldPrice) || 0);
+    if (data.qty !== undefined) p.qty = Math.max(0, Math.floor(Number(data.qty) || 0));
+    if (p.reserved > p.qty) p.reserved = p.qty;
+    if (p.status === 'active' && p.qty === 0) p.status = 'out';
+    if (p.status === 'out' && p.qty > 0) p.status = 'active';
+    p.updatedAt = Date.now();
+    await DB.put('products', p);
+    if (qtyChanged) {
+      const delta = p.qty - oldQty;
+      await InventoryService.record(p.id, delta > 0 ? 'in' : 'out', Math.abs(delta), 'Ручное изменение остатка', null);
+    }
+    return p;
+  },
+
+  async archive(id) {
+    const p = this.byId(id);
+    if (!p) return;
+    p.status = 'archived'; p.updatedAt = Date.now();
+    await DB.put('products', p);
+  },
+
+  async remove(id) {
+    const p = this.byId(id);
+    state.products = state.products.filter(x => x.id !== id);
+    await DB.del('products', id);
+    if (p) await NotificationService.add('product', 'Товар удалён', p.name + ' (история заказов сохранена)');
+  },
+
+  filtered() {
+    const f = state.filters.products;
+    let list = this.all();
+    if (f.status === 'active') list = list.filter(p => p.status === 'active');
+    else if (f.status === 'draft') list = list.filter(p => p.status === 'draft');
+    else if (f.status === 'out') list = list.filter(p => p.qty === 0 && p.status !== 'archived');
+    else if (f.status === 'low') list = list.filter(p => p.status !== 'archived' && p.qty > 0 && this.available(p) <= 5);
+    else if (f.status !== 'all') list = list.filter(p => p.status === f.status);
+
+    if (f.q.trim()) {
+      const q = f.q.trim().toLowerCase();
+      list = list.filter(p =>
+        p.name.toLowerCase().includes(q) ||
+        p.sku.toLowerCase().includes(q) ||
+        (p.barcode || '').toLowerCase().includes(q) ||
+        p.id.toLowerCase().includes(q));
+    }
+    const sorters = {
+      created_desc: (a, b) => b.createdAt - a.createdAt,
+      created_asc: (a, b) => a.createdAt - b.createdAt,
+      name_asc: (a, b) => a.name.localeCompare(b.name, 'ru'),
+      name_desc: (a, b) => b.name.localeCompare(a.name, 'ru'),
+      price_desc: (a, b) => b.price - a.price,
+      price_asc: (a, b) => a.price - b.price,
+      qty_desc: (a, b) => b.qty - a.qty,
+      qty_asc: (a, b) => a.qty - b.qty
+    };
+    list.sort(sorters[f.sort] || sorters.created_desc);
+    return list;
+  }
+};
+
+const InventoryService = {
+  record(productId, type, qty, reason, orderId) {
+    const m = {
+      id: uid('m'), productId, type, qty: Math.abs(qty),
+      reason: reason || '', orderId: orderId || null, at: Date.now()
+    };
+    state.movements.unshift(m);
+    if (state.movements.length > 2000) state.movements.length = 2000;
+    return DB.put('movements', m);
+  },
+  forProduct(productId) { return state.movements.filter(m => m.productId === productId); },
+  totals() {
+    let total = 0, reserved = 0, sold = 0, returned = 0;
+    state.products.forEach(p => {
+      total += p.qty || 0; reserved += p.reserved || 0;
+      sold += p.sold || 0; returned += p.returned || 0;
+    });
+    return { total, reserved, sold, returned, available: Math.max(0, total - reserved) };
+  },
+  async adjust(productId, delta, reason) {
+    const p = ProductService.byId(productId);
+    if (!p) throw new Error('Товар не найден');
+    const next = p.qty + delta;
+    if (next < 0) throw new Error('Остаток не может быть отрицательным');
+    if (next < p.reserved) throw new Error('Нельзя уменьшить остаток ниже зарезервированного (' + p.reserved + ')');
+    p.qty = next;
+    if (p.qty === 0 && p.status === 'active') p.status = 'out';
+    if (p.qty > 0 && p.status === 'out') p.status = 'active';
+    p.updatedAt = Date.now();
+    await DB.put('products', p);
+    await this.record(productId, delta >= 0 ? 'in' : 'out', Math.abs(delta), reason || 'Ручная корректировка', null);
+    if (p.qty <= 5 && p.qty > 0) {
+      await NotificationService.add('stock', 'Товар заканчивается', p.name + ' — осталось ' + p.qty + ' шт.');
+    } else if (p.qty === 0) {
+      await NotificationService.add('stock', 'Товар закончился', p.name + ' — 0 шт.');
+    }
+  }
+};
+
+const OrderService = {
+  all() { return state.orders.slice(); },
+  byId(id) { return state.orders.find(o => o.id === id) || null; },
+  byNumber(n) { return state.orders.find(o => o.number === n) || null; },
+
+  async nextNumber() {
+    const meta = await DB.get('meta', 'counter_order');
+    let n = meta ? (meta.value || 0) : 0;
+    n += 1;
+    await DB.put('meta', { id: 'counter_order', value: n });
+    return 'VX-' + String(n).padStart(6, '0');
+  },
+
+  async create(data) {
+    for (const it of data.items) {
+      const p = ProductService.byId(it.productId);
+      if (!p) throw new Error('Товар не найден: ' + it.name);
+      const avail = ProductService.available(p);
+      if (it.qty > avail) throw new Error('Недостаточно остатка для «' + p.name + '»: доступно ' + avail + ' шт.');
+    }
+    const now = Date.now();
+    const number = await this.nextNumber();
+    const subtotal = data.items.reduce((s, i) => s + i.price * i.qty, 0);
+    const discount = Math.min(Math.max(0, Number(data.discount) || 0), subtotal);
+    const total = subtotal - discount;
+
+    const order = {
+      id: uid('o'), number, createdAt: now,
+      customerId: data.customerId || null,
+      customerName: data.customerName || 'Покупатель',
+      customerPhone: data.customerPhone || '',
+      customerEmail: data.customerEmail || '',
+      items: data.items.map(i => ({
+        productId: i.productId, name: i.name, sku: i.sku, price: i.price, qty: i.qty
+      })),
+      subtotal, discount, total,
+      delivery: { method: data.deliveryMethod || DELIVERY_METHODS[0], address: data.deliveryAddress || '' },
+      note: data.note || '',
+      status: 'new',
+      history: [{ status: 'new', at: now, note: 'Заказ создан' }]
+    };
+
+    for (const it of order.items) {
+      const p = ProductService.byId(it.productId);
+      p.reserved = (p.reserved || 0) + it.qty;
+      p.updatedAt = now;
+      await DB.put('products', p);
+      await InventoryService.record(p.id, 'reserve', it.qty, 'Резерв под заказ ' + number, order.id);
+    }
+
+    state.orders.unshift(order);
+    await DB.put('orders', order);
+    await CustomerService.upsertFromOrder(order);
+    await NotificationService.add('order', 'Новый заказ', number + ' · ' + fmtMoney(total));
+    return order;
+  },
+
+  async changeStatus(id, nextStatus, note) {
+    const o = this.byId(id);
+    if (!o) throw new Error('Заказ не найден');
+    if (o.status === nextStatus) return o;
+    if (TRANSITIONS[o.status] && TRANSITIONS[o.status].indexOf(nextStatus) === -1) {
+      throw new Error('Недопустимый переход статуса: ' + ORDER_STATUS[o.status].label + ' → ' + ORDER_STATUS[nextStatus].label);
+    }
+    const now = Date.now();
+
+    if (nextStatus === 'cancelled') {
+      for (const it of o.items) {
+        const p = ProductService.byId(it.productId);
+        if (!p) continue;
+        if (o.status === 'done') {
+          p.qty = (p.qty || 0) + it.qty;
+          p.sold = Math.max(0, (p.sold || 0) - it.qty);
+          p.returned = (p.returned || 0) + it.qty;
+          await InventoryService.record(p.id, 'return', it.qty, 'Возврат по отмене ' + o.number, o.id);
+        } else {
+          p.reserved = Math.max(0, (p.reserved || 0) - it.qty);
+          await InventoryService.record(p.id, 'unreserve', it.qty, 'Снятие резерва по отмене ' + o.number, o.id);
+        }
+        p.updatedAt = now;
+        await DB.put('products', p);
+      }
+      await NotificationService.add('order', 'Заказ отменён', o.number);
+    } else if (nextStatus === 'done') {
+      for (const it of o.items) {
+        const p = ProductService.byId(it.productId);
+        if (!p) continue;
+        p.reserved = Math.max(0, (p.reserved || 0) - it.qty);
+        p.qty = Math.max(0, (p.qty || 0) - it.qty);
+        p.sold = (p.sold || 0) + it.qty;
+        p.updatedAt = now;
+        await DB.put('products', p);
+        await InventoryService.record(p.id, 'sale', it.qty, 'Списание по заказу ' + o.number, o.id);
+        if (p.qty <= 5) {
+          await NotificationService.add('stock', 'Товар заканчивается', p.name + ' — осталось ' + p.qty + ' шт.');
+        }
+      }
+      await NotificationService.add('order', 'Заказ выполнен', o.number + ' · ' + fmtMoney(o.total));
+    } else {
+      await NotificationService.add('order', 'Статус заказа изменён', o.number + ' → ' + ORDER_STATUS[nextStatus].label);
+    }
+
+    o.status = nextStatus;
+    o.history.push({ status: nextStatus, at: now, note: note || '' });
+    await DB.put('orders', o);
+    return o;
+  },
+
+  filtered() {
+    const f = state.filters.orders;
+    let list = this.all();
+    if (f.status !== 'all') list = list.filter(o => o.status === f.status);
+    if (f.q.trim()) {
+      const q = f.q.trim().toLowerCase();
+      list = list.filter(o =>
+        o.number.toLowerCase().includes(q) ||
+        o.customerName.toLowerCase().includes(q) ||
+        (o.customerPhone || '').toLowerCase().includes(q) ||
+        o.items.some(i => i.name.toLowerCase().includes(q)));
+    }
+    const sorters = {
+      date_desc: (a, b) => b.createdAt - a.createdAt,
+      date_asc: (a, b) => a.createdAt - b.createdAt,
+      total_desc: (a, b) => b.total - a.total,
+      total_asc: (a, b) => a.total - b.total
+    };
+    list.sort(sorters[f.sort] || sorters.date_desc);
+    return list;
+  },
+
+  stats(fromTs, toTs) {
+    const from = fromTs || 0, to = toTs || Infinity;
+    const list = state.orders.filter(o => o.createdAt >= from && o.createdAt <= to);
+    const completed = list.filter(o => o.status === 'done');
+    const revenue = completed.reduce((s, o) => s + o.total, 0);
+    return {
+      total: list.length,
+      new: list.filter(o => o.status === 'new').length,
+      processing: list.filter(o => ['pending', 'assembling', 'ready', 'shipped'].indexOf(o.status) >= 0).length,
+      done: completed.length,
+      cancelled: list.filter(o => o.status === 'cancelled').length,
+      revenue,
+      avg: completed.length ? Math.round(revenue / completed.length) : 0
+    };
+  }
+};
+
+const CustomerService = {
+  all() { return state.customers.slice(); },
+  byId(id) { return state.customers.find(c => c.id === id) || null; },
+  ordersOf(id) { return state.orders.filter(o => o.customerId === id); },
+
+  async upsertFromOrder(order) {
+    const key = (order.customerPhone || order.customerName || '').trim().toLowerCase();
+    if (!key) return;
+    let c = state.customers.find(x =>
+      (x.phone && order.customerPhone && x.phone === order.customerPhone) ||
+      x.name.toLowerCase() === order.customerName.toLowerCase());
+    if (!c) {
+      c = {
+        id: uid('c'), name: order.customerName, phone: order.customerPhone || '',
+        email: order.customerEmail || '', createdAt: Date.now()
+      };
+      state.customers.push(c);
+    } else {
+      if (order.customerPhone) c.phone = order.customerPhone;
+      if (order.customerEmail) c.email = order.customerEmail;
+    }
+    await DB.put('customers', c);
+    order.customerId = c.id;
+    await DB.put('orders', order);
+    return c;
+  }
+};
+
+const AnalyticsService = {
+  compute(fromTs, toTs) {
+    const from = fromTs || 0, to = toTs || Infinity;
+    const orders = state.orders.filter(o => o.createdAt >= from && o.createdAt <= to);
+    const done = orders.filter(o => o.status === 'done');
+    const revenue = done.reduce((s, o) => s + o.total, 0);
+
+    const productMap = {};
+    done.forEach(o => o.items.forEach(it => {
+      if (!productMap[it.productId]) productMap[it.productId] = { name: it.name, qty: 0, revenue: 0 };
+      productMap[it.productId].qty += it.qty;
+      productMap[it.productId].revenue += it.qty * it.price;
+    }));
+    const top = Object.keys(productMap)
+      .map(k => Object.assign({ productId: k }, productMap[k]))
+      .sort((a, b) => b.qty - a.qty);
+
+    return {
+      ordersCount: orders.length,
+      doneCount: done.length,
+      cancelledCount: orders.filter(o => o.status === 'cancelled').length,
+      revenue,
+      avg: done.length ? Math.round(revenue / done.length) : 0,
+      itemsSold: top.reduce((s, t) => s + t.qty, 0),
+      top,
+      orders,
+      done
+    };
+  },
+
+  series(days, fromTs, toTs) {
+    const buckets = [];
+    if (fromTs && toTs) {
+      const start = startOfDay(fromTs);
+      const end = startOfDay(toTs);
+      const n = Math.max(1, Math.round((end - start) / 86400000) + 1);
+      for (let i = 0; i < n; i++) buckets.push({ ts: start + i * 86400000, revenue: 0, orders: 0 });
+    } else {
+      for (let i = days - 1; i >= 0; i--) buckets.push({ ts: daysAgo(i), revenue: 0, orders: 0 });
+    }
+    state.orders.forEach(o => {
+      const d = startOfDay(o.createdAt);
+      const b = buckets.find(x => x.ts === d);
+      if (!b) return;
+      b.orders += 1;
+      if (o.status === 'done') b.revenue += o.total;
+    });
+    return buckets;
+  }
+};
+
+const QrService = {
+  productPayload(productId) { return 'VEXA:PRODUCT:' + productId; },
+  orderPayload(orderId) { return 'VEXA:ORDER:' + orderId; }
+};
+
+const AuthService = (function () {
+  const LS_KEY = 'vexa_session_demo';
+  let pending = null;
+
+  function normalize(cc, raw) {
+    const digits = String(raw || '').replace(/\D/g, '');
+    return cc + digits;
+  }
+  function formatPhone(cc, raw) {
+    const d = String(raw || '').replace(/\D/g, '').slice(0, 10);
+    let out = cc;
+    if (d.length) out += ' (' + d.slice(0, 3);
+    if (d.length >= 3) out += ')';
+    if (d.length > 3) out += ' ' + d.slice(3, 6);
+    if (d.length > 6) out += '-' + d.slice(6, 8);
+    if (d.length > 8) out += '-' + d.slice(8, 10);
+    return out;
+  }
+  function valid(cc, raw) {
+    const d = String(raw || '').replace(/\D/g, '');
+    return d.length === 10;
+  }
+
+  return {
+    formatPhone, valid, normalize,
+    async sendCode(phone) {
+      const code = String(Math.floor(100000 + Math.random() * 900000));
+      pending = { phone, code, expires: Date.now() + 5 * 60 * 1000, attempts: 0 };
+      return { demo: true, code };
+    },
+    async verifyCode(phone, code) {
+      if (!pending || pending.phone !== phone) throw new Error('Сначала запросите код');
+      if (Date.now() > pending.expires) { pending = null; throw new Error('Срок действия кода истёк. Запросите новый код.'); }
+      pending.attempts++;
+      if (pending.attempts > 5) { pending = null; throw new Error('Слишком много попыток. Запросите новый код.'); }
+      if (String(code) !== pending.code) throw new Error('Неверный код подтверждения');
+      pending = null;
+      return true;
+    },
+    saveSession(phone) {
+      const s = { phone, at: Date.now(), demo: true };
+      try { localStorage.setItem(LS_KEY, JSON.stringify(s)); } catch (e) {}
+      return s;
+    },
+    getSession() {
+      try { return JSON.parse(localStorage.getItem(LS_KEY) || 'null'); } catch (e) { return null; }
+    },
+    async logout() {
+      try { localStorage.removeItem(LS_KEY); } catch (e) {}
+    }
+  };
+})();
+
+/* ==========================================================================
+   7. БАЗОВЫЕ UI-ЭЛЕМЕНТЫ
+   ========================================================================== */
+function toast(title, text, type) {
+  const el = document.createElement('div');
+  el.className = 'toast ' + (type || 'ok');
+  el.innerHTML = '<div style="flex:1"><div class="tt">' + esc(title) + '</div>' +
+    (text ? '<div class="tx">' + esc(text) + '</div>' : '') + '</div>';
+  $('#toasts').appendChild(el);
+  setTimeout(() => {
+    el.style.transition = 'opacity .3s, transform .3s';
+    el.style.opacity = '0'; el.style.transform = 'translateX(20px)';
+    setTimeout(() => el.remove(), 320);
+  }, 3600);
+}
+
+function showModal(opts) {
+  const root = $('#modalRoot');
+  const backdrop = document.createElement('div');
+  backdrop.className = 'modal-backdrop';
+  backdrop.innerHTML =
+    '<div class="modal ' + (opts.wide ? 'wide' : '') + '" role="dialog" aria-modal="true">' +
+      '<div class="modal-h">' +
+        '<h3>' + esc(opts.title || '') + '</h3>' +
+        '<button class="iconbtn" data-close aria-label="Закрыть">' + icon('close', 18) + '</button>' +
+      '</div>' +
+      '<div class="modal-b">' + (opts.body || '') + '</div>' +
+      (opts.footer ? '<div class="modal-f">' + opts.footer + '</div>' : '') +
+    '</div>';
+  root.appendChild(backdrop);
+  document.body.style.overflow = 'hidden';
+
+  function close() {
+    backdrop.remove();
+    if (!$('#modalRoot').children.length) document.body.style.overflow = '';
+    if (opts.onClose) opts.onClose();
+  }
+  backdrop.addEventListener('click', e => {
+    if (e.target === backdrop || e.target.closest('[data-close]')) close();
+  });
+  if (opts.onMount) opts.onMount(backdrop, close);
+  return { el: backdrop, close };
+}
+
+function confirmDialog(title, text, okLabel, danger) {
+  return new Promise(resolve => {
+    showModal({
+      title: title,
+      body: '<p style="margin:0;color:var(--muted);font-size:14px">' + esc(text) + '</p>',
+      footer:
+        '<button class="btn btn-ghost" data-role="cancel">Отмена</button>' +
+        '<button class="btn ' + (danger ? 'btn-danger' : 'btn-primary') + '" data-role="ok">' + esc(okLabel || 'Подтвердить') + '</button>',
+      onMount(backdrop, close) {
+        backdrop.querySelector('[data-role="cancel"]').onclick = () => { close(); resolve(false); };
+        backdrop.querySelector('[data-role="ok"]').onclick = () => { close(); resolve(true); };
+        backdrop.addEventListener('click', e => { if (e.target === backdrop) resolve(false); });
+      },
+      onClose() { resolve(false); }
+    });
+  });
+}
+
+function emptyState(iconName, title, text, actionHTML) {
+  return '<div class="empty">' + icon(iconName, 42) +
+    '<h4>' + esc(title) + '</h4><p>' + esc(text) + '</p>' + (actionHTML || '') + '</div>';
+}
+
+function barChart(data, opts) {
+  opts = opts || {};
+  const W = 100, H = 220;
+  const padB = 26, padT = 16;
+  const n = data.length || 1;
+  const max = Math.max.apply(null, data.map(d => d.value).concat([1]));
+  const gap = 6;
+  const bw = (W - gap * (n - 1)) / n;
+  let bars = '', labels = '';
+  data.forEach((d, i) => {
+    const x = i * (bw + gap);
+    const h = Math.max(2, (d.value / max) * (H - padB - padT));
+    const y = H - padB - h;
+    bars += '<rect class="bar" x="' + x.toFixed(2) + '" y="' + y.toFixed(2) + '" width="' + bw.toFixed(2) +
+      '" height="' + h.toFixed(2) + '" rx="1.6"><title>' + esc(d.label + ': ' + (opts.format ? opts.format(d.value) : d.value)) + '</title></rect>';
+    labels += '<text x="' + (x + bw / 2).toFixed(2) + '" y="' + (H - 8) + '" font-size="7" fill="var(--muted)" text-anchor="middle">' + esc(d.short) + '</text>';
+  });
+  return '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" style="height:' + (opts.height || 220) + 'px">' +
+    '<defs><linearGradient id="gradBar" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0" stop-color="#9F67FA"/><stop offset="1" stop-color="#6D28D9"/></linearGradient></defs>' +
+    bars + labels + '</svg>';
+}
+
+/* ==========================================================================
+   8. АУТЕНТИФИКАЦИЯ
+   ========================================================================== */
+const authUI = {
+  screen: 'welcome',
+  cc: '+7',
+  phoneRaw: '',
+  phone: '',
+  demoCode: null,
+  error: '',
+  resendAt: 0,
+  profileDraft: null
+};
+
+function renderAuth() {
+  const root = $('#authRoot');
+  let body = '';
+
+  if (authUI.screen === 'welcome') {
+    body =
+      '<div class="auth-card">' +
+        '<div class="auth-logo">' +
+          '<svg width="52" height="52" viewBox="0 0 48 48"><defs><linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1">' +
+          '<stop offset="0" stop-color="#7C3AED"/><stop offset="1" stop-color="#4C1D95"/></linearGradient></defs>' +
+          '<rect width="48" height="48" rx="14" fill="url(#lg2)"/>' +
+          '<path d="M13 14 L24 34 L35 14" stroke="#fff" stroke-width="4.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' +
+          '<circle cx="24" cy="38.5" r="2.6" fill="#fff"/></svg>' +
+          '<div class="auth-brand">VEXA-SELLER</div>' +
+        '</div>' +
+        '<h1 class="auth-title">Добро пожаловать в VEXA</h1>' +
+        '<p class="auth-sub">Управляйте своим магазином: товары, QR-коды, заказы и аналитика.</p>' +
+        '<button class="btn btn-primary btn-block" id="goLogin" style="margin-bottom:10px">Войти</button>' +
+        '<button class="btn btn-ghost btn-block" id="goRegister">Создать аккаунт</button>' +
+        '<p class="small muted" style="text-align:center;margin-top:22px;line-height:1.5">' +
+          'Демонстрационная версия. Авторизация выполняется в локальном режиме без реальной отправки SMS.' +
+        '</p>' +
+      '</div>';
+  } else if (authUI.screen === 'phone') {
+    body =
+      '<div class="auth-card">' +
+        '<div class="auth-logo"><div class="auth-brand">VEXA-SELLER</div></div>' +
+        '<h1 class="auth-title" style="font-size:22px">Вход по номеру телефона</h1>' +
+        '<p class="auth-sub">Введите номер — мы сформируем демонстрационный код подтверждения.</p>' +
+        '<div class="field">' +
+          '<label for="phoneInput">Номер телефона</label>' +
+          '<div class="flex" style="gap:8px">' +
+            '<select id="ccSelect" class="mini" style="flex:0 0 100px;min-height:44px">' +
+              '<option value="+7">🇷🇺 +7</option>' +
+              '<option value="+375">🇧🇾 +375</option>' +
+              '<option value="+77">🇰🇿 +77</option>' +
+              '<option value="+998">🇺🇿 +998</option>' +
+              '<option value="+995">🇬🇪 +995</option>' +
+              '<option value="+374">🇦🇲 +374</option>' +
+            '</select>' +
+            '<input id="phoneInput" type="tel" inputmode="tel" placeholder="+7 (999) 123-45-67" value="' + esc(authUI.phoneRaw ? AuthService.formatPhone(authUI.cc, authUI.phoneRaw) : '') + '" autocomplete="tel" style="flex:1">' +
+          '</div>' +
+          (authUI.error ? '<div class="err-text">' + esc(authUI.error) + '</div>' : '') +
+        '</div>' +
+        '<button class="btn btn-primary btn-block" id="doSend">Продолжить</button>' +
+        '<button class="btn btn-ghost btn-block" id="backWelcome" style="margin-top:10px">Назад</button>' +
+      '</div>';
+  } else if (authUI.screen === 'code') {
+    const secsLeft = Math.max(0, Math.ceil((authUI.resendAt - Date.now()) / 1000));
+    body =
+      '<div class="auth-card">' +
+        '<div class="auth-logo"><div class="auth-brand">VEXA-SELLER</div></div>' +
+        '<h1 class="auth-title" style="font-size:22px">Подтверждение номера</h1>' +
+        '<p class="auth-sub">Введите шестизначный код для <b style="color:var(--text)">' + esc(authUI.phone) + '</b></p>' +
+        (authUI.demoCode
+          ? '<div style="background:var(--warnbg);color:var(--warn);border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:13px;line-height:1.5">' +
+              '<b>Демонстрационный код:</b> <span style="font-family:ui-monospace,monospace;font-size:19px;font-weight:800;letter-spacing:3px">' +
+              esc(authUI.demoCode) + '</span><br>' +
+              '<span style="opacity:.85">Это не настоящее SMS. Код создан локально для демонстрации.</span>' +
+            '</div>'
+          : '') +
+        '<div class="code-row" id="codeRow">' +
+          [0,1,2,3,4,5].map(i => '<input type="text" inputmode="numeric" maxlength="1" data-idx="' + i + '" aria-label="Цифра ' + (i+1) + '">').join('') +
+        '</div>' +
+        (authUI.error ? '<div class="err-text" style="text-align:center">' + esc(authUI.error) + '</div>' : '') +
+        '<button class="btn btn-primary btn-block" id="doVerify" style="margin-top:16px">Подтвердить</button>' +
+        '<button class="btn btn-ghost btn-block" id="doResend" style="margin-top:10px" ' + (secsLeft > 0 ? 'disabled' : '') + '>' +
+          (secsLeft > 0 ? 'Отправить повторно через ' + secsLeft + ' с' : 'Отправить код повторно') +
+        '</button>' +
+        '<button class="btn btn-ghost btn-block" id="backPhone" style="margin-top:10px">Изменить номер</button>' +
+      '</div>';
+  } else if (authUI.screen === 'profile') {
+    const p = authUI.profileDraft || (authUI.profileDraft = {
+      name: '', shop: '', phone: authUI.phone, email: '', org: '', type: 'ИП', city: '', address: '', agree: false
+    });
+    const fields = ['name', 'shop', 'phone', 'email', 'type', 'city', 'address'];
+    const filled = fields.filter(f => String(p[f] || '').trim()).length + (p.agree ? 1 : 0);
+    const pct = Math.round(filled / (fields.length + 1) * 100);
+    body =
+      '<div class="auth-card" style="max-width:560px">' +
+        '<h1 class="auth-title" style="font-size:22px;text-align:left">Заполните профиль продавца</h1>' +
+        '<p class="auth-sub" style="text-align:left">Эти данные используются для оформления заказов и документов.</p>' +
+        '<div style="margin-bottom:18px">' +
+          '<div class="flex-between" style="margin-bottom:6px"><span class="small muted">Заполнено</span><span class="small" style="font-weight:700">' + pct + '%</span></div>' +
+          '<div class="progress"><i style="width:' + pct + '%"></i></div>' +
+        '</div>' +
+        '<div class="field"><label>Имя продавца *</label><input id="pf_name" type="text" value="' + esc(p.name) + '" placeholder="Иван Петров"></div>' +
+        '<div class="field"><label>Название магазина *</label><input id="pf_shop" type="text" value="' + esc(p.shop) + '" placeholder="VEXA Store"></div>' +
+        '<div class="field"><label>Номер телефона</label><input id="pf_phone" type="tel" value="' + esc(p.phone) + '" disabled></div>' +
+        '<div class="field"><label>Email *</label><input id="pf_email" type="email" value="' + esc(p.email) + '" placeholder="seller@example.com"></div>' +
+        '<div class="field"><label>Название организации <span class="muted">(необязательно)</span></label><input id="pf_org" type="text" value="' + esc(p.org) + '" placeholder="ООО «Ромашка»"></div>' +
+        '<div class="field"><label>Тип продавца *</label><select id="pf_type">' +
+          ['Физическое лицо', 'Самозанятый', 'ИП', 'ООО'].map(t => '<option' + (p.type === t ? ' selected' : '') + '>' + t + '</option>').join('') +
+        '</select></div>' +
+        '<div class="field"><label>Город *</label><input id="pf_city" type="text" value="' + esc(p.city) + '" placeholder="Москва"></div>' +
+        '<div class="field"><label>Адрес склада *</label><input id="pf_address" type="text" value="' + esc(p.address) + '" placeholder="ул. Складская, 1"></div>' +
+        '<label class="checkbox" style="margin:14px 0 18px"><input type="checkbox" id="pf_agree"' + (p.agree ? ' checked' : '') + '><span>Я принимаю условия использования VEXA-SELLER.</span></label>' +
+        (authUI.error ? '<div class="err-text" style="margin-bottom:10px">' + esc(authUI.error) + '</div>' : '') +
+        '<button class="btn btn-primary btn-block" id="doSaveProfile">Завершить регистрацию</button>' +
+      '</div>';
+  }
+
+  root.innerHTML = body;
+
+  if (authUI.screen === 'welcome') {
+    $('#goLogin').onclick = () => { authUI.screen = 'phone'; authUI.error = ''; renderAuth(); };
+    $('#goRegister').onclick = () => { authUI.screen = 'phone'; authUI.error = ''; renderAuth(); };
+  }
+
+  if (authUI.screen === 'phone') {
+    const inp = $('#phoneInput');
+    const cc = $('#ccSelect');
+    cc.value = authUI.cc;
+    cc.onchange = () => { authUI.cc = cc.value; inp.value = AuthService.formatPhone(cc.value, authUI.phoneRaw); };
+    inp.addEventListener('input', () => {
+      const digits = inp.value.replace(/\D/g, '').replace(/^7|^375|^77|^998|^374/, '');
+      authUI.phoneRaw = digits.slice(0, 10);
+      inp.value = AuthService.formatPhone(authUI.cc, authUI.phoneRaw);
+    });
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') $('#doSend').click(); });
+    setTimeout(() => inp.focus(), 60);
+    $('#backWelcome').onclick = () => { authUI.screen = 'welcome'; authUI.error = ''; renderAuth(); };
+    $('#doSend').onclick = async () => {
+      if (!AuthService.valid(authUI.cc, authUI.phoneRaw)) {
+        authUI.error = 'Введите корректный номер телефона (10 цифр после кода страны)';
+        renderAuth(); return;
+      }
+      const phone = AuthService.normalize(authUI.cc, authUI.phoneRaw);
+      const res = await AuthService.sendCode(phone);
+      authUI.phone = phone;
+      authUI.demoCode = res.code;
+      authUI.error = '';
+      authUI.resendAt = Date.now() + 45000;
+      authUI.screen = 'code';
+      renderAuth();
+      startResendTimer();
+    };
+  }
+
+  if (authUI.screen === 'code') {
+    const inputs = $$('#codeRow input');
+    inputs.forEach((el, i) => {
+      el.addEventListener('input', () => {
+        el.value = el.value.replace(/\D/g, '').slice(0, 1);
+        if (el.value && i < 5) inputs[i + 1].focus();
+        if (inputs.every(x => x.value)) $('#doVerify').click();
+      });
+      el.addEventListener('keydown', e => {
+        if (e.key === 'Backspace' && !el.value && i > 0) inputs[i - 1].focus();
+      });
+      el.addEventListener('paste', e => {
+        e.preventDefault();
+        const txt = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
+        txt.split('').forEach((ch, k) => { if (inputs[k]) inputs[k].value = ch; });
+        if (txt.length) inputs[Math.min(txt.length, 5)].focus();
+        if (txt.length === 6) $('#doVerify').click();
+      });
+    });
+    setTimeout(() => inputs[0].focus(), 80);
+
+    $('#doVerify').onclick = async () => {
+      const code = inputs.map(x => x.value).join('');
+      if (code.length !== 6) { authUI.error = 'Введите все 6 цифр кода'; renderAuth(); startResendTimer(); return; }
+      try {
+        await AuthService.verifyCode(authUI.phone, code);
+        authUI.error = '';
+        authUI.screen = 'profile';
+        authUI.profileDraft = null;
+        renderAuth();
+      } catch (err) {
+        authUI.error = err.message;
+        renderAuth();
+        startResendTimer();
+      }
+    };
+    $('#doResend').onclick = async () => {
+      const res = await AuthService.sendCode(authUI.phone);
+      authUI.demoCode = res.code;
+      authUI.error = '';
+      authUI.resendAt = Date.now() + 45000;
+      renderAuth();
+      startResendTimer();
+      toast('Код создан заново', 'Демонстрационный код обновлён');
+    };
+    $('#backPhone').onclick = () => { authUI.screen = 'phone'; authUI.error = ''; renderAuth(); };
+  }
+
+  if (authUI.screen === 'profile') {
+    const map = { pf_name: 'name', pf_shop: 'shop', pf_email: 'email', pf_org: 'org', pf_type: 'type', pf_city: 'city', pf_address: 'address' };
+    Object.keys(map).forEach(id => {
+      const el = $('#' + id);
+      if (!el) return;
+      el.addEventListener('input', () => {
+        authUI.profileDraft[map[id]] = el.value;
+        updateProgress();
+      });
+    });
+    const agree = $('#pf_agree');
+    agree.addEventListener('change', () => { authUI.profileDraft.agree = agree.checked; updateProgress(); });
+
+    function updateProgress() {
+      const p = authUI.profileDraft;
+      const fields = ['name', 'shop', 'phone', 'email', 'type', 'city', 'address'];
+      const filled = fields.filter(f => String(p[f] || '').trim()).length + (p.agree ? 1 : 0);
+      const pct = Math.round(filled / (fields.length + 1) * 100);
+      const bar = $('.progress i');
+      if (bar) bar.style.width = pct + '%';
+      const lbl = $('.progress').parentElement.querySelector('.small:last-child');
+      if (lbl) lbl.textContent = pct + '%';
+    }
+
+    $('#doSaveProfile').onclick = async () => {
+      const p = authUI.profileDraft;
+      const req = ['name', 'shop', 'email', 'city', 'address'];
+      const miss = req.filter(f => !String(p[f] || '').trim());
+      if (miss.length) { authUI.error = 'Заполните обязательные поля'; renderAuth(); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.email)) { authUI.error = 'Введите корректный email'; renderAuth(); return; }
+      if (!p.agree) { authUI.error = 'Необходимо принять условия использования'; renderAuth(); return; }
+
+      const seller = {
+        id: 'seller',
+        name: p.name.trim(), shop: p.shop.trim(), phone: p.phone,
+        email: p.email.trim(), org: p.org.trim(), type: p.type,
+        city: p.city.trim(), address: p.address.trim(),
+        createdAt: Date.now(), updatedAt: Date.now()
+      };
+      state.seller = seller;
+      await DB.put('meta', seller);
+      AuthService.saveSession(seller.phone);
+      await NotificationService.add('system', 'Регистрация завершена', 'Добро пожаловать, ' + seller.name + '!');
+      startApp();
+    };
+  }
+}
+
+let resendTimer = null;
+function startResendTimer() {
+  clearInterval(resendTimer);
+  resendTimer = setInterval(() => {
+    if (authUI.screen !== 'code') { clearInterval(resendTimer); return; }
+    const btn = $('#doResend');
+    if (!btn) { clearInterval(resendTimer); return; }
+    const left = Math.max(0, Math.ceil((authUI.resendAt - Date.now()) / 1000));
+    if (left <= 0) {
+      btn.disabled = false;
+      btn.textContent = 'Отправить код повторно';
+      clearInterval(resendTimer);
+    } else {
+      btn.disabled = true;
+      btn.textContent = 'Отправить повторно через ' + left + ' с';
+    }
+  }, 1000);
+}
+
+/* ==========================================================================
+   9. НАВИГАЦИЯ
+   ========================================================================== */
+const NAV_ITEMS = [
+  { route: 'dashboard',     label: 'Главная',      icon: 'home' },
+  { route: 'products',      label: 'Товары',       icon: 'box' },
+  { route: 'orders',        label: 'Заказы',       icon: 'cart' },
+  { route: 'analytics',     label: 'Аналитика',    icon: 'chart' },
+  { route: 'notifications', label: 'Уведомления',  icon: 'bell' },
+  { route: 'settings',      label: 'Настройки',    icon: 'gear' }
+];
+const MOBILE_NAV = ['dashboard', 'products', 'orders', 'notifications'];
+
+function renderNav() {
+  const unread = NotificationService.unreadCount();
+  $('#sideNav').innerHTML = NAV_ITEMS.map(it => {
+    const badge = (it.route === 'notifications' && unread) ? '<span class="nav-badge">' + unread + '</span>' : '';
+    return '<a class="nav-item' + (state.route === it.route ? ' active' : '') + '" data-route="' + it.route + '">' +
+      icon(it.icon, 19) + '<span>' + it.label + '</span>' + badge + '</a>';
+  }).join('');
+
+  $('#bottomNav').innerHTML = MOBILE_NAV.map(r => {
+    const it = NAV_ITEMS.find(x => x.route === r);
+    const badge = (r === 'notifications' && unread) ? '<span class="bn-badge">' + unread + '</span>' : '';
+    return '<div class="bn-item' + (state.route === r ? ' active' : '') + '" data-route="' + r + '">' +
+      icon(it.icon, 21) + '<span>' + it.label + '</span>' + badge + '</div>';
+  }).join('') +
+  '<div class="bn-item" data-route="__more">' + icon('gear', 21) + '<span>Ещё</span></div>';
+}
+
+function updateNotifBadge() {
+  const unread = NotificationService.unreadCount();
+  const dot = $('#notifDot');
+  if (dot) dot.hidden = unread === 0;
+  renderNav();
+}
+
+function navigate(route) {
+  if (route === '__more') {
+    $('#sidebar').classList.add('open');
+    $('#scrim').hidden = false;
+    return;
+  }
+  if (!PAGES[route]) return;
+  state.route = route;
+  location.hash = '#/' + route;
+  closeDrawer();
+  renderApp();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function closeDrawer() {
+  const sb = $('#sidebar');
+  if (sb) sb.classList.remove('open');
+  const sc = $('#scrim');
+  if (sc) sc.hidden = true;
+}
+
+/* ==========================================================================
+   10. СТРАНИЦЫ
+   ========================================================================== */
+
+/* ---------- 10.1 Главная ---------- */
+function pageDashboard() {
+  const f = state.filters.dashboard;
+  const days = f.range;
+  const from = daysAgo(days - 1);
+  const st = OrderService.stats(from, Infinity);
+  const inv = InventoryService.totals();
+
+  const series = AnalyticsService.series(days);
+  const chartData = series.map(b => {
+    const d = new Date(b.ts);
+    return {
+      label: fmtDate(b.ts),
+      short: pad2(d.getDate()) + '.' + pad2(d.getMonth() + 1),
+      value: b.revenue
+    };
+  });
+
+  const recent = OrderService.all().sort((a, b) => b.createdAt - a.createdAt).slice(0, 6);
+  const lowStock = state.products
+    .filter(p => p.status !== 'archived' && p.qty <= 5)
+    .sort((a, b) => a.qty - b.qty).slice(0, 5);
+
+  const activity = state.notifications.slice(0, 6);
+
+  return '' +
+  '<div class="page-head">' +
+    '<h1>Главная</h1>' +
+    '<p>Сводка по магазину «' + esc(state.seller ? state.seller.shop : '') + '» за выбранный период</p>' +
+  '</div>' +
+
+  '<div class="toolbar">' +
+    '<div class="chips" id="dashRange">' +
+      [[1, 'Сегодня'], [7, '7 дней'], [30, '30 дней'], [0, 'Всё время']].map(([v, l]) =>
+        '<div class="chip' + (f.range === v ? ' active' : '') + '" data-range="' + v + '">' + l + '</div>').join('') +
+    '</div>' +
+  '</div>' +
+
+  '<div class="grid stats mb">' +
+    statCard('Всего заказов', fmtNum(st.total), 'cart', 'за выбранный период') +
+    statCard('Новые заказы', fmtNum(st.new), 'plus2', 'требуют обработки') +
+    statCard('В обработке', fmtNum(st.processing), 'layers', 'сборка и доставка') +
+    statCard('Выполненные', fmtNum(st.done), 'check', 'успешно закрыты') +
+    statCard('Количество товаров', fmtNum(state.products.filter(p => p.status !== 'archived').length), 'box', 'активных позиций') +
+    statCard('Остаток товаров', fmtNum(inv.total) + ' шт.', 'layers', 'зарезервировано: ' + fmtNum(inv.reserved)) +
+    statCard('Выручка', fmtMoney(st.revenue), 'chart', 'по выполненным заказам') +
+    statCard('Средний чек', fmtMoney(st.avg), 'chart', 'по выполненным заказам') +
+  '</div>' +
+
+  '<div class="grid grid-2 mb">' +
+    '<div class="card">' +
+      '<div class="card-h"><h3>Выручка по дням</h3><span class="small muted">' + (days === 0 ? 'Всё время' : 'Последние ' + days + ' дн.') + '</span></div>' +
+      (chartData.length ? barChart(chartData, { format: fmtMoney, height: 220 }) : emptyState('chart', 'Нет данных', 'Пока нет выполненных заказов')) +
+    '</div>' +
+    '<div class="card">' +
+      '<div class="card-h"><h3>Заканчивается</h3></div>' +
+      (lowStock.length ? lowStock.map(p =>
+        '<div class="kv"><span class="k" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' +
+        '<span class="link" data-product="' + esc(p.id) + '">' + esc(p.name) + '</span></span>' +
+        '<span class="badge ' + (p.qty === 0 ? 'b-err' : 'b-warn') + '">' + p.qty + ' шт.</span></div>').join('')
+        : '<p class="muted small" style="margin:0">Все товары в наличии</p>') +
+    '</div>' +
+  '</div>' +
+
+  '<div class="card mb">' +
+    '<div class="card-h"><h3>Последние заказы</h3>' +
+      '<button class="btn btn-sm btn-ghost" data-route="orders">Все заказы</button></div>' +
+    (recent.length ? '<div class="table-wrap"><table class="tbl">' +
+      '<thead><tr><th>Номер</th><th>Дата</th><th>Покупатель</th><th>Позиции</th><th class="num">Сумма</th><th>Статус</th></tr></thead><tbody>' +
+      recent.map(o => '<tr>' +
+        '<td><span class="link" data-order="' + esc(o.id) + '">' + esc(o.number) + '</span></td>' +
+        '<td>' + esc(fmtDateTime(o.createdAt)) + '</td>' +
+        '<td>' + esc(o.customerName) + '</td>' +
+        '<td>' + o.items.reduce((s, i) => s + i.qty, 0) + ' шт.</td>' +
+        '<td class="num">' + esc(fmtMoney(o.total)) + '</td>' +
+        '<td><span class="badge ' + ORDER_STATUS[o.status].cls + '">' + ORDER_STATUS[o.status].label + '</span></td>' +
+      '</tr>').join('') + '</tbody></table></div>'
+      : emptyState('cart', 'Заказов пока нет', 'Заказы появятся здесь, как только будут созданы')) +
+  '</div>' +
+
+  '<div class="card">' +
+    '<div class="card-h"><h3>Последние события</h3>' +
+      '<button class="btn btn-sm btn-ghost" data-route="notifications">Все уведомления</button></div>' +
+    (activity.length ? activity.map(n =>
+      '<div class="kv"><span class="k" style="flex:1"><b style="color:var(--text);font-weight:600">' + esc(n.title) + '</b>' +
+      (n.text ? '<br><span class="small">' + esc(n.text) + '</span>' : '') + '</span>' +
+      '<span class="small muted" style="white-space:nowrap">' + esc(relTime(n.at)) + '</span></div>').join('')
+      : '<p class="muted small" style="margin:0">Событий пока нет</p>') +
+  '</div>';
+}
+
+function statCard(label, value, iconName, hint) {
+  return '<div class="stat">' +
+    '<div class="ic">' + icon(iconName, 34) + '</div>' +
+    '<div class="lbl">' + esc(label) + '</div>' +
+    '<div class="val">' + esc(value) + '</div>' +
+    (hint ? '<div class="dlt">' + esc(hint) + '</div>' : '') +
+  '</div>';
+}
+
+/* ---------- 10.2 Товары ---------- */
+function pageProducts() {
+  const f = state.filters.products;
+  const list = ProductService.filtered();
+  const filters = [
+    ['all', 'Все товары'], ['active', 'Активные'], ['draft', 'Черновики'],
+    ['out', 'Нет в наличии'], ['low', 'Низкий остаток'], ['archived', 'Архив']
+  ];
+
+  return '' +
+  '<div class="page-head"><h1>Товары</h1><p>Управление каталогом, ценами, остатками и QR-кодами</p></div>' +
+
+  '<div class="toolbar">' +
+    '<div class="searchbox">' + icon('search', 18) +
+      '<input type="text" id="pSearch" placeholder="Поиск по названию, SKU, штрихкоду или ID" value="' + esc(f.q) + '">' +
+    '</div>' +
+    '<select class="mini" id="pSort">' +
+      [['created_desc','Сначала новые'],['created_asc','Сначала старые'],['name_asc','Название А–Я'],
+       ['name_desc','Название Я–А'],['price_desc','Цена по убыванию'],['price_asc','Цена по возрастанию'],
+       ['qty_desc','Остаток по убыванию'],['qty_asc','Остаток по возрастанию']]
+        .map(([v, l]) => '<option value="' + v + '"' + (f.sort === v ? ' selected' : '') + '>' + l + '</option>').join('') +
+    '</select>' +
+    '<button class="btn btn-primary" id="btnNewProduct">' + icon('plus', 18) + 'Создать товар</button>' +
+  '</div>' +
+
+  '<div class="chips mb">' +
+    filters.map(([v, l]) => '<div class="chip' + (f.status === v ? ' active' : '') + '" data-pfilter="' + v + '">' + l + '</div>').join('') +
+  '</div>' +
+
+  (list.length ? '<div class="grid grid-cards">' + list.map(productCard).join('') + '</div>'
+    : emptyState('box', state.products.length === 0 ? 'Каталог пуст' : 'Товары не найдены',
+        state.products.length === 0
+          ? 'Создайте первый товар, чтобы начать работу'
+          : 'Измените параметры поиска или фильтры',
+        '<button class="btn btn-primary" data-action="new-product">Создать товар</button>'));
+}
+
+function productCard(p) {
+  const img = p.image || placeholderImage(p.name, p.name.length);
+  const statusKey = p.status === 'archived' ? 'archived' : (p.qty === 0 ? 'out' : p.status);
+  const st = PRODUCT_STATUS[statusKey] || PRODUCT_STATUS.active;
+  const avail = ProductService.available(p);
+  return '<div class="pcard">' +
+    '<div class="thumb"><img src="' + esc(img) + '" alt="' + esc(p.name) + '" loading="lazy"></div>' +
+    '<div class="body">' +
+      '<span class="badge ' + st.cls + '" style="align-self:flex-start">' + st.label + '</span>' +
+      '<div class="nm">' + esc(p.name) + '</div>' +
+      '<div class="meta"><span>' + esc(p.sku) + '</span><span>·</span><span>' + esc(p.category) + '</span></div>' +
+      '<div class="price">' + esc(fmtMoney(p.price)) + (p.oldPrice > p.price ? '<small>' + esc(fmtMoney(p.oldPrice)) + '</small>' : '') + '</div>' +
+      '<div class="meta"><span>Остаток: <b style="color:var(--text)">' + p.qty + '</b></span>' +
+        '<span>Доступно: <b style="color:var(--text)">' + avail + '</b></span>' +
+        (p.reserved ? '<span>Резерв: <b style="color:var(--text)">' + p.reserved + '</b></span>' : '') + '</div>' +
+      '<div class="acts">' +
+        '<button class="btn btn-sm btn-ghost" data-product="' + esc(p.id) + '" style="flex:1">Открыть</button>' +
+        '<button class="btn btn-sm btn-ghost btn-icon" data-qr-product="' + esc(p.id) + '" title="QR-код">' + icon('qr', 16) + '</button>' +
+        '<button class="btn btn-sm btn-ghost btn-icon" data-edit-product="' + esc(p.id) + '" title="Редактировать">' + icon('edit', 16) + '</button>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+function productFormHTML(p) {
+  p = p || {};
+  const v = (k, d) => esc(p[k] !== undefined && p[k] !== null ? p[k] : (d || ''));
+  return '' +
+  '<div class="field"><label>Название товара *</label><input id="f_name" type="text" value="' + v('name') + '" placeholder="Например: Наушники беспроводные"></div>' +
+  '<div class="row row-2">' +
+    '<div class="field"><label>Артикул продавца (SKU)</label><input id="f_sku" type="text" value="' + v('sku') + '" placeholder="Оставьте пустым — сгенерируем"></div>' +
+    '<div class="field"><label>Категория *</label><select id="f_category">' +
+      CATEGORIES.map(c => '<option' + (p.category === c ? ' selected' : '') + '>' + c + '</option>').join('') + '</select></div>' +
+  '</div>' +
+  '<div class="field"><label>Описание</label><textarea id="f_description" placeholder="Краткое описание товара">' + v('description') + '</textarea></div>' +
+  '<div class="row row-3">' +
+    '<div class="field"><label>Цена, ₽ *</label><input id="f_price" type="number" min="0" step="1" value="' + v('price', 0) + '"></div>' +
+    '<div class="field"><label>Старая цена, ₽</label><input id="f_oldPrice" type="number" min="0" step="1" value="' + v('oldPrice', 0) + '"></div>' +
+    '<div class="field"><label>Количество, шт. *</label><input id="f_qty" type="number" min="0" step="1" value="' + v('qty', 0) + '"></div>' +
+  '</div>' +
+  '<div class="row row-2">' +
+    '<div class="field"><label>Штрихкод</label><input id="f_barcode" type="text" value="' + v('barcode') + '" placeholder="Оставьте пустым — сгенерируем"></div>' +
+    '<div class="field"><label>Бренд</label><input id="f_brand" type="text" value="' + v('brand') + '"></div>' +
+  '</div>' +
+  '<div class="row row-2">' +
+    '<div class="field"><label>Цвет</label><input id="f_color" type="text" value="' + v('color') + '"></div>' +
+    '<div class="field"><label>Размер</label><input id="f_size" type="text" value="' + v('size') + '"></div>' +
+  '</div>' +
+  '<div class="row row-3">' +
+    '<div class="field"><label>Вес, кг</label><input id="f_weight" type="number" min="0" step="0.01" value="' + v('weight', 0) + '"></div>' +
+    '<div class="field"><label>Длина, см</label><input id="f_length" type="number" min="0" step="1" value="' + v('length', 0) + '"></div>' +
+    '<div class="field"><label>Ширина, см</label><input id="f_width" type="number" min="0" step="1" value="' + v('width', 0) + '"></div>' +
+  '</div>' +
+  '<div class="row row-2">' +
+    '<div class="field"><label>Высота, см</label><input id="f_height" type="number" min="0" step="1" value="' + v('height', 0) + '"></div>' +
+    '<div class="field"><label>Изображение товара</label>' +
+      '<input type="file" id="f_image" accept="image/*" style="padding:8px">' +
+      '<div class="hint">Необязательно. Если не выбрано, будет использован сгенерированный плейсхолдер.</div>' +
+    '</div>' +
+  '</div>' +
+  '<div id="f_imgPreview" style="margin-bottom:14px"></div>' +
+  '<div id="f_error"></div>';
+}
+
+function openProductForm(id) {
+  const p = id ? ProductService.byId(id) : null;
+  let imageData = p && p.image ? p.image : null;
+
+  showModal({
+    title: p ? 'Редактирование товара' : 'Новый товар',
+    wide: true,
+    body: productFormHTML(p),
+    footer:
+      '<button class="btn btn-ghost" data-close>Отмена</button>' +
+      (p ? '' : '<button class="btn btn-ghost" id="mSaveDraft">Сохранить черновик</button>') +
+      '<button class="btn btn-primary" id="mSaveProduct">' + (p ? 'Сохранить изменения' : 'Сохранить товар') + '</button>',
+    onMount(backdrop, close) {
+      const file = backdrop.querySelector('#f_image');
+      const preview = backdrop.querySelector('#f_imgPreview');
+
+      function paintPreview() {
+        const src = imageData || placeholderImage(backdrop.querySelector('#f_name').value || 'Товар', 3);
+        preview.innerHTML = '<div style="display:flex;gap:12px;align-items:center">' +
+          '<img src="' + esc(src) + '" style="width:80px;height:80px;border-radius:12px;object-fit:cover;border:1px solid var(--border)">' +
+          '<span class="small muted">Предпросмотр изображения</span></div>';
+      }
+      paintPreview();
+      backdrop.querySelector('#f_name').addEventListener('input', paintPreview);
+
+      file.addEventListener('change', () => {
+        const f = file.files && file.files[0];
+        if (!f) return;
+        if (f.size > 1.5 * 1024 * 1024) {
+          toast('Файл слишком большой', 'Выберите изображение до 1,5 МБ', 'warn');
+          file.value = '';
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => { imageData = reader.result; paintPreview(); };
+        reader.readAsDataURL(f);
+      });
+
+      function collect(status) {
+        const g = sel => backdrop.querySelector(sel);
+        return {
+          name: g('#f_name').value.trim(),
+          sku: g('#f_sku').value.trim(),
+          category: g('#f_category').value,
+          description: g('#f_description').value.trim(),
+          price: Number(g('#f_price').value),
+          oldPrice: Number(g('#f_oldPrice').value),
+          qty: Number(g('#f_qty').value),
+          barcode: g('#f_barcode').value.trim(),
+          brand: g('#f_brand').value.trim(),
+          color: g('#f_color').value.trim(),
+          size: g('#f_size').value.trim(),
+          weight: Number(g('#f_weight').value),
+          length: Number(g('#f_length').value),
+          width: Number(g('#f_width').value),
+          height: Number(g('#f_height').value),
+          image: imageData,
+          status: status
+        };
+      }
+
+      function validate(data) {
+        const errs = [];
+        if (!data.name) errs.push('Укажите название товара');
+        if (!(data.price >= 0) || isNaN(data.price)) errs.push('Цена не может быть отрицательной');
+        if (!(data.qty >= 0) || isNaN(data.qty)) errs.push('Количество не может быть отрицательным');
+        if (data.oldPrice < 0) errs.push('Старая цена не может быть отрицательной');
+        if (data.sku && state.products.some(x => x.sku.toLowerCase() === data.sku.toLowerCase() && (!p || x.id !== p.id))) {
+          errs.push('Товар с таким SKU уже существует');
+        }
+        return errs;
+      }
+
+      async function save(status) {
+        const box = backdrop.querySelector('#f_error');
+        const data = collect(status);
+        const errs = validate(data);
+        if (errs.length) {
+          box.innerHTML = '<div class="err-text">' + errs.map(esc).join('<br>') + '</div>';
+          return;
+        }
+        try {
+          if (p) {
+            await ProductService.update(p.id, data);
+            toast('Товар обновлён', data.name);
+          } else {
+            const np = await ProductService.create(data);
+            toast('Товар создан', np.name + ' · ' + np.sku);
+          }
+          close();
+          renderApp();
+        } catch (e) {
+          box.innerHTML = '<div class="err-text">' + esc(e.message) + '</div>';
+        }
+      }
+
+      backdrop.querySelector('#mSaveProduct').onclick = () => save('active');
+      const draftBtn = backdrop.querySelector('#mSaveDraft');
+      if (draftBtn) draftBtn.onclick = () => save('draft');
+    }
+  });
+}
+
+function openProductDetails(id) {
+  const p = ProductService.byId(id);
+  if (!p) { toast('Товар не найден', '', 'err'); return; }
+  const payload = QrService.productPayload(p.id);
+  const st = PRODUCT_STATUS[p.status === 'active' && p.qty === 0 ? 'out' : p.status] || PRODUCT_STATUS.active;
+  const movements = InventoryService.forProduct(p.id).slice(0, 8);
+
+  showModal({
+    title: p.name,
+    wide: true,
+    body:
+      '<div class="flex" style="gap:16px;align-items:flex-start;flex-wrap:wrap">' +
+        '<img src="' + esc(p.image || placeholderImage(p.name, p.name.length)) + '" style="width:110px;height:110px;border-radius:14px;object-fit:cover;border:1px solid var(--border);flex:0 0 auto">' +
+        '<div style="flex:1;min-width:200px">' +
+          '<span class="badge ' + st.cls + '">' + st.label + '</span>' +
+          '<div style="font-size:22px;font-weight:800;margin-top:8px">' + esc(fmtMoney(p.price)) + '</div>' +
+          '<div class="small muted" style="margin-top:4px">' + esc(p.category) + (p.brand ? ' · ' + esc(p.brand) : '') + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="divider"></div>' +
+      '<div class="row row-2">' +
+        '<div>' +
+          kv('Артикул (SKU)', p.sku) +
+          kv('Штрихкод', p.barcode || '—') +
+          kv('ID товара', p.id) +
+          kv('Остаток', p.qty + ' шт.') +
+          kv('Зарезервировано', p.reserved + ' шт.') +
+          kv('Доступно', ProductService.available(p) + ' шт.') +
+        '</div>' +
+        '<div>' +
+          kv('Продано', (p.sold || 0) + ' шт.') +
+          kv('Возвраты', (p.returned || 0) + ' шт.') +
+          kv('Вес', (p.weight || 0) + ' кг') +
+          kv('Габариты', (p.length || 0) + '×' + (p.width || 0) + '×' + (p.height || 0) + ' см') +
+          kv('Создан', fmtDateTime(p.createdAt)) +
+          kv('Обновлён', fmtDateTime(p.updatedAt)) +
+        '</div>' +
+      '</div>' +
+      (p.description ? '<div class="divider"></div><div class="small muted">' + esc(p.description) + '</div>' : '') +
+      '<div class="divider"></div>' +
+      '<div style="text-align:center">' +
+        '<div class="qr-box" id="qrHolder"></div>' +
+        '<div class="small muted" style="margin-top:8px;word-break:break-all;font-family:ui-monospace,monospace">' + esc(payload) + '</div>' +
+      '</div>' +
+      '<div class="flex" style="justify-content:center;flex-wrap:wrap;margin-top:16px;gap:8px">' +
+        '<button class="btn btn-sm btn-ghost" id="qrDownload">' + icon('download', 16) + 'Скачать QR</button>' +
+        '<button class="btn btn-sm btn-ghost" id="qrPrint">' + icon('print', 16) + 'Печать этикетки</button>' +
+        '<button class="btn btn-sm btn-ghost" id="qrCopy">' + icon('copy', 16) + 'Копировать ID</button>' +
+      '</div>' +
+      '<div class="divider"></div>' +
+      '<h4 style="font-size:13px;margin-bottom:8px">Последние движения по складу</h4>' +
+      (movements.length ? movements.map(m =>
+        '<div class="kv"><span class="k">' + esc(fmtDateTime(m.at)) + ' · ' + esc(m.reason) + '</span>' +
+        '<span class="v">' + (m.type === 'in' ? '+' : m.type === 'out' || m.type === 'sale' ? '−' : '·') + m.qty + '</span></div>').join('')
+        : '<p class="small muted" style="margin:0">Движений пока нет</p>'),
+    footer:
+      '<button class="btn btn-ghost btn-danger" id="pDelete">' + icon('trash', 16) + 'Удалить</button>' +
+      '<button class="btn btn-ghost" id="pArchive">В архив</button>' +
+      '<button class="btn btn-primary" id="pEdit">' + icon('edit', 16) + 'Редактировать</button>',
+    onMount(backdrop, close) {
+      const holder = backdrop.querySelector('#qrHolder');
+      const canvas = qrCanvas(payload, 240, 3);
+      canvas.style.width = '200px'; canvas.style.height = '200px';
+      holder.appendChild(canvas);
+
+      backdrop.querySelector('#qrDownload').onclick = () => {
+        const full = qrCanvas(payload, 1024, 4);
+        full.toBlob(blob => {
+          download('vexa-qr-' + p.sku + '.png', blob);
+          toast('QR-код скачан', p.sku + '.png');
+        });
+      };
+
+      backdrop.querySelector('#qrPrint').onclick = () => printProductLabel(p, payload);
+
+      backdrop.querySelector('#qrCopy').onclick = async () => {
+        try {
+          await navigator.clipboard.writeText(payload);
+          toast('Скопировано', payload);
+        } catch (e) {
+          const ta = document.createElement('textarea');
+          ta.value = payload; document.body.appendChild(ta); ta.select();
+          document.execCommand('copy'); ta.remove();
+          toast('Скопировано', payload);
+        }
+      };
+
+      backdrop.querySelector('#pEdit').onclick = () => { close(); openProductForm(p.id); };
+      backdrop.querySelector('#pArchive').onclick = async () => {
+        const ok = await confirmDialog('Архивировать товар?', 'Товар «' + p.name + '» будет скрыт из активного каталога.', 'Архивировать');
+        if (!ok) return;
+        await ProductService.archive(p.id);
+        toast('Товар архивирован', p.name);
+        close(); renderApp();
+      };
+      backdrop.querySelector('#pDelete').onclick = async () => {
+        const ok = await confirmDialog('Удалить товар?',
+          'Товар «' + p.name + '» будет удалён из каталога. Исторические записи заказов останутся без изменений.', 'Удалить', true);
+        if (!ok) return;
+        await ProductService.remove(p.id);
+        toast('Товар удалён', p.name, 'warn');
+        close(); renderApp();
+      };
+    }
+  });
+}
+
+function kv(k, v) {
+  return '<div class="kv"><span class="k">' + esc(k) + '</span><span class="v">' + esc(v) + '</span></div>';
+}
+
+function printProductLabel(p, payload) {
+  const c = qrCanvas(payload, 600, 4);
+  const dataUrl = c.toDataURL('image/png');
+  const html =
+    '<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><title>Этикетка ' + esc(p.sku) + '</title>' +
+    '<style>body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;padding:24px}' +
+    '.label{border:1.5px solid #222;border-radius:12px;padding:18px;display:flex;gap:18px;align-items:center;max-width:420px}' +
+    '.logo{font-weight:800;color:#4C1D95;font-size:18px;letter-spacing:.04em}' +
+    '.n{font-weight:800;font-size:16px;margin:6px 0 4px}' +
+    '.m{font-size:12px;color:#444;font-family:ui-monospace,Menlo,monospace}' +
+    'img{width:160px;height:160px;image-rendering:pixelated}' +
+    '</style></head><body>' +
+    '<div class="label">' +
+      '<img src="' + dataUrl + '" alt="QR">' +
+      '<div><div class="logo">VEXA</div>' +
+      '<div class="n">' + esc(p.name) + '</div>' +
+      '<div class="m">SKU: ' + esc(p.sku) + '</div>' +
+      (p.barcode ? '<div class="m">Штрихкод: ' + esc(p.barcode) + '</div>' : '') +
+      '<div class="m">' + esc(fmtMoney(p.price)) + '</div>' +
+      '</div>' +
+    '</div>' +
+    '<script>window.onload=function(){setTimeout(function(){window.print();},250);};<\/script>' +
+    '</body></html>';
+  const w = window.open('', '_blank');
+  if (!w) { toast('Печать недоступна', 'Разрешите всплывающие окна', 'warn'); return; }
+  w.document.open(); w.document.write(html); w.document.close();
+}
+
+/* ---------- 10.3 Заказы ---------- */
+function pageOrders() {
+  const f = state.filters.orders;
+  const list = OrderService.filtered();
+  const chips = [['all', 'Все']].concat(Object.keys(ORDER_STATUS).map(k => [k, ORDER_STATUS[k].label]));
+  const counts = {};
+  state.orders.forEach(o => { counts[o.status] = (counts[o.status] || 0) + 1; });
+
+  return '' +
+  '<div class="page-head"><h1>Заказы</h1><p>Просмотр заказов и управление статусами</p></div>' +
+
+  '<div class="toolbar">' +
+    '<div class="searchbox">' + icon('search', 18) +
+      '<input type="text" id="oSearch" placeholder="Поиск по номеру, покупателю или товару" value="' + esc(f.q) + '">' +
+    '</div>' +
+    '<select class="mini" id="oSort">' +
+      [['date_desc','Сначала новые'],['date_asc','Сначала старые'],['total_desc','Сумма по убыванию'],['total_asc','Сумма по возрастанию']]
+        .map(([v, l]) => '<option value="' + v + '"' + (f.sort === v ? ' selected' : '') + '>' + l + '</option>').join('') +
+    '</select>' +
+  '</div>' +
+
+  '<div class="chips mb">' +
+    chips.map(([v, l]) => '<div class="chip' + (f.status === v ? ' active' : '') + '" data-ofilter="' + v + '">' +
+      l + (counts[v] ? ' · ' + counts[v] : '') + '</div>').join('') +
+  '</div>' +
+
+  (list.length ? '<div class="grid grid-cards">' + list.map(orderCard).join('') + '</div>'
+    : emptyState('cart', state.orders.length === 0 ? 'Заказов пока нет' : 'Заказы не найдены',
+        state.orders.length === 0
+          ? 'Заказы появятся здесь после их создания'
+          : 'Измените фильтры или поисковый запрос'));
+}
+
+function orderCard(o) {
+  const st = ORDER_STATUS[o.status];
+  const items = o.items.reduce((s, i) => s + i.qty, 0);
+  return '<div class="pcard" style="cursor:default">' +
+    '<div class="body">' +
+      '<div class="flex-between">' +
+        '<span class="link" data-order="' + esc(o.id) + '" style="font-weight:700">' + esc(o.number) + '</span>' +
+        '<span class="badge ' + st.cls + '">' + st.label + '</span>' +
+      '</div>' +
+      '<div class="meta">' + esc(fmtDateTime(o.createdAt)) + '</div>' +
+      '<div style="font-weight:600;font-size:13.5px">' + esc(o.customerName) + '</div>' +
+      '<div class="small muted">' + o.items.length + ' поз. · ' + items + ' шт.</div>' +
+      '<div class="price">' + esc(fmtMoney(o.total)) + '</div>' +
+      '<div class="acts">' +
+        '<button class="btn btn-sm btn-ghost" data-order="' + esc(o.id) + '" style="flex:1">Открыть</button>' +
+        '<button class="btn btn-sm btn-ghost btn-icon" data-qr-order="' + esc(o.id) + '" title="QR-код заказа">' + icon('qr', 16) + '</button>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+function openOrderDetails(id) {
+  const o = OrderService.byId(id);
+  if (!o) { toast('Заказ не найден', '', 'err'); return; }
+  const st = ORDER_STATUS[o.status];
+  const next = TRANSITIONS[o.status] || [];
+  const payload = QrService.orderPayload(o.id);
+
+  const statusButtons = next.map(s => {
+    const cls = s === 'cancelled' ? 'btn-danger' : 'btn-primary';
+    return '<button class="btn btn-sm ' + cls + '" data-setstatus="' + s + '">' + ORDER_STATUS[s].label + '</button>';
+  }).join('');
+
+  showModal({
+    title: 'Заказ ' + o.number,
+    wide: true,
+    body:
+      '<div class="flex-between mb">' +
+        '<span class="badge ' + st.cls + '" style="font-size:13px;padding:6px 14px">' + st.label + '</span>' +
+        '<span class="small muted">' + esc(fmtDateTime(o.createdAt)) + '</span>' +
+      '</div>' +
+      '<div class="row row-2">' +
+        '<div>' +
+          '<h4 style="font-size:13px;margin-bottom:8px">Покупатель</h4>' +
+          kv('Имя', o.customerName) +
+          (o.customerPhone ? kv('Телефон', o.customerPhone) : '') +
+          (o.customerEmail ? kv('Email', o.customerEmail) : '') +
+        '</div>' +
+        '<div>' +
+          '<h4 style="font-size:13px;margin-bottom:8px">Доставка</h4>' +
+          kv('Способ', o.delivery.method) +
+          (o.delivery.address ? kv('Адрес', o.delivery.address) : '') +
+          kv('ID заказа', o.id) +
+        '</div>' +
+      '</div>' +
+      '<div class="divider"></div>' +
+      '<h4 style="font-size:13px;margin-bottom:8px">Состав заказа</h4>' +
+      '<div class="table-wrap"><table class="tbl"><thead><tr><th>Товар</th><th>SKU</th><th class="num">Цена</th><th class="num">Кол-во</th><th class="num">Сумма</th></tr></thead><tbody>' +
+      o.items.map(i => '<tr><td>' + esc(i.name) + '</td><td class="small muted">' + esc(i.sku || '') + '</td>' +
+        '<td class="num">' + esc(fmtMoney(i.price)) + '</td><td class="num">' + i.qty + '</td>' +
+        '<td class="num">' + esc(fmtMoney(i.price * i.qty)) + '</td></tr>').join('') +
+      '</tbody></table></div>' +
+      '<div class="mt">' +
+        kv('Подытог', fmtMoney(o.subtotal)) +
+        (o.discount ? kv('Скидка', '− ' + fmtMoney(o.discount)) : '') +
+        '<div class="kv" style="font-size:16px"><span class="k" style="font-weight:700;color:var(--text)">Итого</span>' +
+        '<span class="v" style="color:var(--p700);font-weight:800">' + esc(fmtMoney(o.total)) + '</span></div>' +
+      '</div>' +
+      (o.note ? '<div class="divider"></div><div class="small"><b>Комментарий:</b> ' + esc(o.note) + '</div>' : '') +
+      '<div class="divider"></div>' +
+      '<h4 style="font-size:13px;margin-bottom:8px">История статусов</h4>' +
+      o.history.slice().reverse().map(h =>
+        '<div class="kv"><span class="k">' + esc(fmtDateTime(h.at)) + (h.note ? ' · ' + esc(h.note) : '') + '</span>' +
+        '<span class="badge ' + (ORDER_STATUS[h.status] ? ORDER_STATUS[h.status].cls : 'b-gray') + '">' +
+        esc(ORDER_STATUS[h.status] ? ORDER_STATUS[h.status].label : h.status) + '</span></div>').join('') +
+      '<div class="divider"></div>' +
+      '<div style="text-align:center">' +
+        '<div class="qr-box" id="qrHolderOrder"></div>' +
+        '<div class="small muted" style="margin-top:8px;font-family:ui-monospace,monospace;word-break:break-all">' + esc(payload) + '</div>' +
+      '</div>' +
+      '<div class="flex" style="justify-content:center;flex-wrap:wrap;margin-top:14px;gap:8px">' +
+        '<button class="btn btn-sm btn-ghost" id="ordDownload">' + icon('download', 16) + 'Скачать QR</button>' +
+        '<button class="btn btn-sm btn-ghost" id="ordPrint">' + icon('print', 16) + 'Печать заказа</button>' +
+      '</div>',
+    footer:
+      (statusButtons ? '<div style="flex:1;display:flex;gap:8px;flex-wrap:wrap">' + statusButtons + '</div>' : '<div style="flex:1"></div>'),
+    onMount(backdrop, close) {
+      const holder = backdrop.querySelector('#qrHolderOrder');
+      const c = qrCanvas(payload, 240, 3);
+      c.style.width = '180px'; c.style.height = '180px';
+      holder.appendChild(c);
+
+      backdrop.querySelector('#ordDownload').onclick = () => {
+        const full = qrCanvas(payload, 1024, 4);
+        full.toBlob(b => { download('vexa-order-' + o.number + '.png', b); toast('QR-код заказа скачан', o.number + '.png'); });
+      };
+      backdrop.querySelector('#ordPrint').onclick = () => printOrderSheet(o, payload);
+
+      $$('[data-setstatus]', backdrop).forEach(btn => {
+        btn.onclick = async () => {
+          const s = btn.getAttribute('data-setstatus');
+          if (s === 'cancelled') {
+            const ok = await confirmDialog('Отменить заказ?',
+              'Заказ ' + o.number + ' будет отменён. Зарезервированные товары вернутся в доступный остаток.', 'Отменить заказ', true);
+            if (!ok) return;
+          }
+          try {
+            await OrderService.changeStatus(o.id, s);
+            toast('Статус обновлён', o.number + ' → ' + ORDER_STATUS[s].label);
+            close();
+            renderApp();
+          } catch (e) {
+            toast('Ошибка', e.message, 'err');
+          }
+        };
+      });
+    }
+  });
+}
+
+function printOrderSheet(o, payload) {
+  const c = qrCanvas(payload, 600, 4);
+  const url = c.toDataURL('image/png');
+  const rows = o.items.map(i =>
+    '<tr><td>' + esc(i.name) + '</td><td style="text-align:right">' + i.qty + '</td>' +
+    '<td style="text-align:right">' + esc(fmtMoney(i.price)) + '</td>' +
+    '<td style="text-align:right">' + esc(fmtMoney(i.price * i.qty)) + '</td></tr>').join('');
+  const html = '<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><title>' + esc(o.number) + '</title>' +
+    '<style>body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;padding:28px;color:#111}' +
+    'table{width:100%;border-collapse:collapse;margin-top:14px;font-size:13px}' +
+    'th,td{border-bottom:1px solid #ddd;padding:8px 6px;text-align:left}' +
+    'th{background:#F5F3FF}.hd{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}' +
+    '.logo{font-weight:800;color:#4C1D95;font-size:20px}.tot{font-size:18px;font-weight:800;text-align:right;margin-top:10px}' +
+    '</style></head><body>' +
+    '<div class="hd"><div><div class="logo">VEXA</div><h2 style="margin:6px 0 2px">Заказ ' + esc(o.number) + '</h2>' +
+    '<div style="color:#555;font-size:13px">' + esc(fmtDateTime(o.createdAt)) + ' · ' + esc(ORDER_STATUS[o.status].label) + '</div></div>' +
+    '<img src="' + url + '" style="width:140px;height:140px"></div>' +
+    '<p style="font-size:13px"><b>Покупатель:</b> ' + esc(o.customerName) +
+    (o.customerPhone ? ' · ' + esc(o.customerPhone) : '') + '<br>' +
+    '<b>Доставка:</b> ' + esc(o.delivery.method) + (o.delivery.address ? ', ' + esc(o.delivery.address) : '') + '</p>' +
+    '<table><thead><tr><th>Товар</th><th style="text-align:right">Кол-во</th><th style="text-align:right">Цена</th><th style="text-align:right">Сумма</th></tr></thead>' +
+    '<tbody>' + rows + '</tbody></table>' +
+    '<div class="tot">Итого: ' + esc(fmtMoney(o.total)) + '</div>' +
+    '<script>window.onload=function(){setTimeout(function(){window.print();},250);};<\/script>' +
+    '</body></html>';
+  const w = window.open('', '_blank');
+  if (!w) { toast('Печать недоступна', 'Разрешите всплывающие окна', 'warn'); return; }
+  w.document.open(); w.document.write(html); w.document.close();
+}
+
+/* ---------- 10.4 Аналитика ---------- */
+function pageAnalytics() {
+  const f = state.filters.analytics;
+  let from, to;
+  if (f.range === 'custom' && f.from && f.to) {
+    from = startOfDay(new Date(f.from).getTime());
+    to = startOfDay(new Date(f.to).getTime()) + 86399999;
+  } else {
+    const days = typeof f.range === 'number' ? f.range : 7;
+    from = daysAgo(days - 1);
+    to = Infinity;
+  }
+  const a = AnalyticsService.compute(from, to);
+  const series = (f.range === 'custom' && f.from && f.to)
+    ? AnalyticsService.series(0, new Date(f.from).getTime(), new Date(f.to).getTime())
+    : AnalyticsService.series(typeof f.range === 'number' ? f.range : 7);
+
+  const revenueData = series.map(b => {
+    const d = new Date(b.ts);
+    return { label: fmtDate(b.ts), short: pad2(d.getDate()) + '.' + pad2(d.getMonth() + 1), value: b.revenue };
+  });
+  const ordersData = series.map(b => {
+    const d = new Date(b.ts);
+    return { label: fmtDate(b.ts), short: pad2(d.getDate()) + '.' + pad2(d.getMonth() + 1), value: b.orders };
+  });
+
+  const maxTop = a.top.length ? a.top[0].qty : 1;
+
+  return '' +
+  '<div class="page-head"><h1>Аналитика</h1><p>Показатели продаж рассчитываются по фактическим данным заказов</p></div>' +
+
+  '<div class="toolbar">' +
+    '<div class="chips">' +
+      [[7, '7 дней'], [30, '30 дней'], [90, '90 дней'], ['custom', 'Свой период']]
+        .map(([v, l]) => '<div class="chip' + (String(f.range) === String(v) ? ' active' : '') + '" data-arange="' + v + '">' + l + '</div>').join('') +
+    '</div>' +
+    (f.range === 'custom'
+      ? '<div class="flex" style="gap:8px"><input type="date" id="aFrom" value="' + esc(f.from || '') + '" style="width:auto">' +
+        '<span class="muted">—</span><input type="date" id="aTo" value="' + esc(f.to || '') + '" style="width:auto">' +
+        '<button class="btn btn-sm btn-primary" id="aApply">Применить</button></div>'
+      : '') +
+  '</div>' +
+
+  '<div class="grid stats mb">' +
+    statCard('Выручка', fmtMoney(a.revenue), 'chart', 'только выполненные заказы') +
+    statCard('Заказов всего', fmtNum(a.ordersCount), 'cart', 'за выбранный период') +
+    statCard('Средний чек', fmtMoney(a.avg), 'chart', 'по выполненным заказам') +
+    statCard('Продано единиц', fmtNum(a.itemsSold) + ' шт.', 'box', 'в выполненных заказах') +
+    statCard('Выполнено', fmtNum(a.doneCount), 'check', 'успешно закрыты') +
+    statCard('Отменено', fmtNum(a.cancelledCount), 'warn', 'не учитываются в выручке') +
+    statCard('Активных заказов', fmtNum(state.orders.filter(o => ['new','pending','assembling','ready','shipped'].indexOf(o.status) >= 0).length), 'layers', 'в работе сейчас') +
+    statCard('Позиций в каталоге', fmtNum(state.products.filter(p => p.status !== 'archived').length), 'box', 'активных товаров') +
+  '</div>' +
+
+  '<div class="card mb">' +
+    '<div class="card-h"><h3>Выручка по дням</h3><span class="small muted">Учитываются только выполненные заказы</span></div>' +
+    (revenueData.length ? barChart(revenueData, { format: fmtMoney, height: 240 })
+      : emptyState('chart', 'Нет данных', 'Недостаточно данных для построения графика')) +
+  '</div>' +
+
+  '<div class="grid grid-2">' +
+    '<div class="card">' +
+      '<div class="card-h"><h3>Количество заказов</h3></div>' +
+      (ordersData.length ? barChart(ordersData, { format: v => v + ' шт.', height: 200 })
+        : emptyState('cart', 'Нет данных', 'Заказы за период отсутствуют')) +
+    '</div>' +
+    '<div class="card">' +
+      '<div class="card-h"><h3>Самые продаваемые товары</h3></div>' +
+      (a.top.length ? '<div class="bars-list">' + a.top.slice(0, 8).map(t =>
+        '<div class="bar-row"><div class="top"><span>' + esc(t.name) + '</span>' +
+        '<span class="muted">' + t.qty + ' шт. · ' + esc(fmtMoney(t.revenue)) + '</span></div>' +
+        '<div class="track"><i style="width:' + Math.round(t.qty / maxTop * 100) + '%"></i></div></div>').join('') + '</div>'
+        : '<p class="small muted" style="margin:0">Пока нет выполненных заказов</p>') +
+    '</div>' +
+  '</div>';
+}
+
+/* ---------- 10.5 Уведомления ---------- */
+function pageNotifications() {
+  const list = state.notifications;
+  const typeIcon = {
+    order: 'cart', stock: 'box', product: 'box', system: 'gear', qr: 'qr'
+  };
+  return '' +
+  '<div class="page-head"><h1>Уведомления</h1><p>События магазина, остатки и статусы заказов</p></div>' +
+
+  '<div class="toolbar">' +
+    '<button class="btn btn-ghost" id="nMarkAll"' + (list.some(n => !n.read) ? '' : ' disabled') + '>' + icon('check', 17) + 'Отметить все прочитанными</button>' +
+    '<button class="btn btn-ghost btn-danger" id="nClear"' + (list.length ? '' : ' disabled') + '>' + icon('trash', 17) + 'Очистить</button>' +
+  '</div>' +
+
+  (list.length ? '<div class="card" style="padding:8px">' + list.map(n =>
+    '<div class="kv" style="padding:12px 10px;align-items:flex-start;' + (n.read ? 'opacity:.62' : '') + '">' +
+      '<span style="flex:0 0 auto;width:34px;height:34px;border-radius:10px;background:var(--lav100);color:var(--p700);display:flex;align-items:center;justify-content:center">' +
+        icon(typeIcon[n.type] || 'bell', 17) + '</span>' +
+      '<span class="k" style="flex:1;min-width:0">' +
+        '<b style="color:var(--text);font-weight:600;display:block">' + esc(n.title) + '</b>' +
+        (n.text ? '<span class="small">' + esc(n.text) + '</span>' : '') +
+      '</span>' +
+      '<span style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">' +
+        '<span class="small muted" style="white-space:nowrap">' + esc(relTime(n.at)) + '</span>' +
+        (n.read ? '' : '<button class="btn btn-sm btn-ghost" data-nread="' + esc(n.id) + '">Прочитано</button>') +
+      '</span>' +
+    '</div>').join('') + '</div>'
+    : emptyState('bell', 'Уведомлений нет', 'Здесь появятся события: новые заказы, изменения статусов, низкие остатки'));
+}
+
+/* ---------- 10.6 Настройки ---------- */
+function pageSettings() {
+  const s = state.seller || {};
+  const theme = document.documentElement.getAttribute('data-theme');
+  const notifPrefs = JSON.parse(localStorage.getItem('vexa_notif_prefs') || '{"orders":true,"stock":true,"system":true}');
+
+  return '' +
+  '<div class="page-head"><h1>Настройки</h1><p>Профиль продавца, магазин, внешний вид и данные приложения</p></div>' +
+
+  '<div class="grid grid-2" style="align-items:start">' +
+    '<div>' +
+      '<div class="card mb">' +
+        '<div class="card-h"><h3>Профиль продавца</h3></div>' +
+        '<div class="row row-2">' +
+          '<div class="field"><label>Имя продавца</label><input type="text" id="s_name" value="' + esc(s.name || '') + '"></div>' +
+          '<div class="field"><label>Телефон</label><input type="text" id="s_phone" value="' + esc(s.phone || '') + '" disabled></div>' +
+        '</div>' +
+        '<div class="field"><label>Email</label><input type="email" id="s_email" value="' + esc(s.email || '') + '"></div>' +
+        '<div class="field"><label>Тип продавца</label><select id="s_type">' +
+          ['Физическое лицо', 'Самозанятый', 'ИП', 'ООО'].map(t => '<option' + (s.type === t ? ' selected' : '') + '>' + t + '</option>').join('') +
+        '</select></div>' +
+      '</div>' +
+
+      '<div class="card mb">' +
+        '<div class="card-h"><h3>Магазин</h3></div>' +
+        '<div class="field"><label>Название магазина</label><input type="text" id="s_shop" value="' + esc(s.shop || '') + '"></div>' +
+        '<div class="field"><label>Название организации</label><input type="text" id="s_org" value="' + esc(s.org || '') + '"></div>' +
+        '<div class="row row-2">' +
+          '<div class="field"><label>Город</label><input type="text" id="s_city" value="' + esc(s.city || '') + '"></div>' +
+          '<div class="field"><label>Адрес склада</label><input type="text" id="s_address" value="' + esc(s.address || '') + '"></div>' +
+        '</div>' +
+        '<button class="btn btn-primary" id="s_save">Сохранить изменения</button>' +
+      '</div>' +
+
+      '<div class="card">' +
+        '<div class="card-h"><h3>Уведомления</h3></div>' +
+        '<label class="checkbox mb"><input type="checkbox" id="np_orders"' + (notifPrefs.orders ? ' checked' : '') + '><span>Новые заказы и изменения статусов</span></label>' +
+        '<label class="checkbox mb"><input type="checkbox" id="np_stock"' + (notifPrefs.stock ? ' checked' : '') + '><span>Низкие остатки товаров</span></label>' +
+        '<label class="checkbox"><input type="checkbox" id="np_system"' + (notifPrefs.system ? ' checked' : '') + '><span>Системные события</span></label>' +
+      '</div>' +
+    '</div>' +
+
+    '<div>' +
+      '<div class="card mb">' +
+        '<div class="card-h"><h3>Внешний вид</h3></div>' +
+        '<div class="chips">' +
+          '<div class="chip' + (theme === 'light' ? ' active' : '') + '" data-theme-set="light">Светлая тема</div>' +
+          '<div class="chip' + (theme === 'dark' ? ' active' : '') + '" data-theme-set="dark">Тёмная тема</div>' +
+        '</div>' +
+        '<p class="small muted" style="margin:12px 0 0">Тема сохраняется в браузере и применяется при следующем открытии.</p>' +
+      '</div>' +
+
+      '<div class="card mb">' +
+        '<div class="card-h"><h3>Безопасность</h3></div>' +
+        '<p class="small muted" style="margin:0 0 12px">Аутентификация выполняется локально, реальные SMS не отправляются.</p>' +
+        '<div class="kv"><span class="k">Режим авторизации</span><span class="v"><span class="badge b-warn">Демо</span></span></div>' +
+        '<div class="kv"><span class="k">Хранилище данных</span><span class="v">' + (DB.mode === 'idb' ? 'IndexedDB' : 'localStorage') + '</span></div>' +
+        '<button class="btn btn-ghost btn-block mt" id="s_logout">' + icon('logout', 17) + 'Выйти из аккаунта</button>' +
+      '</div>' +
+
+      '<div class="card mb">' +
+        '<div class="card-h"><h3>Данные приложения</h3></div>' +
+        '<div class="kv"><span class="k">Товары</span><span class="v">' + state.products.length + '</span></div>' +
+        '<div class="kv"><span class="k">Заказы</span><span class="v">' + state.orders.length + '</span></div>' +
+        '<div class="kv"><span class="k">Покупатели</span><span class="v">' + state.customers.length + '</span></div>' +
+        '<div class="kv"><span class="k">Движения склада</span><span class="v">' + state.movements.length + '</span></div>' +
+        '<div class="divider"></div>' +
+        '<div class="flex" style="flex-wrap:wrap;gap:8px">' +
+          '<button class="btn btn-sm btn-ghost" id="d_export">' + icon('download', 16) + 'Экспорт данных</button>' +
+          '<button class="btn btn-sm btn-ghost" id="d_import">' + icon('plus', 16) + 'Импорт данных</button>' +
+          '<input type="file" id="d_file" accept="application/json" hidden>' +
+        '</div>' +
+        '<div class="divider"></div>' +
+        '<button class="btn btn-danger btn-block mb" id="d_clear">Очистить данные магазина</button>' +
+        '<button class="btn btn-danger btn-block" id="d_reset">Полный сброс приложения</button>' +
+      '</div>' +
+
+      '<div class="card">' +
+        '<div class="card-h"><h3>О приложении</h3></div>' +
+        '<p class="small muted" style="margin:0">VEXA-SELLER · демонстрационная версия<br>' +
+        'Все данные хранятся локально в вашем браузере. Реальная отправка SMS и интеграция с маркетплейсами требует серверной части.</p>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+/* ==========================================================================
+   11. РЕНДЕР ПРИЛОЖЕНИЯ
+   ========================================================================== */
+const PAGES = {
+  'dashboard':     { title: 'Главная',     sub: 'Сводка по магазину',    render: pageDashboard },
+  'products':      { title: 'Товары',      sub: 'Каталог и QR-коды',     render: pageProducts },
+  'orders':        { title: 'Заказы',      sub: 'Обработка и статусы',   render: pageOrders },
+  'analytics':     { title: 'Аналитика',   sub: 'Показатели продаж',     render: pageAnalytics },
+  'notifications': { title: 'Уведомления', sub: 'События магазина',      render: pageNotifications },
+  'settings':      { title: 'Настройки',   sub: 'Профиль и данные',      render: pageSettings }
+};
+
+function renderApp() {
+  const page = PAGES[state.route] || PAGES.dashboard;
+  $('#pageTitle').innerHTML = esc(page.title) + '<span class="sub">' + esc(page.sub || '') + '</span>';
+  $('#content').innerHTML = page.render();
+  if (state.seller) $('#sbShop').textContent = state.seller.shop || 'Магазин';
+  renderNav();
+  bindPage(state.route);
+}
+
+function bindPage(route) {
+  $$('[data-route]').forEach(el => {
+    if (el.dataset.boundRoute) return;
+    el.dataset.boundRoute = '1';
+    el.addEventListener('click', () => navigate(el.getAttribute('data-route')));
+  });
+
+  if (route === 'dashboard') {
+    $$('#dashRange .chip').forEach(chip => {
+      chip.onclick = () => {
+        state.filters.dashboard.range = Number(chip.getAttribute('data-range'));
+        renderApp();
+      };
+    });
+  }
+
+  if (route === 'products') {
+    const s = $('#pSearch');
+    if (s) {
+      let t;
+      s.addEventListener('input', () => {
+        clearTimeout(t);
+        t = setTimeout(() => {
+          state.filters.products.q = s.value;
+          renderApp();
+          const el = $('#pSearch');
+          if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+        }, 240);
+      });
+    }
+    const sort = $('#pSort');
+    if (sort) sort.onchange = () => { state.filters.products.sort = sort.value; renderApp(); };
+    $$('#content .chips [data-pfilter]').forEach(c => {
+      c.onclick = () => { state.filters.products.status = c.getAttribute('data-pfilter'); renderApp(); };
+    });
+    const nb = $('#btnNewProduct');
+    if (nb) nb.onclick = () => openProductForm(null);
+  }
+
+  if (route === 'orders') {
+    const s = $('#oSearch');
+    if (s) {
+      let t;
+      s.addEventListener('input', () => {
+        clearTimeout(t);
+        t = setTimeout(() => {
+          state.filters.orders.q = s.value;
+          renderApp();
+          const el = $('#oSearch');
+          if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+        }, 240);
+      });
+    }
+    const sort = $('#oSort');
+    if (sort) sort.onchange = () => { state.filters.orders.sort = sort.value; renderApp(); };
+    $$('#content .chips [data-ofilter]').forEach(c => {
+      c.onclick = () => { state.filters.orders.status = c.getAttribute('data-ofilter'); renderApp(); };
+    });
+  }
+
+  if (route === 'analytics') {
+    $$('#content [data-arange]').forEach(c => {
+      c.onclick = () => {
+        const v = c.getAttribute('data-arange');
+        state.filters.analytics.range = (v === 'custom') ? 'custom' : Number(v);
+        if (v !== 'custom') { state.filters.analytics.from = null; state.filters.analytics.to = null; }
+        else if (!state.filters.analytics.from) {
+          state.filters.analytics.from = new Date(daysAgo(6)).toISOString().slice(0, 10);
+          state.filters.analytics.to = new Date().toISOString().slice(0, 10);
+        }
+        renderApp();
+      };
+    });
+    const ap = $('#aApply');
+    if (ap) ap.onclick = () => {
+      state.filters.analytics.from = $('#aFrom').value;
+      state.filters.analytics.to = $('#aTo').value;
+      renderApp();
+    };
+  }
+
+  if (route === 'notifications') {
+    const ma = $('#nMarkAll');
+    if (ma && !ma.disabled) ma.onclick = async () => {
+      await NotificationService.markAllRead();
+      toast('Все уведомления прочитаны');
+      renderApp();
+    };
+    const cl = $('#nClear');
+    if (cl && !cl.disabled) cl.onclick = async () => {
+      const ok = await confirmDialog('Очистить уведомления?', 'Все уведомления будут удалены без возможности восстановления.', 'Очистить', true);
+      if (!ok) return;
+      await NotificationService.clear();
+      renderApp();
+      toast('Уведомления очищены');
+    };
+  }
+
+  if (route === 'settings') bindSettings();
+}
+
+function bindSettings() {
+  const save = $('#s_save');
+  if (save) save.onclick = async () => {
+    const s = state.seller || {};
+    const email = $('#s_email').value.trim();
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast('Некорректный email', '', 'err'); return; }
+    const updated = {
+      id: 'seller',
+      name: $('#s_name').value.trim() || s.name,
+      shop: $('#s_shop').value.trim() || s.shop,
+      phone: s.phone,
+      email,
+      org: $('#s_org').value.trim(),
+      type: $('#s_type').value,
+      city: $('#s_city').value.trim(),
+      address: $('#s_address').value.trim(),
+      createdAt: s.createdAt || Date.now(),
+      updatedAt: Date.now()
+    };
+    state.seller = updated;
+    await DB.put('meta', updated);
+    renderApp();
+    toast('Профиль сохранён', updated.shop);
+  };
+
+  $$('[data-theme-set]').forEach(ch => {
+    ch.onclick = () => {
+      setTheme(ch.getAttribute('data-theme-set'));
+      renderApp();
+      toast('Тема изменена', ch.getAttribute('data-theme-set') === 'dark' ? 'Тёмная тема' : 'Светлая тема');
+    };
+  });
+
+  ['np_orders', 'np_stock', 'np_system'].forEach(id => {
+    const el = $('#' + id);
+    if (!el) return;
+    el.onchange = () => {
+      const prefs = {
+        orders: $('#np_orders').checked,
+        stock: $('#np_stock').checked,
+        system: $('#np_system').checked
+      };
+      localStorage.setItem('vexa_notif_prefs', JSON.stringify(prefs));
+    };
+  });
+
+  const lo = $('#s_logout');
+  if (lo) lo.onclick = async () => {
+    const ok = await confirmDialog('Выйти из аккаунта?', 'Данные магазина останутся в браузере. Вы сможете войти снова.', 'Выйти');
+    if (!ok) return;
+    await AuthService.logout();
+    location.reload();
+  };
+
+  const ex = $('#d_export');
+  if (ex) ex.onclick = () => {
+    const data = {
+      meta: { app: 'VEXA-SELLER', version: 2, exportedAt: new Date().toISOString() },
+      seller: state.seller,
+      products: state.products,
+      orders: state.orders,
+      customers: state.customers,
+      movements: state.movements,
+      notifications: state.notifications
+    };
+    download('vexa-seller-export-' + new Date().toISOString().slice(0, 10) + '.json', JSON.stringify(data, null, 2));
+    toast('Экспорт готов', 'Файл сохранён');
+  };
+
+  const im = $('#d_import');
+  const file = $('#d_file');
+  if (im && file) {
+    im.onclick = () => file.click();
+    file.onchange = () => {
+      const f = file.files && file.files[0];
+      if (!f) return;
+      const reader = new FileReader();
+      reader.onload = async () => {
+        let data;
+        try { data = JSON.parse(reader.result); }
+        catch (e) { toast('Ошибка импорта', 'Файл не является корректным JSON', 'err'); return; }
+        if (!data || typeof data !== 'object') { toast('Ошибка импорта', 'Неверный формат данных', 'err'); return; }
+        const ok = await confirmDialog('Импортировать данные?',
+          'Текущие данные будут полностью заменены содержимым файла. Действие необратимо.', 'Импортировать', true);
+        if (!ok) return;
+        try {
+          await applyImport(data);
+          toast('Импорт завершён', 'Данные загружены');
+          setTimeout(() => location.reload(), 700);
+        } catch (e) {
+          toast('Ошибка импорта', e.message, 'err');
+        }
+      };
+      reader.readAsText(f);
+      file.value = '';
+    };
+  }
+
+  const clr = $('#d_clear');
+  if (clr) clr.onclick = async () => {
+    const ok = await confirmDialog('Очистить данные магазина?',
+      'Будут удалены товары, заказы, покупатели, движения склада и уведомления. Профиль продавца сохранится.', 'Очистить', true);
+    if (!ok) return;
+    for (const s of ['products', 'orders', 'customers', 'movements', 'notifications']) await DB.clear(s);
+    await DB.put('meta', { id: 'counter_order', value: 0 });
+    await reloadState();
+    renderApp();
+    toast('Данные магазина очищены');
+  };
+
+  const rst = $('#d_reset');
+  if (rst) rst.onclick = async () => {
+    const ok = await confirmDialog('Полный сброс приложения?',
+      'Будут удалены все данные, включая профиль продавца.', 'Сбросить всё', true);
+    if (!ok) return;
+    await DB.clearAll();
+    try { localStorage.removeItem('vexa_session_demo'); } catch (e) {}
+    try { localStorage.removeItem('vexa_notif_prefs'); } catch (e) {}
+    location.reload();
+  };
+}
+
+async function applyImport(data) {
+  const sanitizeStr = v => (typeof v === 'string' ? v.slice(0, 5000) : '');
+  const products = Array.isArray(data.products) ? data.products : [];
+  const orders = Array.isArray(data.orders) ? data.orders : [];
+  const customers = Array.isArray(data.customers) ? data.customers : [];
+  const movements = Array.isArray(data.movements) ? data.movements : [];
+  const notifications = Array.isArray(data.notifications) ? data.notifications : [];
+
+  for (const s of ['products', 'orders', 'customers', 'movements', 'notifications']) await DB.clear(s);
+
+  await DB.putMany('products', products.filter(p => p && p.id).map(p => ({
+    id: sanitizeStr(p.id), name: sanitizeStr(p.name), sku: sanitizeStr(p.sku),
+    category: sanitizeStr(p.category), description: sanitizeStr(p.description),
+    price: Math.max(0, Number(p.price) || 0), oldPrice: Math.max(0, Number(p.oldPrice) || 0),
+    qty: Math.max(0, Math.floor(Number(p.qty) || 0)), reserved: Math.max(0, Math.floor(Number(p.reserved) || 0)),
+    sold: Math.max(0, Math.floor(Number(p.sold) || 0)), returned: Math.max(0, Math.floor(Number(p.returned) || 0)),
+    barcode: sanitizeStr(p.barcode), weight: Number(p.weight) || 0,
+    length: Number(p.length) || 0, width: Number(p.width) || 0, height: Number(p.height) || 0,
+    color: sanitizeStr(p.color), size: sanitizeStr(p.size), brand: sanitizeStr(p.brand),
+    image: (typeof p.image === 'string' && /^data:image\//.test(p.image)) ? p.image : null,
+    status: ['active', 'draft', 'out', 'archived'].indexOf(p.status) >= 0 ? p.status : 'active',
+    createdAt: Number(p.createdAt) || Date.now(), updatedAt: Number(p.updatedAt) || Date.now()
+  })));
+
+  await DB.putMany('orders', orders.filter(o => o && o.id).map(o => ({
+    id: sanitizeStr(o.id), number: sanitizeStr(o.number),
+    createdAt: Number(o.createdAt) || Date.now(),
+    customerId: o.customerId ? sanitizeStr(o.customerId) : null,
+    customerName: sanitizeStr(o.customerName) || 'Покупатель',
+    customerPhone: sanitizeStr(o.customerPhone), customerEmail: sanitizeStr(o.customerEmail),
+    items: Array.isArray(o.items) ? o.items.map(i => ({
+      productId: sanitizeStr(i.productId), name: sanitizeStr(i.name), sku: sanitizeStr(i.sku),
+      price: Math.max(0, Number(i.price) || 0), qty: Math.max(1, Math.floor(Number(i.qty) || 1))
+    })) : [],
+    subtotal: Math.max(0, Number(o.subtotal) || 0), discount: Math.max(0, Number(o.discount) || 0),
+    total: Math.max(0, Number(o.total) || 0),
+    delivery: { method: sanitizeStr(o.delivery && o.delivery.method), address: sanitizeStr(o.delivery && o.delivery.address) },
+    note: sanitizeStr(o.note),
+    status: ORDER_STATUS[o.status] ? o.status : 'new',
+    history: Array.isArray(o.history) ? o.history.map(h => ({
+      status: ORDER_STATUS[h.status] ? h.status : 'new',
+      at: Number(h.at) || Date.now(),
+      note: sanitizeStr(h.note)
+    })) : [{ status: 'new', at: Date.now(), note: 'Импортировано' }]
+  })));
+
+  await DB.putMany('customers', customers.filter(c => c && c.id).map(c => ({
+    id: sanitizeStr(c.id), name: sanitizeStr(c.name), phone: sanitizeStr(c.phone),
+    email: sanitizeStr(c.email), createdAt: Number(c.createdAt) || Date.now()
+  })));
+
+  await DB.putMany('movements', movements.filter(m => m && m.id).map(m => ({
+    id: sanitizeStr(m.id), productId: sanitizeStr(m.productId), type: sanitizeStr(m.type),
+    qty: Math.max(0, Math.floor(Number(m.qty) || 0)), reason: sanitizeStr(m.reason),
+    orderId: m.orderId ? sanitizeStr(m.orderId) : null, at: Number(m.at) || Date.now()
+  })));
+
+  await DB.putMany('notifications', notifications.filter(n => n && n.id).map(n => ({
+    id: sanitizeStr(n.id), type: sanitizeStr(n.type), title: sanitizeStr(n.title),
+    text: sanitizeStr(n.text), at: Number(n.at) || Date.now(), read: !!n.read
+  })));
+
+  if (data.seller && typeof data.seller === 'object') {
+    const s = data.seller;
+    await DB.put('meta', {
+      id: 'seller', name: sanitizeStr(s.name), shop: sanitizeStr(s.shop), phone: sanitizeStr(s.phone),
+      email: sanitizeStr(s.email), org: sanitizeStr(s.org), type: sanitizeStr(s.type),
+      city: sanitizeStr(s.city), address: sanitizeStr(s.address),
+      createdAt: Number(s.createdAt) || Date.now(), updatedAt: Date.now()
+    });
+  }
+}
+
+/* ==========================================================================
+   12. ТЕМА
+   ========================================================================== */
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  try { localStorage.setItem('vexa_theme', t); } catch (e) {}
+}
+function applyTheme() {
+  let t = 'light';
+  try { t = localStorage.getItem('vexa_theme') || 'light'; } catch (e) {}
+  document.documentElement.setAttribute('data-theme', t);
+}
+
+/* ==========================================================================
+   13. МИГРАЦИЯ СХЕМЫ
+   Демонстрационные данные из v1 удаляются при первом запуске обновления.
+   ========================================================================== */
+async function migrateData() {
+  const CURRENT = 2;
+  const sv = await DB.get('meta', 'schema_version');
+  if (sv && sv.value >= CURRENT) return;
+
+  const seeded = await DB.get('meta', 'seeded');
+  if (seeded && seeded.value) {
+    // Удаляем старые автогенерированные данные
+    for (const store of ['products', 'orders', 'customers', 'movements', 'notifications']) {
+      await DB.clear(store);
+    }
+    try { await DB.del('meta', 'seeded'); } catch (e) {}
+    try { await DB.del('meta', 'counter_order'); } catch (e) {}
+  }
+  await DB.put('meta', { id: 'schema_version', value: CURRENT });
+}
+
+/* ==========================================================================
+   14. ЗАГРУЗКА СОСТОЯНИЯ
+   ========================================================================== */
+async function reloadState() {
+  state.products = await DB.getAll('products');
+  state.orders = await DB.getAll('orders');
+  state.customers = await DB.getAll('customers');
+  state.movements = (await DB.getAll('movements')).sort((a, b) => b.at - a.at);
+  state.notifications = (await DB.getAll('notifications')).sort((a, b) => b.at - a.at);
+  const seller = await DB.get('meta', 'seller');
+  state.seller = seller || null;
+  state.products.sort((a, b) => b.createdAt - a.createdAt);
+  state.orders.sort((a, b) => b.createdAt - a.createdAt);
+}
+
+/* ==========================================================================
+   15. ГЛОБАЛЬНЫЕ ОБРАБОТЧИКИ
+   ========================================================================== */
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-product]');
+  if (t) { openProductDetails(t.getAttribute('data-product')); return; }
+
+  const o = e.target.closest('[data-order]');
+  if (o) { openOrderDetails(o.getAttribute('data-order')); return; }
+
+  const qp = e.target.closest('[data-qr-product]');
+  if (qp) { openProductDetails(qp.getAttribute('data-qr-product')); return; }
+
+  const qo = e.target.closest('[data-qr-order]');
+  if (qo) { openOrderDetails(qo.getAttribute('data-qr-order')); return; }
+
+  const ep = e.target.closest('[data-edit-product]');
+  if (ep) { openProductForm(ep.getAttribute('data-edit-product')); return; }
+
+  const na = e.target.closest('[data-action="new-product"]');
+  if (na) { openProductForm(null); return; }
+
+  const nr = e.target.closest('[data-nread]');
+  if (nr) { NotificationService.markRead(nr.getAttribute('data-nread')).then(renderApp); return; }
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const backdrop = $('.modal-backdrop');
+    if (backdrop) {
+      backdrop.remove();
+      if (!$('#modalRoot').children.length) document.body.style.overflow = '';
+    }
+    closeDrawer();
+  }
+});
+
+/* ==========================================================================
+   16. ЗАПУСК
+   ========================================================================== */
+function startApp() {
+  $('#authRoot').hidden = true;
+  $('#authRoot').style.display = 'none';
+  $('#app').hidden = false;
+
+  const hash = (location.hash || '').replace('#/', '');
+  state.route = PAGES[hash] ? hash : 'dashboard';
+  renderApp();
+  updateNotifBadge();
+}
+
+async function boot() {
+  applyTheme();
+
+  $('#burger').onclick = () => {
+    const sb = $('#sidebar');
+    sb.classList.toggle('open');
+    $('#scrim').hidden = !sb.classList.contains('open');
+  };
+  $('#scrim').onclick = closeDrawer;
+  $('#btnTheme').onclick = () => {
+    const cur = document.documentElement.getAttribute('data-theme');
+    setTheme(cur === 'dark' ? 'light' : 'dark');
+    renderApp();
+  };
+  $('#btnNotif').onclick = () => navigate('notifications');
+
+  window.addEventListener('hashchange', () => {
+    const hash = (location.hash || '').replace('#/', '');
+    if (PAGES[hash] && hash !== state.route) {
+      state.route = hash;
+      renderApp();
+    }
+  });
+
+  try {
+    await DB.init();
+    await migrateData();
+    await reloadState();
+  } catch (e) {
+    console.error('Ошибка инициализации хранилища', e);
+    toast('Ошибка хранилища', 'Данные могут не сохраняться', 'err');
+  }
+
+  const session = AuthService.getSession();
+  if (session && state.seller) {
+    startApp();
+  } else if (state.seller && !session) {
+    authUI.screen = 'phone';
+    renderAuth();
+  } else {
+    authUI.screen = 'welcome';
+    renderAuth();
+  }
+}
+
+boot();
+
+/* ==========================================================================
+   17. КОНТРАКТЫ ДЛЯ ПОДКЛЮЧЕНИЯ РЕАЛЬНОГО БЭКЕНДА (не активны в этой сборке)
+   --------------------------------------------------------------------------
+   POST   /api/auth/send-code      { phone }                  → { requestId, expiresIn }
+   POST   /api/auth/verify-code    { phone, requestId, code }  → Set-Cookie: session (httpOnly)
+   POST   /api/auth/logout                                     → 204
+   GET    /api/auth/me                                         → { seller }
+
+   GET    /api/products            ?q&status&sort&page         → { items, total }
+   POST   /api/products            { ...product }              → { product }
+   PUT    /api/products/:id        { ...patch }                → { product }
+   DELETE /api/products/:id                                    → 204
+
+   GET    /api/orders              ?status&q&page              → { items, total }
+   PUT    /api/orders/:id/status   { status, note }            → { order }
+
+   GET    /api/analytics           ?from&to                    → { revenue, orders, top, series }
+
+   GET    /api/notifications                                   → { items }
+   POST   /api/notifications/read  { id | all }                → 204
+   ========================================================================== */
+</script>
+</body>
+</html>
