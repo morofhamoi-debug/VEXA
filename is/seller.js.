@@ -1,1 +1,738 @@
+/* ============================================================
+   VEXA — Seller integration with Supabase
+   Переопределяет сервисы существующего seller.html
+   ============================================================ */
+(function () {
+  if (!window.sb || !window.VEXA_SELLER) {
+    console.error('[VEXA seller] Не найдены зависимости: window.sb или window.VEXA_SELLER');
+    return;
+  }
 
+  const S = window.VEXA_SELLER;
+  const sb = window.sb;
+  const {
+    state, toast, renderApp, showModal, confirmDialog, icon, esc,
+    fmtMoney, fmtDateTime, relTime, uid, $, $$, placeholderImage,
+    ORDER_STATUS, TRANSITIONS, CATEGORIES, DELIVERY_METHODS, PRODUCT_STATUS,
+    AuthService, ProductService, OrderService, NotificationService,
+    InventoryService, CustomerService, AnalyticsService, QrService
+  } = S;
+
+  const STORAGE_BUCKET = (window.VEXA_CONFIG && window.VEXA_CONFIG.STORAGE_BUCKET) || 'product-images';
+
+  // Публичный URL фото
+  function publicImageUrl(path) {
+    if (!path) return null;
+    const { data } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(path);
+    return data ? data.publicUrl : null;
+  }
+
+  /* ============================================================
+     1. AUTH — Supabase email/password
+     ============================================================ */
+  const Session = { user: null, profile: null, seller: null };
+
+  async function loadSession() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) return null;
+    Session.user = session.user;
+    const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
+    Session.profile = profile;
+    const { data: seller } = await sb.from('sellers').select('*').eq('user_id', session.user.id).maybeSingle();
+    Session.seller = seller;
+    return { user: session.user, profile, seller };
+  }
+
+  async function signUpSeller(email, password, fullName, storeName) {
+    const { data, error } = await sb.auth.signUp({
+      email, password,
+      options: { data: { full_name: fullName, store_name: storeName } }
+    });
+    if (error) throw error;
+    if (!data.session) {
+      throw new Error('Подтвердите email по ссылке из письма, затем войдите снова');
+    }
+    // Создаём sellers-запись через RPC
+    const { data: rpcData, error: rpcErr } = await sb.rpc('fn_register_seller', {
+      p_store_name: storeName
+    });
+    if (rpcErr) {
+      console.error('[seller.register]', rpcErr);
+      throw new Error('Не удалось создать магазин: ' + rpcErr.message);
+    }
+    return rpcData;
+  }
+
+  async function signInSeller(email, password) {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    return data;
+  }
+
+  async function signOutSeller() {
+    await sb.auth.signOut();
+  }
+
+  /* ============================================================
+     2. PRODUCTS — Supabase
+     ============================================================ */
+  const ProductDB = {
+    async loadAll() {
+      const sellerId = Session.seller && Session.seller.id;
+      if (!sellerId) return [];
+      const { data, error } = await sb
+        .from('products')
+        .select('*')
+        .eq('seller_id', sellerId)
+        .order('created_at', { ascending: false });
+      if (error) { console.error('[products.load]', error); return []; }
+      return (data || []).map(mapProductFromRow);
+    },
+
+    async create(data, imageFile) {
+      const sellerId = Session.seller.id;
+      let imagePath = null;
+      if (imageFile) {
+        imagePath = await uploadProductImage(imageFile, sellerId);
+      }
+      const sku = data.sku || autoSku();
+      const barcode = data.barcode || autoBarcode();
+      const { data: rows, error } = await sb
+        .from('products')
+        .insert({
+          seller_id: sellerId,
+          name: data.name,
+          description: data.description || null,
+          price: Number(data.price) || 0,
+          old_price: Number(data.oldPrice) || null,
+          category: data.category || null,
+          sku,
+          barcode,
+          quantity: Math.max(0, Math.floor(Number(data.qty) || 0)),
+          image_url: imagePath,
+          status: data.status || 'active'
+        })
+        .select()
+        .single();
+      if (error) throw new Error(error.message);
+      return mapProductFromRow(rows);
+    },
+
+    async update(id, data, imageFile) {
+      const sellerId = Session.seller.id;
+      let imagePath = undefined;
+      if (imageFile) {
+        imagePath = await uploadProductImage(imageFile, sellerId);
+      }
+      const patch = {
+        name: data.name,
+        description: data.description || null,
+        price: Number(data.price) || 0,
+        old_price: Number(data.oldPrice) || null,
+        category: data.category || null,
+        sku: data.sku,
+        barcode: data.barcode,
+        quantity: Math.max(0, Math.floor(Number(data.qty) || 0)),
+        status: data.status
+      };
+      if (imagePath !== undefined) patch.image_url = imagePath;
+
+      const { data: rows, error } = await sb
+        .from('products')
+        .update(patch)
+        .eq('id', id)
+        .eq('seller_id', sellerId)
+        .select()
+        .single();
+      if (error) throw new Error(error.message);
+      return mapProductFromRow(rows);
+    },
+
+    async archive(id) {
+      const { error } = await sb.from('products')
+        .update({ status: 'archived' })
+        .eq('id', id).eq('seller_id', Session.seller.id);
+      if (error) throw new Error(error.message);
+    },
+
+    async remove(id) {
+      const { error } = await sb.from('products')
+        .delete()
+        .eq('id', id).eq('seller_id', Session.seller.id);
+      if (error) throw new Error(error.message);
+    }
+  };
+
+  function mapProductFromRow(r) {
+    return {
+      id: r.id, sellerId: r.seller_id,
+      name: r.name, description: r.description || '',
+      price: Number(r.price) || 0, oldPrice: Number(r.old_price) || 0,
+      category: r.category || CATEGORIES[0],
+      sku: r.sku || '', barcode: r.barcode || '',
+      qty: r.quantity || 0,
+      reserved: r.reserved_quantity || 0,
+      sold: r.sold_quantity || 0, returned: 0,
+      image: r.image_url ? publicImageUrl(r.image_url) : null,
+      imagePath: r.image_url || null,
+      status: r.status || 'active',
+      weight: 0, length: 0, width: 0, height: 0, color: '', size: '', brand: '',
+      createdAt: new Date(r.created_at).getTime(),
+      updatedAt: new Date(r.updated_at).getTime(),
+      _row: r
+    };
+  }
+
+  async function uploadProductImage(file, sellerId) {
+    const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().slice(0, 6);
+    const path = sellerId + '/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext;
+    const { error } = await sb.storage.from(STORAGE_BUCKET).upload(path, file, {
+      cacheControl: '3600', upsert: false, contentType: file.type || 'image/jpeg'
+    });
+    if (error) throw new Error('Ошибка загрузки фото: ' + error.message);
+    return path;
+  }
+
+  let _skuCounter = 0;
+  function autoSku() { _skuCounter++; return 'VX-' + String(_skuCounter).padStart(4, '0'); }
+  function autoBarcode() { return '46' + String(Math.floor(Math.random() * 1e11)).padStart(11, '0'); }
+
+  /* ============================================================
+     3. ORDERS — Supabase + RPC
+     ============================================================ */
+  const OrderDB = {
+    async loadAll() {
+      const sellerId = Session.seller && Session.seller.id;
+      if (!sellerId) return [];
+      const { data, error } = await sb
+        .from('orders')
+        .select('*, items:order_items(*)')
+        .eq('seller_id', sellerId)
+        .order('created_at', { ascending: false })
+        .limit(300);
+      if (error) { console.error('[orders.load]', error); return []; }
+
+      const customerIds = [...new Set((data || []).map(o => o.customer_id).filter(Boolean))];
+      let profilesMap = {};
+      if (customerIds.length) {
+        const { data: profs } = await sb.from('profiles')
+          .select('id, full_name, phone, email').in('id', customerIds);
+        (profs || []).forEach(p => { profilesMap[p.id] = p; });
+      }
+      return (data || []).map(r => mapOrderFromRow(r, profilesMap[r.customer_id]));
+    },
+
+    async accept(id) {
+      const { data, error } = await sb.rpc('fn_accept_seller_order', { p_order_id: id });
+      if (error) throw new Error(translateRpcError(error));
+      return data;
+    },
+    async cancel(id, reason) {
+      const { data, error } = await sb.rpc('fn_cancel_seller_order', {
+        p_order_id: id, p_reason: reason || null
+      });
+      if (error) throw new Error(translateRpcError(error));
+      return data;
+    },
+    async startAssembly(id) {
+      const { data, error } = await sb.rpc('fn_start_assembly', { p_order_id: id });
+      if (error) throw new Error(translateRpcError(error));
+      return data;
+    },
+    async markAssembled(id) {
+      const { data, error } = await sb.rpc('fn_mark_order_assembled', { p_order_id: id });
+      if (error) throw new Error(translateRpcError(error));
+      return data;
+    }
+  };
+
+  function mapOrderFromRow(r, customerProfile) {
+    const items = (r.items || []).map(it => ({
+      productId: it.product_id,
+      name: it.product_name_snapshot,
+      sku: '',
+      price: Number(it.product_price_snapshot) || 0,
+      qty: it.quantity
+    }));
+    const subtotal = Number(r.total_amount) || 0;
+    const delivery = Number(r.delivery_price) || 0;
+    return {
+      id: r.id,
+      number: r.order_number,
+      createdAt: new Date(r.created_at).getTime(),
+      customerId: r.customer_id,
+      customerName: (customerProfile && customerProfile.full_name) || 'Покупатель',
+      customerPhone: (customerProfile && customerProfile.phone) || '',
+      customerEmail: (customerProfile && customerProfile.email) || '',
+      items,
+      subtotal: subtotal - delivery,
+      discount: 0,
+      total: subtotal,
+      delivery: {
+        method: DELIVERY_METHODS[1],
+        address: ''
+      },
+      note: '',
+      status: mapStatusFromDB(r.status),
+      _rawStatus: r.status,
+      history: (r.items ? [] : []),
+      _row: r
+    };
+  }
+
+  // mapping статусов DB → UI
+  const DB_TO_UI = {
+    'pending': 'new',
+    'seller_accepted': 'pending',
+    'assembling': 'assembling',
+    'ready_for_pvz': 'ready',
+    'received_at_pvz': 'shipped',
+    'picked_up_by_driver': 'shipped',
+    'in_transit_to_warehouse': 'shipped',
+    'received_at_warehouse': 'shipped',
+    'ready_for_customer': 'shipped',
+    'completed': 'done',
+    'seller_cancelled': 'cancelled',
+    'cancelled': 'cancelled',
+    'returned': 'cancelled'
+  };
+  function mapStatusFromDB(s) { return DB_TO_UI[s] || 'new'; }
+
+  // UI transitions → RPC
+  async function applyStatusChange(orderId, uiStatus) {
+    const o = state.orders.find(x => x.id === orderId);
+    if (!o) throw new Error('Заказ не найден');
+    if (uiStatus === 'pending') {
+      // "Новый" → "Принят" через RPC
+      await OrderDB.accept(orderId);
+      return 'seller_accepted';
+    }
+    if (uiStatus === 'assembling') {
+      await OrderDB.startAssembly(orderId);
+      return 'assembling';
+    }
+    if (uiStatus === 'ready') {
+      await OrderDB.markAssembled(orderId);
+      return 'ready_for_pvz';
+    }
+    if (uiStatus === 'cancelled') {
+      await OrderDB.cancel(orderId, 'Отменено продавцом');
+      return 'seller_cancelled';
+    }
+    throw new Error('Переход ' + uiStatus + ' не поддерживается продавцом');
+  }
+
+  /* ============================================================
+     4. NOTIFICATIONS — Supabase
+     ============================================================ */
+  const NotifDB = {
+    async loadAll() {
+      const uid = Session.user && Session.user.id;
+      if (!uid) return [];
+      const { data, error } = await sb.from('notifications')
+        .select('*')
+        .eq('user_id', uid)
+        .order('created_at', { ascending: false })
+        .limit(80);
+      if (error) { console.error('[notifications.load]', error); return []; }
+      return (data || []).map(n => ({
+        id: n.id,
+        type: n.type || 'system',
+        title: n.title,
+        text: n.message || '',
+        at: new Date(n.created_at).getTime(),
+        read: !!n.is_read,
+        _row: n
+      }));
+    },
+    async markRead(id) {
+      const { error } = await sb.from('notifications')
+        .update({ is_read: true }).eq('id', id).eq('user_id', Session.user.id);
+      if (error) console.error(error);
+    },
+    async markAllRead() {
+      const { error } = await sb.from('notifications')
+        .update({ is_read: true }).eq('user_id', Session.user.id).eq('is_read', false);
+      if (error) console.error(error);
+    },
+    async clear() {
+      const { error } = await sb.from('notifications')
+        .delete().eq('user_id', Session.user.id);
+      if (error) console.error(error);
+    }
+  };
+
+  /* ============================================================
+     5. Переводы ошибок RPC
+     ============================================================ */
+  function translateRpcError(err) {
+    const m = (err && err.message) || '';
+    if (m.includes('NOT_AUTHENTICATED')) return 'Требуется вход в систему';
+    if (m.includes('NOT_A_SELLER')) return 'Аккаунт не является продавцом';
+    if (m.includes('NOT_YOUR_ORDER')) return 'Это не ваш заказ';
+    if (m.includes('ORDER_NOT_FOUND')) return 'Заказ не найден';
+    if (m.includes('INVALID_STATUS')) return 'Недопустимое действие для текущего статуса заказа';
+    if (m.includes('CANNOT_CANCEL_IN_STATUS')) return 'Нельзя отменить заказ на текущем этапе';
+    if (m.includes('ROLE_CHANGE_NOT_ALLOWED')) return 'Смена роли запрещена';
+    if (m.includes('STORE_NAME_REQUIRED')) return 'Укажите название магазина';
+    if (m.includes('duplicate')) return 'Такая запись уже существует';
+    return m || 'Не удалось выполнить операцию';
+  }
+
+  /* ============================================================
+     6. Realtime подписки
+     ============================================================ */
+  let channels = [];
+
+  function subscribeRealtime() {
+    unsubscribeRealtime();
+    const sellerId = Session.seller && Session.seller.id;
+    const uid = Session.user && Session.user.id;
+    if (!sellerId || !uid) return;
+
+    const ch1 = sb.channel('seller-orders-' + sellerId)
+      .on('postgres_changes',
+        { event: '*', schema: 'public', table: 'orders', filter: 'seller_id=eq.' + sellerId },
+        async () => {
+          const fresh = await OrderDB.loadAll();
+          state.orders = fresh;
+          if (state.route === 'orders' || state.route === 'dashboard') renderApp();
+        })
+      .subscribe();
+    channels.push(ch1);
+
+    const ch2 = sb.channel('seller-notifs-' + uid)
+      .on('postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'notifications', filter: 'user_id=eq.' + uid },
+        (payload) => {
+          const n = payload.new;
+          state.notifications.unshift({
+            id: n.id, type: n.type || 'system', title: n.title,
+            text: n.message || '', at: new Date(n.created_at).getTime(),
+            read: false, _row: n
+          });
+          if (state.notifications.length > 200) state.notifications.length = 200;
+          if (S.updateNotifBadge) S.updateNotifBadge();
+          if (state.route === 'notifications' || state.route === 'dashboard') renderApp();
+          if (S.toast) S.toast(n.title, n.message || '', 'ok');
+        })
+      .subscribe();
+    channels.push(ch2);
+  }
+  function unsubscribeRealtime() {
+    channels.forEach(c => { try { sb.removeChannel(c); } catch (e) {} });
+    channels = [];
+  }
+
+  /* ============================================================
+     7. Загрузка всего состояния из БД
+     ============================================================ */
+  async function loadAllFromDB() {
+    const [products, orders, notifications] = await Promise.all([
+      ProductDB.loadAll(),
+      OrderDB.loadAll(),
+      NotifDB.loadAll()
+    ]);
+    state.products = products;
+    state.orders = orders;
+    state.notifications = notifications;
+    state.customers = [];
+    state.movements = [];
+  }
+
+  /* ============================================================
+     8. Переопределяем сервисы старого кода
+     ============================================================ */
+  function patchServices() {
+    // --- ProductService ---
+    ProductService.create = async function (data) {
+      const p = await ProductDB.create(data, data._imageFile || null);
+      state.products.unshift(p);
+      return p;
+    };
+    ProductService.update = async function (id, data) {
+      const p = await ProductDB.update(id, data, data._imageFile || null);
+      const idx = state.products.findIndex(x => x.id === id);
+      if (idx >= 0) state.products[idx] = p;
+      return p;
+    };
+    ProductService.archive = async function (id) {
+      await ProductDB.archive(id);
+      const p = state.products.find(x => x.id === id);
+      if (p) p.status = 'archived';
+    };
+    ProductService.remove = async function (id) {
+      await ProductDB.remove(id);
+      state.products = state.products.filter(x => x.id !== id);
+    };
+
+    // --- OrderService ---
+    OrderService.changeStatus = async function (id, nextStatus, note) {
+      const dbStatus = await applyStatusChange(id, nextStatus);
+      const o = state.orders.find(x => x.id === id);
+      if (o) {
+        o.status = nextStatus;
+        o._rawStatus = dbStatus;
+      }
+      return o;
+    };
+    OrderService.create = async function () {
+      throw new Error('Создание заказов из панели продавца отключено. Заказы создаются покупателем в marketplace.html.');
+    };
+
+    // --- NotificationService ---
+    NotificationService.markRead = async function (id) {
+      const n = state.notifications.find(x => x.id === id);
+      if (n) { n.read = true; }
+      await NotifDB.markRead(id);
+    };
+    NotificationService.markAllRead = async function () {
+      state.notifications.forEach(n => { n.read = true; });
+      await NotifDB.markAllRead();
+    };
+    NotificationService.clear = async function () {
+      await NotifDB.clear();
+      state.notifications = [];
+    };
+
+    // --- QrService: токен заказа из БД ---
+    QrService.orderPayload = function (orderId) {
+      const o = state.orders.find(x => x.id === orderId);
+      if (o && o._row && o._row.shipment_token) {
+        return 'VEXA:ORDER:' + o._row.shipment_token;
+      }
+      // fallback — просто ID (RPC всё равно проверит)
+      return 'VEXA:ORDER:' + orderId;
+    };
+    QrService.productPayload = function (productId) {
+      return 'VEXA:PRODUCT:' + productId;
+    };
+
+    // --- AnalyticsService работает от state.orders, ничего не меняем ---
+    // --- InventoryService становится виртуальным (движения не хранятся в БД)
+    InventoryService.record = async function () { /* no-op */ };
+    InventoryService.forProduct = function () { return []; };
+    InventoryService.adjust = async function () {
+      throw new Error('Корректировка остатка недоступна. Используйте редактирование товара.');
+    };
+
+    // --- CustomerService отключён (покупатели — отдельные auth.users) ---
+    CustomerService.upsertFromOrder = async function () { /* no-op */ };
+  }
+
+  /* ============================================================
+     9. Переопределяем AuthService (экраны входа/регистрации)
+     ============================================================ */
+  function patchAuth() {
+    // Старый authUI больше не используется — рисуем свой экран
+    window.VEXA.sellerUI = window.VEXA.sellerUI || {};
+    window.VEXA.sellerUI.renderAuth = renderSupabaseAuth;
+  }
+
+  function renderSupabaseAuth() {
+    const root = document.getElementById('authRoot');
+    if (!root) return;
+
+    // Текущий экран, который мы показываем
+    const ui = window.VEXA.sellerUI;
+    ui.screen = ui.screen || 'welcome';
+    ui.error = ui.error || '';
+
+    if (ui.screen === 'welcome') {
+      root.innerHTML = `
+        <div class="auth-card">
+          <div class="auth-logo">
+            <svg width="52" height="52" viewBox="0 0 48 48"><defs><linearGradient id="lgA" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#7C3AED"/><stop offset="1" stop-color="#4C1D95"/></linearGradient></defs>
+              <rect width="48" height="48" rx="14" fill="url(#lgA)"/>
+              <path d="M13 14 L24 34 L35 14" stroke="#fff" stroke-width="4.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="24" cy="38.5" r="2.6" fill="#fff"/></svg>
+            <div class="auth-brand">VEXA-SELLER</div>
+          </div>
+          <h1 class="auth-title">Панель продавца</h1>
+          <p class="auth-sub">Войдите или создайте аккаунт продавца. Все товары и заказы синхронизируются с маркетплейсом.</p>
+          <button class="btn btn-primary btn-block" id="sbLoginBtn" style="margin-bottom:10px">Войти</button>
+          <button class="btn btn-ghost btn-block" id="sbRegisterBtn">Регистрация продавца</button>
+        </div>`;
+      root.querySelector('#sbLoginBtn').onclick = () => { ui.screen = 'login'; ui.error = ''; renderSupabaseAuth(); };
+      root.querySelector('#sbRegisterBtn').onclick = () => { ui.screen = 'register'; ui.error = ''; renderSupabaseAuth(); };
+    }
+
+    if (ui.screen === 'login') {
+      root.innerHTML = `
+        <div class="auth-card">
+          <div class="auth-logo"><div class="auth-brand">VEXA-SELLER</div></div>
+          <h1 class="auth-title" style="font-size:22px">Вход в панель продавца</h1>
+          <p class="auth-sub">Используйте email и пароль, указанные при регистрации.</p>
+          <div class="field"><label>Email</label>
+            <input id="au_email" type="email" autocomplete="email" placeholder="seller@example.com"></div>
+          <div class="field"><label>Пароль</label>
+            <input id="au_pass" type="password" autocomplete="current-password" placeholder="Минимум 6 символов"></div>
+          ${ui.error ? '<div class="err-text" style="margin-bottom:10px">'+esc(ui.error)+'</div>' : ''}
+          <button class="btn btn-primary btn-block" id="au_login">Войти</button>
+          <button class="btn btn-ghost btn-block" id="au_back" style="margin-top:10px">Назад</button>
+          <p class="small muted" style="text-align:center;margin-top:16px">Нет аккаунта?
+            <span class="link" id="au_toReg">Зарегистрироваться как продавец</span></p>
+        </div>`;
+
+      const doLogin = async () => {
+        const email = root.querySelector('#au_email').value.trim();
+        const pass = root.querySelector('#au_pass').value;
+        if (!email || !pass) { ui.error = 'Заполните email и пароль'; renderSupabaseAuth(); return; }
+        const btn = root.querySelector('#au_login');
+        btn.disabled = true; btn.textContent = 'Вход...';
+        try {
+          await signInSeller(email, pass);
+          await startAfterAuth();
+        } catch (e) {
+          ui.error = e.message || 'Ошибка входа';
+          renderSupabaseAuth();
+        }
+      };
+      root.querySelector('#au_login').onclick = doLogin;
+      root.querySelector('#au_pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+      root.querySelector('#au_back').onclick = () => { ui.screen = 'welcome'; ui.error = ''; renderSupabaseAuth(); };
+      root.querySelector('#au_toReg').onclick = () => { ui.screen = 'register'; ui.error = ''; renderSupabaseAuth(); };
+      setTimeout(() => { const el = root.querySelector('#au_email'); if (el) el.focus(); }, 80);
+    }
+
+    if (ui.screen === 'register') {
+      root.innerHTML = `
+        <div class="auth-card" style="max-width:520px">
+          <div class="auth-logo"><div class="auth-brand">VEXA-SELLER</div></div>
+          <h1 class="auth-title" style="font-size:22px;text-align:left">Регистрация продавца</h1>
+          <p class="auth-sub" style="text-align:left">После регистрации откроется доступ в панель продавца.</p>
+          <div class="field"><label>Ваше имя</label>
+            <input id="rg_name" type="text" placeholder="Иван Петров" autocomplete="name"></div>
+          <div class="field"><label>Название магазина</label>
+            <input id="rg_shop" type="text" placeholder="VEXA Store"></div>
+          <div class="field"><label>Email</label>
+            <input id="rg_email" type="email" placeholder="seller@example.com" autocomplete="email"></div>
+          <div class="field"><label>Пароль</label>
+            <input id="rg_pass" type="password" placeholder="Минимум 6 символов" autocomplete="new-password">
+            <div class="hint">Не менее 6 символов</div></div>
+          ${ui.error ? '<div class="err-text" style="margin-bottom:10px">'+esc(ui.error)+'</div>' : ''}
+          <button class="btn btn-primary btn-block" id="rg_do">Зарегистрироваться</button>
+          <button class="btn btn-ghost btn-block" id="rg_back" style="margin-top:10px">Назад</button>
+        </div>`;
+
+      const doReg = async () => {
+        const name = root.querySelector('#rg_name').value.trim();
+        const shop = root.querySelector('#rg_shop').value.trim();
+        const email = root.querySelector('#rg_email').value.trim();
+        const pass = root.querySelector('#rg_pass').value;
+
+        if (!name) { ui.error = 'Введите имя'; renderSupabaseAuth(); return; }
+        if (!shop) { ui.error = 'Введите название магазина'; renderSupabaseAuth(); return; }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { ui.error = 'Некорректный email'; renderSupabaseAuth(); return; }
+        if (pass.length < 6) { ui.error = 'Пароль должен содержать не менее 6 символов'; renderSupabaseAuth(); return; }
+
+        const btn = root.querySelector('#rg_do');
+        btn.disabled = true; btn.textContent = 'Создание...';
+        try {
+          await signUpSeller(email, pass, name, shop);
+          toast('Аккаунт создан', 'Добро пожаловать в VEXA-SELLER', 'ok');
+          await startAfterAuth();
+        } catch (e) {
+          ui.error = e.message || 'Ошибка регистрации';
+          renderSupabaseAuth();
+        }
+      };
+      root.querySelector('#rg_do').onclick = doReg;
+      root.querySelector('#rg_back').onclick = () => { ui.screen = 'welcome'; ui.error = ''; renderSupabaseAuth(); };
+      setTimeout(() => { const el = root.querySelector('#rg_name'); if (el) el.focus(); }, 80);
+    }
+  }
+
+  /* ============================================================
+     10. Start after auth — загрузка данных и рендер приложения
+     ============================================================ */
+  async function startAfterAuth() {
+    const s = await loadSession();
+    if (!s || !s.user) { renderSupabaseAuth(); return; }
+    if (!s.seller) {
+      // user есть, но sellers нет — регистрация не завершена
+      toast('Аккаунт не является продавцом', 'Обратитесь к администратору', 'warn');
+      await sb.auth.signOut();
+      renderSupabaseAuth();
+      return;
+    }
+
+    // Формируем state.seller в формате старого приложения
+    state.seller = {
+      id: s.seller.id,
+      name: s.profile ? (s.profile.full_name || '') : '',
+      shop: s.seller.store_name,
+      phone: (s.profile && s.profile.phone) || '',
+      email: (s.profile && s.profile.email) || s.user.email,
+      org: '',
+      type: 'ИП',
+      city: '',
+      address: s.seller.description || '',
+      createdAt: new Date(s.seller.created_at).getTime(),
+      updatedAt: Date.now()
+    };
+
+    await loadAllFromDB();
+    patchServices();
+    subscribeRealtime();
+
+    // Прячем auth-экран, показываем приложение
+    const authRoot = document.getElementById('authRoot');
+    if (authRoot) { authRoot.hidden = true; authRoot.style.display = 'none'; }
+    const app = document.getElementById('app');
+    if (app) app.hidden = false;
+
+    // Роутер
+    if (typeof S.setRoute === 'function') {
+      // если у старого кода есть роутер
+    }
+    state.route = 'dashboard';
+    if (S.renderNav) S.renderNav();
+    if (typeof renderApp === 'function') renderApp();
+    if (S.updateNotifBadge) S.updateNotifBadge();
+
+    // Обработчик выхода
+    const lo = document.getElementById('s_logout');
+    if (lo) {
+      lo.onclick = async () => {
+        const ok = await confirmDialog('Выйти из аккаунта?', 'Вы сможете войти снова с тем же email.', 'Выйти');
+        if (!ok) return;
+        unsubscribeRealtime();
+        await signOutSeller();
+        location.reload();
+      };
+    }
+    // Кнопка выхода в настройках генерируется заново при каждом renderApp,
+    // поэтому вешаем делегирование:
+    document.addEventListener('click', async (e) => {
+      const btn = e.target.closest('#s_logout');
+      if (!btn) return;
+      const ok = await confirmDialog('Выйти из аккаунта?', 'Вы сможете войти снова с тем же email.', 'Выйти');
+      if (!ok) return;
+      unsubscribeRealtime();
+      await signOutSeller();
+      location.reload();
+    });
+  }
+
+  /* ============================================================
+     11. attach() — вызывается из seller.html
+     ============================================================ */
+  async function attach() {
+    // Пробуем восстановить сессию
+    const s = await loadSession();
+    if (s && s.user && s.seller) {
+      await startAfterAuth();
+      return;
+    }
+    // Иначе показываем экран входа
+    const authRoot = document.getElementById('authRoot');
+    if (authRoot) { authRoot.hidden = false; authRoot.style.display = 'flex'; }
+    const app = document.getElementById('app');
+    if (app) app.hidden = true;
+    renderSupabaseAuth();
+  }
+
+  window.VEXA.seller = { attach, startAfterAuth, loadSession, signOut: signOutSeller };
+})();
